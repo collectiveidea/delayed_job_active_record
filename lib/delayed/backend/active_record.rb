@@ -74,7 +74,11 @@ module Delayed
             Time.now
           end
         end
-
+        
+        def reload(*args)
+          reset
+          super
+        end
       end
     end
   end

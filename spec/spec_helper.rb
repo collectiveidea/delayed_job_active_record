@@ -5,8 +5,6 @@ require 'bundler/setup'
 require 'rspec'
 require 'logger'
 
-require 'active_record'
-
 require 'delayed_job_active_record'
 require 'delayed/backend/shared_spec'
 
