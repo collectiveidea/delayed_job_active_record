@@ -10,6 +10,7 @@ module Delayed
         set_table_name :delayed_jobs
 
         before_save :set_default_run_at
+        before_create :check_unique_key
         
         def self.rails3?
           ::ActiveRecord::VERSION::MAJOR == 3
