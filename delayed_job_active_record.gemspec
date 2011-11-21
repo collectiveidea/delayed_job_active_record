@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name              = 'delayed_job_unique_key_active_record'
-  s.version           = '0.0.1'
+  s.name              = 'delayed_job_active_record'
+  s.version           = '0.2.0'
   s.authors           = ["Matt Griffin"]
   s.summary           = 'ActiveRecord backend for DelayedJob'
   s.description       = 'ActiveRecord backend for DelayedJob, originally authored by Tobias Luetke'
@@ -16,8 +16,7 @@ Gem::Specification.new do |s|
   s.test_files        = Dir.glob('spec/**/*')
 
   s.add_runtime_dependency      'activerecord',  '> 2.1.0'
-  # s.add_runtime_dependency      'delayed_job',   '3.0.0.pre'
-  s.add_runtime_dependency      'delayed_job_uniq_key',   '0.0.1'
+  s.add_runtime_dependency      'delayed_job',   '3.0.0.pre'
 
   s.add_development_dependency  'rspec',          '~> 2.0'
   s.add_development_dependency  'rake',           '~> 0.8'
