@@ -1,12 +1,9 @@
 # DelayedJob ActiveRecord Backend
 
-Please note! This is a pre-release version intended for use only with DelayedJob 3.0
-
 ## Installation
 
 Add the gems to your Gemfile:
 
-    gem 'delayed_job'
     gem 'delayed_job_active_record'
 
 Run `bundle install`
