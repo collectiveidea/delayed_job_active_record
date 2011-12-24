@@ -89,7 +89,7 @@ describe ActiveRecord do
       y.should     match(/attributes:/)
       y.should     match(/text: value/)
       y.should     match(/scoped: true/)
-      y.should_not match(/story_id:/)
+      y.should     satisfy {|yaml| yaml !~ /story_id:/ || yaml =~ /story_id.*null/}
       y.should     match(/transient_attr1.*transvalue/)
       y.should_not match(/transient_attr2/)
       y.should_not match(/villan/)

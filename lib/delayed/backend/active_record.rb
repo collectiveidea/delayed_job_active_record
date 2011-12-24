@@ -31,6 +31,7 @@ module ActiveRecord
 
       transient_attrs.each do |tvar|
         tvar_name = tvar.to_s.sub(/@/, '')
+        next  if ! respond_to?("#{tvar_name}=")
         coder[tvar_name] = instance_variable_get(tvar)
       end
         
@@ -41,7 +42,18 @@ module ActiveRecord
       return if coder.blank?
 
       if ::ActiveRecord::VERSION::MAJOR == 3
-        # From lib/active_record/base.rb
+        r = _init_with_active_record_3_0(coder) if ::ActiveRecord::VERSION::MINOR == 0
+        r = _init_with_active_record_3_1(coder) if ::ActiveRecord::VERSION::MINOR == 1
+      end
+      
+      _run_initialize_transient_attributes(coder)
+      return r
+    end
+
+    private
+    
+      # From lib/active_record/base.rb
+      def _init_with_active_record_3_0(coder)
         @attributes = coder['attributes']
         @attributes_cache, @previously_changed, @changed_attributes = {}, {}, {}
         @new_record = @readonly = @destroyed = @marked_for_destruction = false
@@ -49,11 +61,24 @@ module ActiveRecord
         _run_initialize_callbacks
       end
       
-      _run_initialize_transient_attributes(coder)
-    end
+      # From lib/active_record/base.rb
+      def _init_with_active_record_3_1(coder)
+        @attributes = coder['attributes']
+        @relation = nil
 
-    private
-    
+        set_serialized_attributes
+
+        @attributes_cache, @previously_changed, @changed_attributes = {}, {}, {}
+        @association_cache = {}
+        @aggregation_cache = {}
+        @readonly = @destroyed = @marked_for_destruction = false
+        @new_record = false
+        run_callbacks :find
+        run_callbacks :initialize
+
+        self
+      end
+      
       def _is_association?(ivar_name)
         return false if ivar_name.blank?
         return ! self.class.reflections.select{|r| r == ivar_name.to_sym}.empty?
@@ -66,7 +91,8 @@ module ActiveRecord
         transient_vars = vars.reject{|name,value| _is_association?(name)}
 
         transient_vars.each_pair do |name,value|
-          send("#{name}=", value)  if respond_to?("#{name}=")
+          next if ! respond_to?("#{name}=")
+          send("#{name}=", value)
         end
       
         self
