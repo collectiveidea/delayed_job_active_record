@@ -41,4 +41,19 @@ describe Delayed::Backend::ActiveRecord::Job do
       Delayed::Backend::ActiveRecord::Job.find(job.id).run_at.should be_within(1).of(later)
     end
   end
+
+  context "ActiveRecord::Base.send(:attr_accessible, nil)" do
+    before do
+      Delayed::Backend::ActiveRecord::Job.send(:attr_accessible, nil)
+    end
+
+    after do
+      Delayed::Backend::ActiveRecord::Job.send(:attr_accessible, *Delayed::Backend::ActiveRecord::Job.new.attributes.keys)
+    end
+
+    it "should still be accessible" do
+      job = Delayed::Backend::ActiveRecord::Job.enqueue :payload_object => EnqueueJobMod.new
+      Delayed::Backend::ActiveRecord::Job.find(job.id).handler.should_not be_blank
+    end
+  end
 end
