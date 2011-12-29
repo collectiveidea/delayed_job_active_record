@@ -33,7 +33,7 @@ describe Delayed::Backend::ActiveRecord::Job do
       Delayed::Backend::ActiveRecord::Job.after_fork
     end
   end
-  
+
   describe "enqueue" do
     it "should allow enqueue hook to modify job at DB level" do
       later = described_class.db_time_now + 20.minutes

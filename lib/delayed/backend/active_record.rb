@@ -10,11 +10,11 @@ module Delayed
         set_table_name :delayed_jobs
 
         before_save :set_default_run_at
-        
+
         def self.rails3?
           ::ActiveRecord::VERSION::MAJOR == 3
         end
-        
+
         if rails3?
           scope :ready_to_run, lambda{|worker_name, max_run_time|
             where('(run_at <= ? AND (locked_at IS NULL OR locked_at < ?) OR locked_by = ?) AND failed_at IS NULL', db_time_now, db_time_now - max_run_time, worker_name)
@@ -87,7 +87,7 @@ module Delayed
             Time.now
           end
         end
-        
+
         def reload(*args)
           reset
           super
