@@ -2,7 +2,7 @@
 
 ## Installation
 
-Add the gems to your Gemfile:
+Add the gem to your Gemfile:
 
     gem 'delayed_job_active_record'
 
