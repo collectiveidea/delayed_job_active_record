@@ -9,6 +9,9 @@ module Delayed
         include Delayed::Backend::Base
         set_table_name :delayed_jobs
 
+        attr_accessible :priority, :run_at, :queue, :payload_object,
+          :failed_at, :locked_at, :locked_by
+
         before_save :set_default_run_at
 
         def self.rails3?
