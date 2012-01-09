@@ -1,5 +1,106 @@
 require 'active_record'
 require 'active_record/version'
+
+module ActiveRecord
+  class Base
+    
+    # From lib/active_record/base.rb
+    # grep @ lib/active_record/base.rb | sed "s/^[ \t]*//" | egrep -v @@ | sort -u
+    RAILS2_IVARS = [:@abstract_class, :@attribute, :@attributes, :@attributes_cache, :@changed_attributes, :@column_names, :@columns, :@columns_hash, :@content_columns, :@destroyed, :@dynamic_methods_hash, :@errors, :@exception, :@finder_needs_type_condition, :@generated_methods, :@inheritance_column, :@message, :@new_record, :@new_record_before_save, :@readonly]
+    
+    # From lib/active_record/base.rb (union of Rails 3.0 and Rails 3.1)
+    # grep @ lib/active_record/base.rb | sed "s/^[ \t]*//" | egrep -v @@ | sort -u
+    RAILS3_IVARS = [:@aggregation_cache, :@arel_engine, :@arel_table, :@association_cache, :@attributes_cache, :@attributes, :@changed_attributes, :@column_names, :@columns, :@columns_hash, :@content_columns, :@destroyed, :@dynamic_methods_hash, :@errors, :@finder_needs_type_condition, :@generated_feature_methods, :@inheritance_column, :@marked_for_destruction, :@new_record, :@new_record_before_save, :@previously_changed, :@quoted_table_name, :@readonly, :@relation, :@validation_context]
+    
+    ACTIVE_RECORD_INSTANCE_VARIABLES = ::ActiveRecord::VERSION::MAJOR == 3 ? RAILS3_IVARS : RAILS2_IVARS
+
+    DELAYED_JOB_INSTANCE_VARIABLES = [:@payload_object]
+
+    # Serialize any transient attributes too
+    def encode_with(coder)
+      super(coder) if defined?(super)
+      return if coder.blank?
+
+      # From delayed_job/lib/delayed/psych_ext.rb
+      coder["attributes"] = @attributes
+      coder.tag = ['!ruby/ActiveRecord', self.class.name].join(':')
+      
+      ivars_without_ar = instance_variables.reject {|x| ACTIVE_RECORD_INSTANCE_VARIABLES.include?(x)}
+      ivars_without_assoc = ivars_without_ar.reject{|x| _is_association?(x.to_s.sub(/@/, '').to_sym)}
+      transient_attrs = ivars_without_assoc.reject {|x| DELAYED_JOB_INSTANCE_VARIABLES.include?(x)}
+
+      transient_attrs.each do |tvar|
+        tvar_name = tvar.to_s.sub(/@/, '')
+        next  if ! respond_to?("#{tvar_name}=")
+        coder[tvar_name] = instance_variable_get(tvar)
+      end
+        
+    end
+    
+    # Deserialize any transient attributes too
+    def init_with(coder)
+      return if coder.blank?
+
+      if ::ActiveRecord::VERSION::MAJOR == 3
+        r = _init_with_active_record_3_0(coder) if ::ActiveRecord::VERSION::MINOR == 0
+        r = _init_with_active_record_3_1(coder) if ::ActiveRecord::VERSION::MINOR == 1
+      end
+      
+      _run_initialize_transient_attributes(coder)
+      return r
+    end
+
+    private
+    
+      # From lib/active_record/base.rb
+      def _init_with_active_record_3_0(coder)
+        @attributes = coder['attributes']
+        @attributes_cache, @previously_changed, @changed_attributes = {}, {}, {}
+        @new_record = @readonly = @destroyed = @marked_for_destruction = false
+        _run_find_callbacks
+        _run_initialize_callbacks
+      end
+      
+      # From lib/active_record/base.rb
+      def _init_with_active_record_3_1(coder)
+        @attributes = coder['attributes']
+        @relation = nil
+
+        set_serialized_attributes
+
+        @attributes_cache, @previously_changed, @changed_attributes = {}, {}, {}
+        @association_cache = {}
+        @aggregation_cache = {}
+        @readonly = @destroyed = @marked_for_destruction = false
+        @new_record = false
+        run_callbacks :find
+        run_callbacks :initialize
+
+        self
+      end
+      
+      def _is_association?(ivar_name)
+        return false if ivar_name.blank?
+        return ! self.class.reflections.select{|r| r == ivar_name.to_sym}.empty?
+      end
+    
+      def _run_initialize_transient_attributes(coder)
+        return if coder.blank?
+      
+        vars = coder.reject{|name,value| name == 'attributes'}
+        transient_vars = vars.reject{|name,value| _is_association?(name)}
+
+        transient_vars.each_pair do |name,value|
+          next if ! respond_to?("#{name}=")
+          send("#{name}=", value)
+        end
+      
+        self
+      end
+
+  end
+end
+
 module Delayed
   module Backend
     module ActiveRecord

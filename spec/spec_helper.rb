@@ -36,6 +36,11 @@ ActiveRecord::Schema.define do
     table.string :text
     table.boolean :scoped, :default => true
   end
+  
+  create_table :villans, :primary_key => :villan_id, :force => true do |table|
+    table.string :name
+    table.integer :story_id
+  end
 end
 
 # Purely useful for test cases...
@@ -46,6 +51,11 @@ class Story < ActiveRecord::Base
   default_scope where(:scoped => true)
 
   handle_asynchronously :whatever
+end
+
+class Villan < ActiveRecord::Base
+  set_primary_key :villan_id
+  def tell; name; end
 end
 
 # Add this directory so the ActiveSupport autoloading works
