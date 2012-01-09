@@ -7,7 +7,6 @@ module Delayed
       # Contains the work object as a YAML field.
       class Job < ::ActiveRecord::Base
         include Delayed::Backend::Base
-        set_table_name :delayed_jobs
 
         attr_accessible :priority, :run_at, :queue, :payload_object,
           :failed_at, :locked_at, :locked_by
@@ -19,11 +18,13 @@ module Delayed
         end
 
         if rails3?
+          self.table_name = 'delayed_jobs'
           scope :ready_to_run, lambda{|worker_name, max_run_time|
             where('(run_at <= ? AND (locked_at IS NULL OR locked_at < ?) OR locked_by = ?) AND failed_at IS NULL', db_time_now, db_time_now - max_run_time, worker_name)
           }
           scope :by_priority, order('priority ASC, run_at ASC')
         else
+          set_table_name :delayed_jobs
           named_scope :ready_to_run, lambda {|worker_name, max_run_time|
             { :conditions => ['(run_at <= ? AND (locked_at IS NULL OR locked_at < ?) OR locked_by = ?) AND failed_at IS NULL', db_time_now, db_time_now - max_run_time, worker_name] }
           }
