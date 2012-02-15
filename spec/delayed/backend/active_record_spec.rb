@@ -40,6 +40,10 @@ describe Delayed::Backend::ActiveRecord::Job do
       job = Delayed::Backend::ActiveRecord::Job.enqueue :payload_object => EnqueueJobMod.new
       Delayed::Backend::ActiveRecord::Job.find(job.id).run_at.should be_within(1).of(later)
     end
+    it "should allow to enqueue jobs with custom attributes" do
+      job = Story.delay(:category => 'story').new
+      job.category.should == 'story'
+    end
   end
 
   context "ActiveRecord::Base.send(:attr_accessible, nil)" do

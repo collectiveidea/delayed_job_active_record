@@ -32,6 +32,9 @@ ActiveRecord::Schema.define do
 
   add_index :delayed_jobs, [:priority, :run_at], :name => 'delayed_jobs_priority'
 
+  # adding custom delayed job column
+  add_column :delayed_jobs, :category, :string
+
   create_table :stories, :primary_key => :story_id, :force => true do |table|
     table.string :text
     table.boolean :scoped, :default => true
@@ -40,12 +43,17 @@ end
 
 # Purely useful for test cases...
 class Story < ActiveRecord::Base
-  set_primary_key :story_id
+  self.primary_key = 'story_id'
   def tell; text; end
   def whatever(n, _); tell*n; end
   default_scope where(:scoped => true)
 
   handle_asynchronously :whatever
+end
+
+# For testing cutom column accessibility
+class DelayedJob < ActiveRecord::Base
+  attr_accessible :category
 end
 
 # Add this directory so the ActiveSupport autoloading works
