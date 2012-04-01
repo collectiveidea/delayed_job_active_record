@@ -19,10 +19,12 @@ module Delayed
 
         if rails3?
           self.table_name = 'delayed_jobs'
-          scope :ready_to_run, lambda{|worker_name, max_run_time|
+          def self.ready_to_run(worker_name, max_run_time)
             where('(run_at <= ? AND (locked_at IS NULL OR locked_at < ?) OR locked_by = ?) AND failed_at IS NULL', db_time_now, db_time_now - max_run_time, worker_name)
-          }
-          scope :by_priority, order('priority ASC, run_at ASC')
+          end
+          def self.by_priority
+            order('priority ASC, run_at ASC')
+          end
         else
           set_table_name :delayed_jobs
           named_scope :ready_to_run, lambda {|worker_name, max_run_time|
