@@ -2,4 +2,7 @@ Gemfile.lock
 .DS_Store
 pkg/*
 .rvmrc
+*.swp
+bin
+.bundle
 
