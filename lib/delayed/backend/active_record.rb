@@ -68,7 +68,7 @@ module Delayed
           else
             # We already own this job, this may happen if the job queue crashes.
             # Simply resume and update the locked_at
-            self.class.update_all(["locked_at = ?", now], ["id = ? and locked_by = ?", id, worker])
+            self.class.update_all(["locked_at = ?", now], ["id = ? and locked_by = ? and (run_at <= ?)", id, worker, now])
           end
           if affected_rows == 1
             self.locked_at = now
