@@ -1,4 +1,4 @@
-# DelayedJob ActiveRecord Backend
+# DelayedJob ActiveRecord Backend [![Build Status](http://travis-ci.org/collectiveidea/delayed_job_active_record.png)](https://travis-ci.org/collectiveidea/delayed_job_active_record) [![Dependency Status](https://gemnasium.com/collectiveidea/delayed_job_active_record.png)](https://gemnasium.com/collectiveidea/delayed_job_active_record)
 
 ## Installation
 
@@ -21,15 +21,6 @@ If you're upgrading from Delayed Job 2.x, run the upgrade generator to create a 
     rake db:migrate
 
 That's it. Use [delayed_job as normal](http://github.com/collectiveidea/delayed_job).
-
-## Build Status
-
-[![Build Status](http://travis-ci.org/collectiveidea/delayed_job_active_record.png)](https://travis-ci.org/collectiveidea/delayed_job_active_record)
-
-
-## Dependency Status
-
-[![Dependency Status](https://gemnasium.com/collectiveidea/delayed_job_active_record.png)](https://gemnasium.com/collectiveidea/delayed_job_active_record)
 
 ## How to contribute
 
