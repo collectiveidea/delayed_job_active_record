@@ -1,4 +1,3 @@
-require 'active_record'
 require 'active_record/version'
 module Delayed
   module Backend
@@ -17,8 +16,10 @@ module Delayed
           ::ActiveRecord::VERSION::MAJOR == 3
         end
 
+        delayed_job_table_name = "#{::ActiveRecord::Base.table_name_prefix}delayed_jobs"
+
         if rails3?
-          self.table_name = 'delayed_jobs'
+          self.table_name = delayed_job_table_name
           def self.ready_to_run(worker_name, max_run_time)
             where('(run_at <= ? AND (locked_at IS NULL OR locked_at < ?) OR locked_by = ?) AND failed_at IS NULL', db_time_now, db_time_now - max_run_time, worker_name)
           end
@@ -26,7 +27,7 @@ module Delayed
             order('priority ASC, run_at ASC')
           end
         else
-          set_table_name :delayed_jobs
+          set_table_name delayed_job_table_name
           named_scope :ready_to_run, lambda {|worker_name, max_run_time|
             { :conditions => ['(run_at <= ? AND (locked_at IS NULL OR locked_at < ?) OR locked_by = ?) AND failed_at IS NULL', db_time_now, db_time_now - max_run_time, worker_name] }
           }
