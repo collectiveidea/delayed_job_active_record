@@ -56,4 +56,23 @@ describe Delayed::Backend::ActiveRecord::Job do
       Delayed::Backend::ActiveRecord::Job.find(job.id).handler.should_not be_blank
     end
   end
+
+  context "ActiveRecord::Base.table_name_prefix" do
+    def reload_job_class_definition
+      # If this can be done in a more sane manner, please fix it
+      load File.join File.dirname(__FILE__), '..', '..', '..', 'lib', 'delayed', 'backend', 'active_record.rb'
+    end
+
+    it "when prefix is not set, should use 'delayed_jobs' as table name" do
+      ::ActiveRecord::Base.table_name_prefix = nil
+      reload_job_class_definition
+      Delayed::Backend::ActiveRecord::Job.table_name.should eq 'delayed_jobs'
+    end
+
+    it "when prefix is set, should prepend it before default table name" do
+      ::ActiveRecord::Base.table_name_prefix = 'custom_'
+      reload_job_class_definition
+      Delayed::Backend::ActiveRecord::Job.table_name.should eq 'custom_delayed_jobs'
+    end
+  end
 end
