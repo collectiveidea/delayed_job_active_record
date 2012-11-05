@@ -7,6 +7,12 @@ module Delayed
       class Job < ::ActiveRecord::Base
         include Delayed::Backend::Base
 
+        def initialize(*args)
+          # Add additionaly provided attributes to attr_accessible
+          _accessible_attributes[:default] += args[0].keys if args.size > 0 && args[0].size > 2
+          super
+        end
+
         attr_accessible :priority, :run_at, :queue, :payload_object,
           :failed_at, :locked_at, :locked_by
 
