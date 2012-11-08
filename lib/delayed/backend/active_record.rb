@@ -74,8 +74,7 @@ module Delayed
           if affected_rows == 1
             self.locked_at = now
             self.locked_by = worker
-            self.locked_at_will_change!
-            self.locked_by_will_change!
+            self.changed_attributes.clear
             return true
           else
             return false
