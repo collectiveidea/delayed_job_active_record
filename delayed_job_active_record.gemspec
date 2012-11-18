@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.files             = Dir.glob('{contrib,lib,recipes,spec}/**/*') +
                         %w(LICENSE README.md)
   s.homepage          = 'http://github.com/collectiveidea/delayed_job_active_record'
+  s.licenses          = ["MIT"]
   s.rdoc_options      = ["--main", "README.md", "--inline-source", "--line-numbers"]
   s.require_paths     = ["lib"]
   s.test_files        = Dir.glob('spec/**/*')
