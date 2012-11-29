@@ -52,7 +52,7 @@ describe Delayed::Backend::ActiveRecord::Job do
       Delayed::Backend::ActiveRecord::Job.send(:attr_accessible, *Delayed::Backend::ActiveRecord::Job.new.attributes.keys)
     end
 
-    it "is still be accessible" do
+    it "is still accessible" do
       job = Delayed::Backend::ActiveRecord::Job.enqueue :payload_object => EnqueueJobMod.new
       expect(Delayed::Backend::ActiveRecord::Job.find(job.id).handler).to_not be_blank
     end
