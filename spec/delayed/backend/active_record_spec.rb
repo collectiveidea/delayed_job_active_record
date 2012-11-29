@@ -2,13 +2,14 @@ require 'spec_helper'
 require 'delayed/backend/active_record'
 
 describe Delayed::Backend::ActiveRecord::Job do
-  after do
-    Time.zone = nil
-  end
-
   it_behaves_like 'a delayed_job backend'
 
   context "db_time_now" do
+    after do
+      Time.zone = nil
+      ActiveRecord::Base.default_timezone = :local
+    end
+
     it "returns time in current time zone if set" do
       Time.zone = 'Eastern Time (US & Canada)'
       expect(%(EST EDT)).to include(Delayed::Job.db_time_now.zone)
