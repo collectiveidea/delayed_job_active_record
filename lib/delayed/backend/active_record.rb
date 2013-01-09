@@ -60,7 +60,7 @@ module Delayed
           scope = scope.scoped(:conditions => ['priority >= ?', Worker.min_priority]) if Worker.min_priority
           scope = scope.scoped(:conditions => ['priority <= ?', Worker.max_priority]) if Worker.max_priority
           scope = scope.scoped(:conditions => ["queue IN (?)", Worker.queues]) if Worker.queues.any?
-          scope = scope.scoped(:conditions => ["queues NOT IN (?)", Worker.not_queues]) if Worker.not_queues.any?
+          scope = scope.scoped(:conditions => ["queue NOT IN (?)", Worker.not_queues]) if Worker.not_queues.any?
 
           ::ActiveRecord::Base.silence do
             scope.by_priority.all(:limit => limit)
