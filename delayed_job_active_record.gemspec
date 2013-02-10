@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# coding: utf-8
 
 Gem::Specification.new do |spec|
   spec.add_dependency   'activerecord', ['>= 2.1.0', '< 4']
@@ -15,5 +15,5 @@ Gem::Specification.new do |spec|
   spec.require_paths  = ['lib']
   spec.summary        = 'ActiveRecord backend for DelayedJob'
   spec.test_files     = Dir.glob("spec/**/*")
-  spec.version        = '0.3.3'
+  spec.version        = '0.4.0'
 end
