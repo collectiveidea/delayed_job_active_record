@@ -54,7 +54,7 @@ module Delayed
 
           now = self.db_time_now
 
-          if rails3? && (::ActiveRecord::Base.connection.adapter_name == "PostgreSQL")
+          if ::ActiveRecord::Base.connection.adapter_name == "PostgreSQL"
             # This works on PostgreSQL and uses 1 less query, but uses SQL not supported nativly through ActiveRecord
             quotedTableName = ::ActiveRecord::Base.connection.quote_column_name(self.table_name)
             reserved = self.find_by_sql(["UPDATE #{quotedTableName} SET locked_at = ?, locked_by = ? WHERE id IN (#{nextScope.to_sql}) RETURNING *",now,worker.name])
@@ -62,7 +62,7 @@ module Delayed
           else
             # This works on any database and uses seperate queries to lock and return the job
             # Databases like PostgreSQL and MySQL that support "SELECT .. FOR UPDATE" (ActiveRecord Pessimistic locking) don't need the second application
-            # of 'readyScope' but it doesn't hurt and it ensures that the job being locked still meets ready_to_run criteria. 
+            # of 'readyScope' but it doesn't hurt and it ensures that the job being locked still meets ready_to_run criteria.
             count = readyScope.where(:id => nextScope).update_all(:locked_at => now, :locked_by => worker.name)
             return nil if count == 0
             return self.where(:locked_at => now, :locked_by => worker.name).first
