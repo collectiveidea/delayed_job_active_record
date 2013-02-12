@@ -1,7 +1,12 @@
+before_script:
+  - mysql -e 'create database delayed_job_test;'
+  - psql -c 'create database delayed_job_test;' -U postgres
 bundler_args: --without development
+env:
+  - "CI_DB_ADAPTER=sqlite3"
+  - "CI_DB_ADAPTER=mysql"
+  - "CI_DB_ADAPTER=postgresql"
 language: ruby
-only:
-  - master
 matrix:
   allow_failures:
     - rvm: rbx-18mode

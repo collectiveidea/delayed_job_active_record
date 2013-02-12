@@ -12,7 +12,8 @@ Delayed::Worker.logger = Logger.new('/tmp/dj.log')
 ENV['RAILS_ENV'] = 'test'
 
 config = YAML.load(File.read('spec/database.yml'))
-ActiveRecord::Base.establish_connection config['sqlite']
+db_adapter = ENV['CI_DB_ADAPTER'] || 'sqlite3'
+ActiveRecord::Base.establish_connection config[db_adapter]
 ActiveRecord::Base.logger = Delayed::Worker.logger
 ActiveRecord::Migration.verbose = false
 

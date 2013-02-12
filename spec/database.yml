@@ -1,8 +1,14 @@
-sqlite:
-  adapter: sqlite3
-  database: ":memory:"
-
 mysql:
   adapter: mysql
-  database: delayed_job
-  uesrname: root
+  database: delayed_job_test
+  username: root
+  encoding: utf8
+
+postgresql:
+  adapter: postgresql
+  database: delayed_job_test
+  username: postgres
+
+sqlite3:
+  adapter: sqlite3
+  database: ":memory:"
