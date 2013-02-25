@@ -58,7 +58,7 @@ module Delayed
             # This locks the single record 'FOR UPDATE' in the subquery (http://www.postgresql.org/docs/9.0/static/sql-select.html#SQL-FOR-UPDATE-SHARE)
             # Note: active_record would attempt to generate UPDATE...LIMIT like sql for postgres if we use a .limit() filter, but it would not use
             # 'FOR UPDATE' and we would have many locking conflicts
-            quotedTableName = ::ActiveRecord::Base.connection.quote_column_name(self.table_name)
+            quotedTableName = ::ActiveRecord::Base.connection.quote_table_name(self.table_name)
             subquerySql = nextScope.lock(true).select('id').to_sql
             reserved = self.find_by_sql(["UPDATE #{quotedTableName} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquerySql}) RETURNING *",now,worker.name])
             return reserved[0]
