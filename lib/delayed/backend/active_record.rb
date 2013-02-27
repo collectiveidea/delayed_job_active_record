@@ -52,22 +52,14 @@ module Delayed
           nextScope = nextScope.scoped.by_priority.limit(1)
 
           now = self.db_time_now
-
-          if ::ActiveRecord::Base.connection.adapter_name == "PostgreSQL"
-            # Custom SQL required for PostgreSQL because postgres does not support UPDATE...LIMIT
-            # This locks the single record 'FOR UPDATE' in the subquery (http://www.postgresql.org/docs/9.0/static/sql-select.html#SQL-FOR-UPDATE-SHARE)
-            # Note: active_record would attempt to generate UPDATE...LIMIT like sql for postgres if we use a .limit() filter, but it would not use
-            # 'FOR UPDATE' and we would have many locking conflicts
-            quotedTableName = ::ActiveRecord::Base.connection.quote_table_name(self.table_name)
-            subquerySql = nextScope.lock(true).select('id').to_sql
-            reserved = self.find_by_sql(["UPDATE #{quotedTableName} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquerySql}) RETURNING *",now,worker.name])
-            return reserved[0]
-          else
-            # This works on MySQL and other DBs that support UPDATE...LIMIT. It uses separate queries to lock and return the job
-            count = nextScope.update_all(:locked_at => now, :locked_by => worker.name)
-            return nil if count == 0
-            return self.where(:locked_at => now, :locked_by => worker.name).first
+          job = nextScope.first
+          return unless job
+          job.with_lock do
+            job.locked_at = now
+            job.locked_by = worker.name
+            job.save!
           end
+          job
         end
 
         # Lock this job for this worker.
