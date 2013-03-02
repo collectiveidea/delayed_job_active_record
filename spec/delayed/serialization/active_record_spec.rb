@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'helper'
 
 describe ActiveRecord do
   it "loads classes with non-default primary key" do
