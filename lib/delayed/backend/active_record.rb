@@ -7,8 +7,7 @@ module Delayed
       class Job < ::ActiveRecord::Base
         include Delayed::Backend::Base
 
-        attr_accessible :priority, :run_at, :queue, :payload_object,
-          :failed_at, :locked_at, :locked_by
+        scope :by_priority, lambda { order('priority ASC, run_at ASC') }
 
         before_save :set_default_run_at
 
@@ -23,10 +22,6 @@ module Delayed
           where('(run_at <= ? AND (locked_at IS NULL OR locked_at < ?) OR locked_by = ?) AND failed_at IS NULL', db_time_now, db_time_now - max_run_time, worker_name)
         end
 
-        def self.by_priority
-          order('priority ASC, run_at ASC')
-        end
-
         def self.before_fork
           ::ActiveRecord::Base.clear_all_connections!
         end
@@ -37,7 +32,7 @@ module Delayed
 
         # When a worker is exiting, make sure we don't have any locked jobs.
         def self.clear_locks!(worker_name)
-          update_all("locked_by = null, locked_at = null", ["locked_by = ?", worker_name])
+          where(:locked_by => worker_name).update_all(:locked_by => nil, :locked_at => nil)
         end
 
         def self.reserve(worker, max_run_time = Worker.max_run_time)
@@ -45,14 +40,13 @@ module Delayed
           readyScope = self.ready_to_run(worker.name, max_run_time)
 
           # scope to filter to the single next eligible job
-          nextScope = readyScope.scoped
-          nextScope = nextScope.scoped(:conditions => ['priority >= ?', Worker.min_priority]) if Worker.min_priority
-          nextScope = nextScope.scoped(:conditions => ['priority <= ?', Worker.max_priority]) if Worker.max_priority
-          nextScope = nextScope.scoped(:conditions => ["queue IN (?)", Worker.queues]) if Worker.queues.any?
-          nextScope = nextScope.scoped.by_priority.limit(1)
+          readyScope = readyScope.where('priority >= ?', Worker.min_priority) if Worker.min_priority
+          readyScope = readyScope.where('priority <= ?', Worker.max_priority) if Worker.max_priority
+          readyScope = readyScope.where(:queue => Worker.queues) if Worker.queues.any?
+          job = readyScope.by_priority.first
 
           now = self.db_time_now
-          job = nextScope.first
+
           return unless job
           job.with_lock do
             job.locked_at = now

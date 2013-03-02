@@ -44,7 +44,7 @@ class Story < ActiveRecord::Base
   self.primary_key = :story_id
   def tell; text; end
   def whatever(n, _); tell*n; end
-  default_scope where(:scoped => true)
+  default_scope { where(:scoped => true) }
 
   handle_asynchronously :whatever
 end
