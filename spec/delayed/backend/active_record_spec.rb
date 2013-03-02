@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'helper'
 require 'delayed/backend/active_record'
 
 describe Delayed::Backend::ActiveRecord::Job do
