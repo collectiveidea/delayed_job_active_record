@@ -4,6 +4,7 @@
 [![Build Status](https://travis-ci.org/collectiveidea/delayed_job_active_record.png)](https://travis-ci.org/collectiveidea/delayed_job_active_record)
 [![Dependency Status](https://gemnasium.com/collectiveidea/delayed_job_active_record.png)](https://gemnasium.com/collectiveidea/delayed_job_active_record)
 [![Code Climate](https://codeclimate.com/github/collectiveidea/delayed_job_active_record.png)](https://codeclimate.com/github/collectiveidea/delayed_job_active_record)
+[![Coverage Status](https://coveralls.io/repos/collectiveidea/delayed_job_active_record/badge.png?branch=master)](https://coveralls.io/r/collectiveidea/delayed_job_active_record)
 
 ## Installation
 
