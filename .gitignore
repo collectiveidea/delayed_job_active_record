@@ -1,6 +1,7 @@
-Gemfile.lock
-pkg/*
-.rvmrc
 *.swp
-bin
 .bundle
+.rvmrc
+Gemfile.lock
+bin
+coverage
+pkg/*
