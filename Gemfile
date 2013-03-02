@@ -28,7 +28,9 @@ group :test do
     end
   end
 
+  gem 'coveralls', :require => false
   gem 'rspec', '>= 2.11'
+  gem 'simplecov', :require => false
 end
 
 gemspec
