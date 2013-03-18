@@ -1,5 +1,4 @@
 require 'active_record/version'
-require 'active_record/errors'
 module Delayed
   module Backend
     module ActiveRecord
@@ -61,7 +60,8 @@ module Delayed
               job.locked_by = worker.name
               job.save!
             end
-          rescue ActiveRecord::RecordNotFound
+          rescue ::ActiveRecord::RecordNotFound => e
+            warn "Proflem locking Job: #{e.inspect}"
             # This can happen if between when we look up the job and when we try to get the
             # lock, the job is deleted.  Rare, but happening for me.
             return
