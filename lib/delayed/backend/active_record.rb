@@ -48,10 +48,18 @@ module Delayed
           now = self.db_time_now
 
           return unless job
-          job.with_lock do
-            job.locked_at = now
-            job.locked_by = worker.name
-            job.save!
+          begin
+            job.with_lock do
+              job.locked_at = now
+              job.locked_by = worker.name
+              job.save!
+            end  
+          rescue ::ActiveRecord::RecordNotFound => e
+            warn "Proflem locking Job: #{e.inspect}"
+            # This can happen if in between the time when we look up the job 
+            # and when we try to get the exclusive lock, the job is deleted.  
+            # While rare, we should ignore this job and move on to the next one.
+            return
           end
           job
         end
