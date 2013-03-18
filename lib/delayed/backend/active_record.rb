@@ -1,4 +1,5 @@
 require 'active_record/version'
+require 'active_record/errors'
 module Delayed
   module Backend
     module ActiveRecord
