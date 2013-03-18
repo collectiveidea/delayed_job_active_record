@@ -54,10 +54,16 @@ module Delayed
           now = self.db_time_now
           job = nextScope.first
           return unless job
-          job.with_lock do
-            job.locked_at = now
-            job.locked_by = worker.name
-            job.save!
+          begin
+            job.with_lock do
+              job.locked_at = now
+              job.locked_by = worker.name
+              job.save!
+            end
+          rescue ActiveRecord::RecordNotFound
+            # This can happen if between when we look up the job and when we try to get the
+            # lock, the job is deleted.  Rare, but happening for me.
+            return
           end
           job
         end
