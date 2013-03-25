@@ -13,8 +13,8 @@ module DelayedJob
       migration_template 'migration.rb', 'db/migrate/create_delayed_jobs.rb'
     end
 
-    def self.next_migration_number(dirname)
-      ActiveRecord::Generators::Base.next_migration_number(dirname)
+    def self.next_migration_number dirname
+      ActiveRecord::Generators::Base.next_migration_number dirname
     end
   end
 end
