@@ -31,6 +31,8 @@ group :test do
   gem 'coveralls', :require => false
   gem 'rspec', '>= 2.11'
   gem 'simplecov', :require => false
+
+  gem 'activerecord', "~> #{ENV['CI_AR_VERSION']}" if ENV['CI_AR_VERSION']
 end
 
 gemspec

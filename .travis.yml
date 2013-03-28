@@ -6,6 +6,10 @@ env:
   - "CI_DB_ADAPTER=sqlite3"
   - "CI_DB_ADAPTER=mysql"
   - "CI_DB_ADAPTER=postgresql"
+  - "CI_AR_VERSION=3.0.0"
+  - "CI_AR_VERSION=3.1.0"
+  - "CI_AR_VERSION=3.2.0"
+  - "CI_AR_VERSION=4.0.0.beta"
 language: ruby
 rvm:
   - rbx-18mode
