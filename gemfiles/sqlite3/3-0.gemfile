@@ -19,4 +19,4 @@ group :test do
   gem 'activerecord', "~> 3.0.0"
 end
 
-gemspec
+gemspec :path => "../../"

@@ -21,4 +21,4 @@ group :test do
   gem 'delayed_job', "~> 4.0.0.beta"
 end
 
-gemspec
+gemspec :path => "../../"
