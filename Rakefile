@@ -1,12 +1,33 @@
 # -*- encoding: utf-8 -*-
-require 'rubygems'
-require 'bundler/setup'
-Bundler::GemHelper.install_tasks
+require "bundler/gem_helper"
+require "rspec/core/rake_task"
 
-require 'rspec/core/rake_task'
-desc 'Run the specs'
-RSpec::Core::RakeTask.new do |r|
-  r.verbose = false
+ADAPTERS = %w(mysql postgresql sqlite3)
+
+ADAPTERS.each do |adapter|
+  desc "Run RSpec code examples for #{adapter} adapter"
+  RSpec::Core::RakeTask.new(adapter => "#{adapter}:adapter")
+
+  namespace adapter do
+    task :adapter do
+      ENV["ADAPTER"] = adapter
+    end
+  end
 end
 
-task :default => :spec
+task :coverage do
+  ENV["COVERAGE"] = "true"
+end
+
+task :adapter do
+  ENV["ADAPTER"] = nil
+end
+
+Rake::Task[:spec].enhance do
+  require "simplecov"
+  require "coveralls"
+
+  Coveralls::SimpleCov::Formatter.new.format(SimpleCov.result)
+end
+
+task default: ([:coverage] + ADAPTERS + [:adapter])
