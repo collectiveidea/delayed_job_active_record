@@ -1,3 +1,5 @@
+$:.each {|i| puts i }
+
 require 'simplecov'
 require 'coveralls'
 
