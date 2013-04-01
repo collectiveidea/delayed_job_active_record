@@ -1,0 +1,23 @@
+source 'https://rubygems.org'
+
+gem 'rake'
+
+group :test do
+  platforms :jruby do
+    gem 'activerecord-jdbc-adapter'
+    gem 'activerecord-jdbcpostgresql-adapter'
+    gem 'jdbc-postgres'
+  end
+
+  platforms :ruby, :mswin, :mingw do
+    gem 'pg'
+  end
+
+  gem 'coveralls', :require => false
+  gem 'rspec', '>= 2.11'
+  gem 'simplecov', :require => false
+
+  gem 'activerecord', "~> 3.0.0"
+end
+
+gemspec :path => "../../"

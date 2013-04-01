@@ -1,0 +1,25 @@
+source 'https://rubygems.org'
+
+gem 'rake'
+
+group :test do
+  platforms :jruby do
+    gem 'activerecord-jdbc-adapter'
+    gem 'activerecord-jdbcmysql-adapter'
+    gem 'jdbc-mysql'
+  end
+
+  platforms :ruby, :mswin, :mingw do
+    gem 'mysql', '~> 2.9'
+  end
+
+  gem 'coveralls', :require => false
+  gem 'rspec', '>= 2.11'
+  gem 'simplecov', :require => false
+
+  gem 'activerecord', "~> 4.0.0.beta"
+
+  gem 'delayed_job', "~> 4.0.0.beta"
+end
+
+gemspec :path => "../../"
