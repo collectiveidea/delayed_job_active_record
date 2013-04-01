@@ -4,19 +4,12 @@ gem 'rake'
 
 group :test do
   platforms :jruby do
-    gem 'activerecord-jdbcmysql-adapter'
-    gem 'jdbc-mysql'
-
-    gem 'activerecord-jdbcpostgresql-adapter'
-    gem 'jdbc-postgres'
-
+    gem 'jruby-openssl'
+    gem 'activerecord-jdbc-adapter'
     gem 'activerecord-jdbcsqlite3-adapter'
-    gem 'jdbc-sqlite3'
   end
 
   platforms :ruby, :mswin, :mingw do
-    gem 'mysql', '~> 2.8.1'
-    gem 'pg'
     gem 'sqlite3'
   end
 
@@ -24,7 +17,9 @@ group :test do
   gem 'rspec', '>= 2.11'
   gem 'simplecov', :require => false
 
-  gem 'activerecord', "~> #{ENV['CI_AR_VERSION']}" if ENV['CI_AR_VERSION']
+  gem 'activerecord', "~> 4.0.0.beta"
+
+  gem 'delayed_job', "~> 4.0.0.beta"
 end
 
-gemspec
+gemspec :path => "../../"
