@@ -2,7 +2,6 @@ language: ruby
 before_script:
   - mysql -e 'create database delayed_job_test;'
   - psql -c 'create database delayed_job_test;' -U postgres
-bundler_args: --without development
 script: rspec
 gemfile:
   - gemfiles/mysql/3-0.gemfile
