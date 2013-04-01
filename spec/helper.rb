@@ -49,7 +49,11 @@ end
 
 # Purely useful for test cases...
 class Story < ActiveRecord::Base
-  self.primary_key = :story_id
+  if ::ActiveRecord::VERSION::MAJOR < 4 && ActiveRecord::VERSION::MINOR < 2
+    set_primary_key :story_id
+  else
+    self.primary_key = :story_id
+  end
   def tell; text; end
   def whatever(n, _); tell*n; end
   default_scope { where(:scoped => true) }
