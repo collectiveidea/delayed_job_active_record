@@ -9,6 +9,9 @@ module Delayed
 
         scope :by_priority, lambda { order('priority ASC, run_at ASC') }
 
+        attr_accessible :priority, :run_at, :queue, :payload_object,
+                        :failed_at, :locked_at, :locked_by
+
         before_save :set_default_run_at
 
         def self.set_delayed_job_table_name
