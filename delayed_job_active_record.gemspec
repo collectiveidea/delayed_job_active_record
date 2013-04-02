@@ -15,5 +15,5 @@ Gem::Specification.new do |spec|
   spec.require_paths  = ['lib']
   spec.summary        = 'ActiveRecord backend for DelayedJob'
   spec.test_files     = Dir.glob("spec/**/*")
-  spec.version        = '0.4.3'
+  spec.version        = '0.4.4'
 end
