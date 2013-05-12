@@ -68,6 +68,17 @@ module Delayed
             count = ready_scope.limit(1).update_all(:locked_at => now, :locked_by => worker.name)
             return nil if count == 0
             self.where(:locked_at => now, :locked_by => worker.name).first
+          when "MSSQL"
+            # The MSSQL driver doesn't generate a limit clause when update_all is called directly
+            subsubquery_sql = ready_scope.limit(1).to_sql
+            # select("id") doesn't generate a subquery, so force a subquery
+            subquery_sql = "SELECT id FROM (#{subsubquery_sql}) AS x"
+            quoted_table_name = self.connection.quote_table_name(self.table_name)
+            sql = ["UPDATE #{quoted_table_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery_sql})", now, worker.name]
+            count = self.connection.execute(sanitize_sql(sql))
+            return nil if count == 0
+            # MSSQL JDBC doesn't support OUTPUT INSERTED.* for returning a result set, so query locked row
+            self.where(:locked_at => now, :locked_by => worker.name).first
           else
             # This is our old fashion, tried and true, but slower lookup
             ready_scope.limit(worker.read_ahead).detect do |job|
