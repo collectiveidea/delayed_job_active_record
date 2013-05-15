@@ -19,19 +19,20 @@ module Delayed
 
         def remove_others_from_singleton_queue
           if payload_object.respond_to?(:singleton_queue_name)
-            where(:queue => "singleton_#{payload_object.singleton_queue_name}").where("id != ?", id).delete_all
+            self.class.where(:queue => "singleton_#{payload_object.singleton_queue_name}").where("id != ?", id).delete_all
           end
         end
 
         def self.enqueue(*args)
           options = args.extract_options!
-          payload_object = args.shift
+          payload_object = options[:payload_object] || args[0]
 
           if payload_object.respond_to?(:singleton_queue_name)
             options.merge!(:queue => "singleton_#{payload_object.singleton_queue_name}")
           end
+          args << options
 
-          super(payload_object, options)
+          super(*args)
         end
 
         def self.set_delayed_job_table_name
