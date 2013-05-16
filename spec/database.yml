@@ -1,7 +1,7 @@
 mysql:
   adapter: mysql
   database: delayed_job_test
-  username: delayed_job
+  username: root
   encoding: utf8
 
 postgresql:

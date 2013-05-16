@@ -48,13 +48,15 @@ module Delayed
             queue IS NULL                     -- allow it to run if its queue is null
             OR queue NOT LIKE 'singleton_%'   -- allow it to run if its queue is not a singleton queue
             OR queue NOT IN (                 -- allow it to run if its queue is not in the list of currently running singleton jobs' queues
-              SELECT DISTINCT(queue)
-                FROM (SELECT queue,run_at,locked_by,locked_at,failed_at FROM delayed_jobs) AS temp_table
-                  WHERE queue LIKE 'singleton_%'
-                  AND run_at <= ?
-                  AND (locked_at IS NOT NULL AND locked_at >= ?)
-                  AND locked_by != ?
-                  AND failed_at IS NULL
+              SELECT *
+                FROM (                        -- Use temp-table: MySQL doesn't allow sub-selects from tables locked for update
+                  SELECT DISTINCT(queue) FROM delayed_jobs           -- Prevent us from getting a job from a singleton queue
+                    WHERE queue LIKE 'singleton_%'                   -- where there's another job in that queue
+                    AND run_at <= ?                                  -- that can be run
+                    AND (locked_at IS NOT NULL AND locked_at >= ?)   -- and is currently locked
+                    AND locked_by != ?                               -- by someone other than us
+                    AND failed_at IS NULL                            -- and hasn't failed
+                ) AS temp_table
             )
           SQL
 
