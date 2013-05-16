@@ -57,7 +57,7 @@ describe "Singleton Job Queue" do
 
           # There should be two jobs on the queue, both locked and one failed
           expect(Delayed::Job.where(queue: "singleton_#{queue_name}").count).to eq(2)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}").where("locked_by IS NOT NULL").count).to eq(2)
+          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: worker1.name).count).to eq(2)
           expect(Delayed::Job.where(queue: "singleton_#{queue_name}", failed_at: failure_time).count).to eq(1)
         end
       end
