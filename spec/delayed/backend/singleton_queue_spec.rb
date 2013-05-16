@@ -42,10 +42,11 @@ describe "Singleton Job Queue" do
     end
 
     context "when one of the jobs is locked" do
-      let(:failure_time) { Time.now }
       let!(:locked_job) { Delayed::Job.reserve(worker1) }
 
       context "and the locked job is failed" do
+        let(:failure_time) { Time.now }
+
         before do
           locked_job.update_attributes(failed_at: failure_time)
         end
@@ -92,7 +93,6 @@ describe "Singleton Job Queue" do
           expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: nil).count).to eq(1)
           expect(Delayed::Job.where(queue: "singleton_#{different_queue_name}").count).to eq(1)
           expect(Delayed::Job.where(queue: "singleton_#{different_queue_name}", locked_by: worker2.name).count).to eq(1)
-          expect(Delayed::Job.where(queue: "singleton_#{different_queue_name}", locked_by: nil).count).to eq(0)
         end
       end
 
