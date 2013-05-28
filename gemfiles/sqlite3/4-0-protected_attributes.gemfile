@@ -1,0 +1,26 @@
+source 'https://rubygems.org'
+
+gem 'rake'
+
+group :test do
+  platforms :jruby do
+    gem 'jruby-openssl'
+    gem 'activerecord-jdbc-adapter'
+    gem 'activerecord-jdbcsqlite3-adapter'
+  end
+
+  platforms :ruby, :mswin, :mingw do
+    gem 'sqlite3'
+  end
+
+  gem 'coveralls',            :require => false
+  gem 'rspec',     '>= 2.11', :require => false
+  gem 'simplecov',            :require => false
+
+  gem 'activerecord', "~> 4.0.0.beta"
+  gem 'protected_attributes'
+
+  gem 'delayed_job', "~> 4.0.0.beta", :require => false
+end
+
+gemspec :path => "../../"

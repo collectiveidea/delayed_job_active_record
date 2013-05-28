@@ -43,7 +43,7 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
-  if ::ActiveRecord::VERSION::MAJOR < 4
+  if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
     context "ActiveRecord::Base.send(:attr_accessible, nil)" do
       before do
         Delayed::Backend::ActiveRecord::Job.send(:attr_accessible, nil)

@@ -10,6 +10,10 @@ SimpleCov.start
 require 'logger'
 require 'rspec'
 
+begin
+  require 'protected_attributes'
+rescue LoadError
+end
 require 'delayed_job_active_record'
 require 'delayed/backend/shared_spec'
 
