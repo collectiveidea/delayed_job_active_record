@@ -67,7 +67,7 @@ module Delayed
             # This works on MySQL and possibly some other DBs that support UPDATE...LIMIT. It uses separate queries to lock and return the job
             count = ready_scope.limit(1).update_all(:locked_at => now, :locked_by => worker.name)
             return nil if count == 0
-            self.where(:locked_at => now, :locked_by => worker.name).first
+            self.where(:locked_at => now, :locked_by => worker.name, :failed_at => nil).first
           when "MSSQL"
             # The MSSQL driver doesn't generate a limit clause when update_all is called directly
             subsubquery_sql = ready_scope.limit(1).to_sql
@@ -78,7 +78,7 @@ module Delayed
             count = self.connection.execute(sanitize_sql(sql))
             return nil if count == 0
             # MSSQL JDBC doesn't support OUTPUT INSERTED.* for returning a result set, so query locked row
-            self.where(:locked_at => now, :locked_by => worker.name).first
+            self.where(:locked_at => now, :locked_by => worker.name, :failed_at => nil).first
           else
             # This is our old fashion, tried and true, but slower lookup
             ready_scope.limit(worker.read_ahead).detect do |job|
