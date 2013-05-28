@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 require "bundler/gem_helper"
+Bundler::GemHelper.install_tasks
+
 require "rspec/core/rake_task"
 
 ADAPTERS = %w(mysql postgresql sqlite3)
