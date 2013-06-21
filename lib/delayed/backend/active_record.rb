@@ -65,7 +65,7 @@ module Delayed
             reserved[0]
           when "MySQL", "Mysql2"
             # This works on MySQL and possibly some other DBs that support UPDATE...LIMIT. It uses separate queries to lock and return the job
-            count = ready_scope.limit(1).update_all(:locked_at => now, :locked_by => worker.name)
+            count = ready_scope.limit(1).order(:priority).update_all(:locked_at => now, :locked_by => worker.name)
             return nil if count == 0
             self.where(:locked_at => now, :locked_by => worker.name, :failed_at => nil).first
           when "MSSQL"
