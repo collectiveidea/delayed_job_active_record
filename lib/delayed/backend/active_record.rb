@@ -1,4 +1,5 @@
 require 'active_record/version'
+require 'protected_attributes'
 module Delayed
   module Backend
     module ActiveRecord
@@ -7,10 +8,8 @@ module Delayed
       class Job < ::ActiveRecord::Base
         include Delayed::Backend::Base
 
-        if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
-          attr_accessible :priority, :run_at, :queue, :payload_object,
-                          :failed_at, :locked_at, :locked_by, :handler
-        end
+        attr_accessible :priority, :run_at, :queue, :payload_object,
+                        :failed_at, :locked_at, :locked_by, :handler
 
         scope :by_priority, lambda { order('priority ASC, run_at ASC') }
 
