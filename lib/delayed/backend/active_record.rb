@@ -68,7 +68,7 @@ module Delayed
             count = ready_scope.limit(1).update_all(:locked_at => now, :locked_by => worker.name)
             return nil if count == 0
             self.where(:locked_at => now, :locked_by => worker.name, :failed_at => nil).first
-          when "MSSQL"
+          when "MSSQL", "Teradata"
             # The MSSQL driver doesn't generate a limit clause when update_all is called directly
             subsubquery_sql = ready_scope.limit(1).to_sql
             # select("id") doesn't generate a subquery, so force a subquery
