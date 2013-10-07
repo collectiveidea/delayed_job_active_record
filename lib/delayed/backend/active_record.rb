@@ -75,7 +75,7 @@ module Delayed
             # We don't own this job so we will update the locked_by name and the locked_at
             begin
               self.class.update_all(["locked_at = ?, locked_by = ?", now, worker], ["id = ? and (locked_at is null or locked_at < ?) and (run_at <= ?)", id, (now - max_run_time.to_i), now])
-            rescue ActiveRecord::StatementInvalid => e
+            rescue Exception => e
               if e.message =~ /Deadlock found when trying to get lock/
                 0
               else
