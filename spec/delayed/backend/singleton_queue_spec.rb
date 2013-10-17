@@ -19,8 +19,8 @@ describe "Singleton Job Queue" do
   context "two jobs with the same singleton_queue_name" do
     let(:queue_name) { "test_queue_name" }
     let(:different_queue_name) { "different_test_queue" }
-    let(:worker1) { stub(:worker, name: "worker1", read_ahead: 1) }
-    let(:worker2) { stub(:worker, name: "worker2", read_ahead: 1) }
+    let(:worker1) { double(:worker, name: "worker1", read_ahead: 1) }
+    let(:worker2) { double(:worker, name: "worker2", read_ahead: 1) }
 
     before do
       Delayed::Job.enqueue(TestSingleton.new(queue_name))
@@ -129,6 +129,24 @@ describe "Singleton Job Queue" do
           expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: nil).count).to eq(1)
           expect(Delayed::Job.where(queue: nil).count).to eq(1)
           expect(Delayed::Job.where(queue: nil, locked_by: worker2.name).count).to eq(1)
+        end
+      end
+    end
+
+    describe '.retry_on_deadlock' do
+      context "when there is a deadlock exception raised in the block" do
+        let(:max_retries) { 5 }
+
+        it "will retry max_retries times and then raise the exception" do
+          Delayed::Job.should_receive(:sleep).exactly(max_retries).times
+
+          expect do
+            Delayed::Job.retry_on_deadlock(max_retries) do
+              # The exception will be an ActiveRecord::StatementInvalid, but we can
+              # avoid making a new dependency on that class by just checking the message here.
+              raise StandardError.new("Exception: Mysql2::Error: Deadlock found when trying to get lock; try restarting transaction: <transaction details>")
+            end
+          end.to raise_error(StandardError)
         end
       end
     end

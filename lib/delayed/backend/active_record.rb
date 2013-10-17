@@ -81,6 +81,25 @@ module Delayed
           where(:locked_by => worker_name).update_all(:locked_by => nil, :locked_at => nil)
         end
 
+        # Our singleton queue subquery is not atomic, and can trigger deadlocks.
+        # To cut down on alerting noise, retry several times before giving up and
+        # raising an exception.
+        def self.retry_on_deadlock(max_retries)
+          begin
+            yield
+          rescue => ex
+            # This will always be an ActiveRecord::StatementInvalid, but we can
+            # avoid making a new dependency on that class by just checking the message here.
+            if ex.message =~ /Deadlock found when trying to get lock/ && max_retries > 0
+              max_retries -= 1
+              sleep(rand * 0.1)
+              retry
+            else
+              raise ex
+            end
+          end
+        end
+
         def self.reserve(worker, max_run_time = Worker.max_run_time)
           # scope to filter to records that are "ready to run"
           ready_scope = self.ready_to_run(worker.name, max_run_time)
@@ -106,9 +125,12 @@ module Delayed
             reserved[0]
           when "MySQL", "Mysql2"
             # This works on MySQL and possibly some other DBs that support UPDATE...LIMIT. It uses separate queries to lock and return the job
-            count = ready_scope.limit(1).update_all(:locked_at => now, :locked_by => worker.name)
-            return nil if count == 0
-            self.where(:locked_at => now, :locked_by => worker.name, :failed_at => nil).first
+            retry_on_deadlock(10) do
+              count = ready_scope.limit(1).update_all(:locked_at => now, :locked_by => worker.name)
+              return nil if count == 0
+            end
+
+            self.where(:locked_at => now, :locked_by => worker.name).first
           when "MSSQL", "Teradata"
             # The MSSQL driver doesn't generate a limit clause when update_all is called directly
             subsubquery_sql = ready_scope.limit(1).to_sql
