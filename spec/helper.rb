@@ -40,6 +40,7 @@ ActiveRecord::Schema.define do
     table.datetime :failed_at
     table.string   :locked_by
     table.string   :queue
+    table.string   :singleton
     table.timestamps
   end
 

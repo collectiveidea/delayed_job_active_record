@@ -36,9 +36,9 @@ describe "Singleton Job Queue" do
       Delayed::Job.reserve(worker2)
 
       # There should be two jobs on the queue, one locked and one not locked
-      expect(Delayed::Job.where(queue: "singleton_#{queue_name}").count).to eq(2)
-      expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: worker1.name).count).to eq(1)
-      expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: nil).count).to eq(1)
+      expect(Delayed::Job.where(singleton: queue_name).count).to eq(2)
+      expect(Delayed::Job.where(singleton: queue_name, locked_by: worker1.name).count).to eq(1)
+      expect(Delayed::Job.where(singleton: queue_name, locked_by: nil).count).to eq(1)
     end
 
     context "when one of the jobs is locked" do
@@ -56,9 +56,9 @@ describe "Singleton Job Queue" do
           Delayed::Job.reserve(worker2)
 
           # There should be two jobs on the queue, both locked and one failed
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}").count).to eq(2)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: worker1.name).count).to eq(2)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", failed_at: failure_time).count).to eq(1)
+          expect(Delayed::Job.where(singleton: queue_name).count).to eq(2)
+          expect(Delayed::Job.where(singleton: queue_name, locked_by: worker1.name).count).to eq(2)
+          expect(Delayed::Job.where(singleton: queue_name, failed_at: failure_time).count).to eq(1)
         end
       end
 
@@ -72,9 +72,9 @@ describe "Singleton Job Queue" do
           Delayed::Job.reserve(worker2)
 
           # There should be two jobs on the queue, one locked and one not locked
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}").count).to eq(2)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: worker1.name).count).to eq(1)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: nil).count).to eq(1)
+          expect(Delayed::Job.where(singleton: queue_name).count).to eq(2)
+          expect(Delayed::Job.where(singleton: queue_name, locked_by: worker1.name).count).to eq(1)
+          expect(Delayed::Job.where(singleton: queue_name, locked_by: nil).count).to eq(1)
         end
       end
 
@@ -88,17 +88,17 @@ describe "Singleton Job Queue" do
           Delayed::Job.reserve(worker2)
 
           # There should be three jobs on the queue, one not locked and one from each queue locked
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}").count).to eq(2)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: worker1.name).count).to eq(1)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: nil).count).to eq(1)
-          expect(Delayed::Job.where(queue: "singleton_#{different_queue_name}").count).to eq(1)
-          expect(Delayed::Job.where(queue: "singleton_#{different_queue_name}", locked_by: worker2.name).count).to eq(1)
+          expect(Delayed::Job.where(singleton: queue_name).count).to eq(2)
+          expect(Delayed::Job.where(singleton: queue_name, locked_by: worker1.name).count).to eq(1)
+          expect(Delayed::Job.where(singleton: queue_name, locked_by: nil).count).to eq(1)
+          expect(Delayed::Job.where(singleton: different_queue_name).count).to eq(1)
+          expect(Delayed::Job.where(singleton: different_queue_name, locked_by: worker2.name).count).to eq(1)
         end
       end
 
       context "with a non-singleton-queue-job" do
         before do
-          Delayed::Job.enqueue(payload_object: TestNonSingleton.new, queue: different_queue_name)
+          Delayed::Job.enqueue(payload_object: TestNonSingleton.new, singleton: different_queue_name)
         end
 
         it "will reserve the non-singleton-queue job" do
@@ -106,11 +106,11 @@ describe "Singleton Job Queue" do
           Delayed::Job.reserve(worker2)
 
           # There should be three jobs on the queue, one locked singleton, one not locked singleton, one locked non-singleton
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}").count).to eq(2)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: worker1.name).count).to eq(1)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: nil).count).to eq(1)
-          expect(Delayed::Job.where(queue: different_queue_name).count).to eq(1)
-          expect(Delayed::Job.where(queue: different_queue_name, locked_by: worker2.name).count).to eq(1)
+          expect(Delayed::Job.where(singleton: queue_name).count).to eq(2)
+          expect(Delayed::Job.where(singleton: queue_name, locked_by: worker1.name).count).to eq(1)
+          expect(Delayed::Job.where(singleton: queue_name, locked_by: nil).count).to eq(1)
+          expect(Delayed::Job.where(singleton: different_queue_name).count).to eq(1)
+          expect(Delayed::Job.where(singleton: different_queue_name, locked_by: worker2.name).count).to eq(1)
         end
       end
 
@@ -124,11 +124,11 @@ describe "Singleton Job Queue" do
           Delayed::Job.reserve(worker2)
 
           # There should be three jobs on the queue, one locked singleton, one not locked singleton, one locked null
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}").count).to eq(2)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: worker1.name).count).to eq(1)
-          expect(Delayed::Job.where(queue: "singleton_#{queue_name}", locked_by: nil).count).to eq(1)
-          expect(Delayed::Job.where(queue: nil).count).to eq(1)
-          expect(Delayed::Job.where(queue: nil, locked_by: worker2.name).count).to eq(1)
+          expect(Delayed::Job.where(singleton: queue_name).count).to eq(2)
+          expect(Delayed::Job.where(singleton: queue_name, locked_by: worker1.name).count).to eq(1)
+          expect(Delayed::Job.where(singleton: queue_name, locked_by: nil).count).to eq(1)
+          expect(Delayed::Job.where(singleton: nil).count).to eq(1)
+          expect(Delayed::Job.where(singleton: nil, locked_by: worker2.name).count).to eq(1)
         end
       end
     end
