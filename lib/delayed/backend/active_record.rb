@@ -23,6 +23,10 @@ module Delayed
           end
         end
 
+        def destroy
+          self.class.retry_on_deadlock(10) { super }
+        end
+
         def self.enqueue(*args)
           options = args.extract_options!
           payload_object = options[:payload_object] || args[0]
