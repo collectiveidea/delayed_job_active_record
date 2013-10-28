@@ -9,7 +9,7 @@ module Delayed
 
         if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
           attr_accessible :priority, :run_at, :queue, :payload_object,
-                          :failed_at, :locked_at, :locked_by, :handler
+                          :failed_at, :locked_at, :locked_by, :handler, :singleton
         end
 
         scope :by_priority, lambda { order('priority ASC, run_at ASC') }
@@ -19,7 +19,7 @@ module Delayed
 
         def remove_others_from_singleton_queue
           if payload_object.respond_to?(:singleton_queue_name)
-            self.class.where(:queue => "singleton_#{payload_object.singleton_queue_name}").where("id != ?", id).delete_all
+            self.class.where(:singleton => payload_object.singleton_queue_name).where("id != ?", id).delete_all
           end
         end
 
@@ -32,7 +32,7 @@ module Delayed
           payload_object = options[:payload_object] || args[0]
 
           if payload_object.respond_to?(:singleton_queue_name)
-            options.merge!(:queue => "singleton_#{payload_object.singleton_queue_name}")
+            options.merge!(:singleton => payload_object.singleton_queue_name)
           end
           args << options
 
@@ -49,14 +49,12 @@ module Delayed
         # Prevent more than one job from a singleton queue from being run at the same time.
         def self.exclude_running_singletons(worker_name, max_run_time)
           sql = [
-            "queue IS NULL",                   # allow it to run if its queue is null
-            "OR queue NOT LIKE 'singleton_%'", # allow it to run if its queue is not a singleton queue
-            "OR queue NOT IN (",               # allow it to run if its queue is not in the list of currently running singleton jobs' queues
+            "singleton IS NULL",                   # allow it to run if its singleton name is null
+            "OR singleton NOT IN (",               # allow it to run if its singleton name is not in the list of currently running singleton job names
               "SELECT *",
               "FROM (",                                             # Use temp-table: MySQL doesn't allow sub-selects from tables locked for update
-                "SELECT DISTINCT(queue) FROM delayed_jobs",         # Prevent us from getting a job from a singleton queue
-                "WHERE queue LIKE 'singleton_%'",                   # where there's another job in that queue
-                  "AND run_at <= ?",                                # that can be run
+                "SELECT DISTINCT(singleton) FROM delayed_jobs",     # Prevent us from getting a job from this singleton queue
+                "WHERE run_at <= ?",                                # that can be run
                   "AND (locked_at IS NOT NULL AND locked_at >= ?)", # and is currently locked
                   "AND locked_by != ?",                             # by someone other than us
                   "AND failed_at IS NULL",                          # and hasn't failed
