@@ -41,7 +41,7 @@ describe "Singleton Job Queue" do
         # There should be two jobs on the queue, both locked
         expect(Delayed::Job.count).to eq(2)
         expect(Delayed::Job.where(singleton: queue_name).where("locked_by IN ('#{worker1.name}', '#{worker2.name}')").count).to eq(1)
-        expect(Delayed::Job.where(singleton: nil, locked_by: worker2.name).count).to eq(1)
+        expect(Delayed::Job.where(singleton: nil, locked_by: worker1.name).count).to eq(1)
       end
     end
   end
