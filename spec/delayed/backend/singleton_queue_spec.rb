@@ -16,6 +16,50 @@ describe "Singleton Job Queue" do
     def perform; end
   end
 
+  describe "mix of singleton and non-singelton jobs" do
+    let(:queue_name) { "test_queue_name" }
+    let(:worker1) { double(:worker, name: "worker1", read_ahead: 1) }
+    let(:worker2) { double(:worker, name: "worker2", read_ahead: 1) }
+
+    after do
+      Delayed::Job.destroy_all
+    end
+
+    context "the non-singleton job is enqueued first" do
+      before do
+        Delayed::Job.enqueue(TestNonSingleton.new)
+        Delayed::Job.enqueue(TestSingleton.new(queue_name))
+      end
+
+      it "reserves both jobs" do
+        Delayed::Job.reserve(worker1)
+        Delayed::Job.reserve(worker2)
+
+        # There should be two jobs on the queue, both locked
+        expect(Delayed::Job.count).to eq(2)
+        expect(Delayed::Job.where(singleton: nil, locked_by: worker1.name).count).to eq(1)
+        expect(Delayed::Job.where(singleton: queue_name, locked_by: worker2.name).count).to eq(1)
+      end
+    end
+
+    context "the singleton job is enqueued first" do
+      before do
+        Delayed::Job.enqueue(TestSingleton.new(queue_name))
+        Delayed::Job.enqueue(TestNonSingleton.new)
+      end
+
+      it "reserves both jobs" do
+        Delayed::Job.reserve(worker1)
+        Delayed::Job.reserve(worker2)
+
+        # There should be two jobs on the queue, both locked
+        expect(Delayed::Job.count).to eq(2)
+        expect(Delayed::Job.where(singleton: queue_name, locked_by: worker1.name).count).to eq(1)
+        expect(Delayed::Job.where(singleton: nil, locked_by: worker2.name).count).to eq(1)
+      end
+    end
+  end
+
   context "two jobs with the same singleton_queue_name" do
     let(:queue_name) { "test_queue_name" }
     let(:different_queue_name) { "different_test_queue" }

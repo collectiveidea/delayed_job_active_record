@@ -55,6 +55,7 @@ module Delayed
               "FROM (",                                             # Use temp-table: MySQL doesn't allow sub-selects from tables locked for update
                 "SELECT DISTINCT(singleton) FROM delayed_jobs",     # Prevent us from getting a job from this singleton queue
                 "WHERE run_at <= ?",                                # that can be run
+                  "AND singleton IS NOT NULL",                      # that is a singleton
                   "AND (locked_at IS NOT NULL AND locked_at >= ?)", # and is currently locked
                   "AND locked_by != ?",                             # by someone other than us
                   "AND failed_at IS NULL",                          # and hasn't failed
