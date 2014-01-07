@@ -61,7 +61,10 @@ module Delayed
             # 'FOR UPDATE' and we would have many locking conflicts
             quoted_table_name = self.connection.quote_table_name(self.table_name)
             subquery_sql      = ready_scope.limit(1).lock(true).select('id').to_sql
-            reserved          = self.find_by_sql(["UPDATE #{quoted_table_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery_sql}) RETURNING *", now, worker.name])
+            reserved = []
+            transaction do 
+              reserved        = self.find_by_sql(["UPDATE #{quoted_table_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery_sql}) RETURNING *", now, worker.name])
+            end
             reserved[0]
           when "MySQL", "Mysql2"
             # This works on MySQL and possibly some other DBs that support UPDATE...LIMIT. It uses separate queries to lock and return the job
