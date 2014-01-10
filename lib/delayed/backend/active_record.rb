@@ -27,6 +27,19 @@ module Delayed
           self.class.retry_on_deadlock(10) { super }
         end
 
+        # Override #invoke_job so that there is tagged logging.
+        def invoke_job
+          if defined?(Rails)
+            Rails.logger.tag(self.name) do
+              Rails.logger.info("Entering job")
+              super
+              Rails.logger.info("Exiting job")
+            end
+          else
+            super
+          end
+        end
+
         def self.enqueue(*args)
           options = args.extract_options!
           payload_object = options[:payload_object] || args[0]
