@@ -29,10 +29,14 @@ module Delayed
 
         # Override #invoke_job so that there is tagged logging.
         def invoke_job
-          Rails.logger.tag(self.name) do
-            Rails.logger.info("Entering job")
+          if defined?(Rails)
+            Rails.logger.tag(self.name) do
+              Rails.logger.info("Entering job")
+              super
+              Rails.logger.info("Exiting job")
+            end
+          else
             super
-            Rails.logger.info("Exiting job")
           end
         end
 
