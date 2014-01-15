@@ -17,6 +17,18 @@ end
 require 'delayed_job_active_record'
 require 'delayed/backend/shared_spec'
 
+RSpec.configure do |config|
+  config.around(:each) do |spec|
+    ActiveRecord::Base.transaction do
+      begin
+        spec.call
+      ensure
+        raise ActiveRecord::Rollback
+      end
+    end
+  end
+end
+
 Delayed::Worker.logger = Logger.new('/tmp/dj.log')
 ENV['RAILS_ENV'] = 'test'
 
@@ -40,6 +52,7 @@ ActiveRecord::Schema.define do
     table.datetime :failed_at
     table.string   :locked_by
     table.string   :queue
+    table.string   :singleton
     table.timestamps
   end
 
