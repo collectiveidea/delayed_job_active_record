@@ -4,6 +4,36 @@ require 'delayed/backend/active_record'
 describe Delayed::Backend::ActiveRecord::Job do
   it_behaves_like 'a delayed_job backend'
 
+  describe '#invoke_job' do
+    let(:payload_object) { double(:payload_object) }
+    subject { described_class.new }
+
+    before do
+      subject.stub(:payload_object).and_return(payload_object)
+      payload_object.stub(:perform)
+    end
+
+    context "when Rails is not in the environment" do
+      it "calls super" do
+        defined?(Rails).should_not be, 'Rails has not been required'
+        subject.invoke_job
+      end
+    end
+
+    context "when Rails is in the environment" do
+      let(:logger) { double(:logger) }
+      before { require 'rails' }
+
+      it "logs the entry and exit of the job, tagged with the job's name" do
+        Rails.logger = logger
+        Rails.logger.should_receive(:tagged).and_yield
+        Rails.logger.should_receive(:info).with("Entering job")
+        Rails.logger.should_receive(:info).with("Exiting job")
+        subject.invoke_job
+      end
+    end
+  end
+
   context "db_time_now" do
     after do
       Time.zone = nil
