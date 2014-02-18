@@ -50,9 +50,7 @@ module Delayed
           #ready_scope = ready_scope.where(:queue => Worker.queues) if Worker.queues.any?
           if Worker.queues.any?
             qu = (['queue like ?'] * Worker.queues.size).join(' OR ')
-            args = Worker.queues.collect{|r| "%#{r}%"}
-            ready_scope = ready_scope.where([qu] + args)
-            puts ready_scope.inspect
+            ready_scope = ready_scope.where([qu] + Worker.queues)
           end
           ready_scope = ready_scope.by_priority
 
