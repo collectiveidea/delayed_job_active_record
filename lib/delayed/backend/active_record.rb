@@ -9,7 +9,7 @@ module Delayed
 
         if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
           attr_accessible :priority, :run_at, :queue, :payload_object,
-                          :failed_at, :locked_at, :locked_by, :handler
+                          :failed_at, :locked_at, :locked_by, :handler, :balance_id
         end
 
         scope :by_priority, lambda { order('priority ASC, run_at ASC') }
@@ -47,12 +47,29 @@ module Delayed
           # scope to filter to the single next eligible job
           ready_scope = ready_scope.where('priority >= ?', Worker.min_priority) if Worker.min_priority
           ready_scope = ready_scope.where('priority <= ?', Worker.max_priority) if Worker.max_priority
+          
           #ready_scope = ready_scope.where(:queue => Worker.queues) if Worker.queues.any?
           if Worker.queues.any?
             qu = (['queue like ?'] * Worker.queues.size).join(' OR ')
             ready_scope = ready_scope.where([qu] + Worker.queues)
           end
           ready_scope = ready_scope.by_priority
+
+
+          if true # TODO config use balanced system
+            # find priority which is probably used
+            firstguy = ready_scope.limit(1).first
+            return nil if firstguy.nil?
+            priority = firstguy.priority
+
+            # find distinct people in the pool
+            people_in_the_pool = ready_scope.where(:priority => priority).uniq.pluck(:balance_id)
+            # select next candidate by random
+            nextguy = people_in_the_pool.sample
+            # select the job for this guy
+            ready_scope = ready_scope.where(:balance_id=>nextguy)
+
+          end
 
           now = self.db_time_now
 
