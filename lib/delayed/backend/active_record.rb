@@ -63,7 +63,7 @@ module Delayed
           scope = scope.scoped(:conditions => ["queue NOT IN (?)", Worker.not_queues]) if Worker.not_queues.any?
 
           ::ActiveRecord::Base.silence do
-            scope.by_priority.all(:limit => limit)
+            scope.by_priority.all(:limit => limit).shuffle
           end
         end
 
