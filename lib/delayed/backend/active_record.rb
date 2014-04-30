@@ -54,7 +54,7 @@ module Delayed
 
           # Optimizations for faster lookups on some common databases
           case
-          when self.connection.adapter_name == "PostgreSQL" && self.connection.server_version >= 90000
+          when self.connection.adapter_name == "PostgreSQL" && self.connection.send(:postgresql_version) >= 90000
             # Custom SQL required for PostgreSQL because postgres does not support UPDATE...LIMIT
             # This locks the single record 'FOR UPDATE' in the subquery (http://www.postgresql.org/docs/9.0/static/sql-select.html#SQL-FOR-UPDATE-SHARE)
             # Note: active_record would attempt to generate UPDATE...LIMIT like sql for postgres if we use a .limit() filter, but it would not use
