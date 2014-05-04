@@ -4,6 +4,26 @@ require 'delayed/backend/active_record'
 describe Delayed::Backend::ActiveRecord::Job do
   it_behaves_like 'a delayed_job backend'
 
+  describe "reserve_with_scope" do
+    let(:worker) { double(name: "worker01", read_ahead: 1) }
+    let(:scope)  { double(limit: limit, where: double(update_all: nil)) }
+    let(:limit)  { double(job: job) }
+    let(:job)    { double(id: 1) }
+
+    before do
+      allow(Delayed::Backend::ActiveRecord::Job.connection).to receive(:adapter_name).at_least(:once).and_return(dbms)
+    end
+
+    context "for a dbms without a specific implementation" do
+      let(:dbms) { "OtherDB" }
+
+      it "uses the plain sql version" do
+        expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_default_sql).once
+        Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+      end
+    end
+  end
+
   context 'db_time_now' do
     after do
       Time.zone = nil
