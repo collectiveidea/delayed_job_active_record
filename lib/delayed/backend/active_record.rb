@@ -64,10 +64,12 @@ module Delayed
             reserved          = self.find_by_sql(["UPDATE #{quoted_table_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery_sql}) RETURNING *", now, worker.name])
             reserved[0]
           when "MySQL", "Mysql2"
-            # This works on MySQL and possibly some other DBs that support UPDATE...LIMIT. It uses separate queries to lock and return the job
-            count = ready_scope.limit(1).update_all(:locked_at => now, :locked_by => worker.name)
-            return nil if count == 0
-            self.where(:locked_at => now, :locked_by => worker.name, :failed_at => nil).first
+            retry_when_deadlocked do
+              # This works on MySQL and possibly some other DBs that support UPDATE...LIMIT. It uses separate queries to lock and return the job
+              count = ready_scope.limit(1).update_all(:locked_at => now, :locked_by => worker.name)
+              return nil if count == 0
+              self.where(:locked_at => now, :locked_by => worker.name, :failed_at => nil).first
+            end
           when "MSSQL", "Teradata"
             # The MSSQL driver doesn't generate a limit clause when update_all is called directly
             subsubquery_sql = ready_scope.limit(1).to_sql
@@ -104,6 +106,24 @@ module Delayed
         def reload(*args)
           reset
           super
+        end
+
+        def destroy
+          Job.retry_when_deadlocked { super }
+        end
+
+        def self.retry_when_deadlocked
+          retries = 0
+          begin
+            yield
+          rescue ActiveRecord::StatementInvalid => e
+            if e.message =~ /Deadlock found when trying to get lock/ && retries < 100
+              retries +=1
+              retry
+            else
+              raise
+            end
+          end
         end
       end
     end
