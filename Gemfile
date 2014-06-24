@@ -15,7 +15,7 @@ group :test do
   end
 
   platforms :ruby, :mswin, :mingw do
-    gem 'mysql', '~> 2.8.1'
+    gem 'mysql', '~> 2.9'
     gem 'pg'
     gem 'sqlite3'
   end
