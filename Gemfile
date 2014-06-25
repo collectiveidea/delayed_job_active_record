@@ -21,7 +21,7 @@ group :test do
   end
 
   gem 'coveralls', :require => false
-  gem 'rspec', '>= 2.11'
+  gem 'rspec', '>= 3'
   gem 'rubocop', '>= 0.23'
   gem 'simplecov', :require => false
 end
