@@ -50,8 +50,10 @@ module Delayed
           ready_scope = ready_scope.where(:queue => Worker.queues) if Worker.queues.any?
           ready_scope = ready_scope.by_priority
 
-          now = db_time_now
+          reserve_with_scope(ready_scope, worker, db_time_now)
+        end
 
+        def self.reserve_with_scope(ready_scope, worker, now)
           # Optimizations for faster lookups on some common databases
           case connection.adapter_name
           when 'PostgreSQL'
@@ -80,11 +82,15 @@ module Delayed
             # MSSQL JDBC doesn't support OUTPUT INSERTED.* for returning a result set, so query locked row
             where(:locked_at => now, :locked_by => worker.name, :failed_at => nil).first
           else
-            # This is our old fashion, tried and true, but slower lookup
-            ready_scope.limit(worker.read_ahead).detect do |job|
-              count = ready_scope.where(:id => job.id).update_all(:locked_at => now, :locked_by => worker.name)
-              count == 1 && job.reload
-            end
+            reserve_with_scope_using_default_sql(ready_scope, worker, now)
+          end
+        end
+
+        def self.reserve_with_scope_using_default_sql(ready_scope, worker, now)
+          # This is our old fashion, tried and true, but slower lookup
+          ready_scope.limit(worker.read_ahead).detect do |job|
+            count = ready_scope.where(:id => job.id).update_all(:locked_at => now, :locked_by => worker.name)
+            count == 1 && job.reload
           end
         end
 
