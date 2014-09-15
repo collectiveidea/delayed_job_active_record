@@ -63,6 +63,33 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
+  describe "process" do
+    it "reserves jobs from the correct queue" do
+      # clear any jobs sitting around
+      Delayed::Backend::ActiveRecord::Job.delete_all
+
+      job = Delayed::Backend::ActiveRecord::Job.enqueue :payload_object => SimpleJob.new, :queue => 'queue'
+      Delayed::Backend::ActiveRecord::Job.count.should == 1
+      Delayed::Worker.new(:queue => 'queue').work_off
+      Delayed::Backend::ActiveRecord::Job.count.should == 0
+    end
+
+    if Delayed::Worker.respond_to?(:excludes)
+      it "ignores excluded queues when reserving jobs" do
+        # clear any jobs sitting around
+        Delayed::Backend::ActiveRecord::Job.delete_all
+
+        job = Delayed::Backend::ActiveRecord::Job.enqueue :payload_object => SimpleJob.new, :queue => 'process'
+        excluded_job = Delayed::Backend::ActiveRecord::Job.enqueue :payload_object => SimpleJob.new, :queue => 'ignore'
+        Delayed::Worker.excludes << 'ignore'
+        Delayed::Worker.new.work_off
+
+        Delayed::Backend::ActiveRecord::Job.find(excluded_job.id).queue.should == 'ignore'
+        Delayed::Backend::ActiveRecord::Job.count.should == 1
+      end
+    end
+  end
+
   if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
     context 'ActiveRecord::Base.send(:attr_accessible, nil)' do
       before do
