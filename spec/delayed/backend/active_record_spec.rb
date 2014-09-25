@@ -50,7 +50,7 @@ describe Delayed::Backend::ActiveRecord::Job do
 
   describe "after_fork" do
     it "calls reconnect on the connection" do
-      allow(ActiveRecord::Base).to receive(:establish_connection)
+      expect(ActiveRecord::Base).to receive(:establish_connection)
       Delayed::Backend::ActiveRecord::Job.after_fork
     end
   end
