@@ -1,96 +1,92 @@
 AllCops:
+  RunRailsCops: true
   Include:
     - 'Gemfile'
     - 'Rakefile'
     - 'delayed_job_active_record.gemspec'
 
-# Avoid long parameter lists
-ParameterLists:
-  Max: 4
-  CountKeywordArgs: true
+#################
+# [i] Overrides #
+#################
 
-ClassLength:
-  Max: 100
-
-LineLength:
-  Enabled: false
-
-MethodLength:
-  CountComments: false
-  Max: 30
-
-# Avoid more than `Max` levels of nesting.
-BlockNesting:
-  Max: 2
-
-# Align with the style guide.
 CollectionMethods:
+  # Mapping from undesired method to desired_method
+  # e.g. to use `detect` over `find`:
+  #
+  # CollectionMethods:
+  #   PreferredMethods:
+  #     find: detect
   PreferredMethods:
-    map:      'collect'
-    map!:     'collect!'
-    reduce:   'inject'
-    find:     'detect'
+    collect: 'map'
+    collect!: 'map!'
+    reduce: 'inject'
     find_all: 'select'
+    find: 'detect'
 
-# Disable documentation checking until a class needs to be documented once
-Documentation:
-  Enabled: false
-
-# Enforce Ruby 1.8-compatible hash syntax
-HashSyntax:
-  EnforcedStyle: hash_rockets
-
-# No spaces inside hash literals
-SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space
-
-# Allow dots at the end of lines
+# Multi-line method chaining should be done with leading dots.
 DotPosition:
-  Enabled: false
+  EnforcedStyle: trailing
 
-# Don't require magic comment at the top of every file
-Encoding:
-  Enabled: false
-
-# Enforce outdenting of access modifiers (i.e. public, private, protected)
-AccessModifierIndentation:
-  EnforcedStyle: outdent
-
-EmptyLinesAroundAccessModifier:
-  Enabled: true
-
-# Align ends correctly
+# Align ends correctly.
 EndAlignment:
   AlignWith: variable
 
-# Indentation of when/else
-CaseIndentation:
-  IndentWhenRelativeTo: end
-  IndentOneStep: false
+IfUnlessModifier:
+  MaxLineLength: 75
+
+LineLength:
+  Max: 200
+
+SignalException:
+  EnforcedStyle: only_raise
+
+SpaceInsideBlockBraces:
+  SpaceBeforeBlockParameters: false
+
+SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+StringLiterals:
+  EnforcedStyle: double_quotes
+
+#################
+# Disabled cops #
+#################
+ClassAndModuleChildren:
+  Enabled: false
+
+ClassLength:
+  Enabled: false
+
+CyclomaticComplexity:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+EachWithObject:
+  Enabled: false
+
+FormatString:
+  Enabled: false
 
 Lambda:
   Enabled: false
 
-RaiseArgs:
-  EnforcedStyle: compact
+MethodLength:
+  Enabled: false
+
+NegatedIf:
+  Enabled: false
+
+Semicolon:
+  Enabled: false
+
+SingleLineBlockParams:
+  Enabled: false
 
 TrailingComma:
   Enabled: false
 
-DoubleNegation:
-  Enabled: false
-
-PercentLiteralDelimiters:
-  PreferredDelimiters:
-    '%':  ()
-    '%i': ()
-    '%q': ()
-    '%Q': ()
-    '%r': '{}'
-    '%s': ()
-    '%w': '[]'
-    '%W': '[]'
-    '%x': ()
-
-NonNilCheck:
+WordArray:
   Enabled: false
