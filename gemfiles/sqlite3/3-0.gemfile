@@ -1,0 +1,23 @@
+source 'https://rubygems.org'
+
+gem 'rake'
+
+group :test do
+  platforms :jruby do
+    gem 'jruby-openssl'
+    gem 'activerecord-jdbc-adapter'
+    gem 'activerecord-jdbcsqlite3-adapter'
+  end
+
+  platforms :ruby, :mswin, :mingw do
+    gem 'sqlite3'
+  end
+
+  gem 'coveralls', :require => false
+  gem 'rspec', '>= 2.11'
+  gem 'simplecov', :require => false
+
+  gem 'activerecord', "~> 3.0.0"
+end
+
+gemspec :path => "../../"

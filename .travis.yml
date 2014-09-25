@@ -7,10 +7,16 @@ env:
   global:
     - JRUBY_OPTS="$JRUBY_OPTS --debug"
 gemfile:
+  - gemfiles/mysql/3-0.gemfile
+  - gemfiles/mysql/3-1.gemfile
   - gemfiles/mysql/3-2.gemfile
   - gemfiles/mysql/4-0.gemfile
+  - gemfiles/postgresql/3-0.gemfile
+  - gemfiles/postgresql/3-1.gemfile
   - gemfiles/postgresql/3-2.gemfile
   - gemfiles/postgresql/4-0.gemfile
+  - gemfiles/sqlite3/3-0.gemfile
+  - gemfiles/sqlite3/3-1.gemfile
   - gemfiles/sqlite3/3-2.gemfile
   - gemfiles/sqlite3/4-0.gemfile
   - gemfiles/sqlite3/4-0-protected_attributes.gemfile
