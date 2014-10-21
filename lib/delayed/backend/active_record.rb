@@ -66,6 +66,8 @@ module Delayed
             reserved          = find_by_sql(["UPDATE #{quoted_table_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery_sql}) RETURNING *", now, worker.name])
             reserved[0]
           when "MySQL", "Mysql2"
+            #removing the millisecond precision from now(time object),mysql 5.6.4 onwards millisecond precision exists, but the datetime object created doesn't have precision, so discarded while updating. But during the where clause, for mysql(>=5.6.4), it queries with precision as well. So removing the precision
+            now = now.change(:usec => 0)
             # This works on MySQL and possibly some other DBs that support UPDATE...LIMIT. It uses separate queries to lock and return the job
             count = ready_scope.limit(1).update_all(locked_at: now, locked_by: worker.name)
             return nil if count == 0
