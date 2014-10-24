@@ -11,15 +11,21 @@ gemfile:
   - gemfiles/mysql/3-1.gemfile
   - gemfiles/mysql/3-2.gemfile
   - gemfiles/mysql/4-0.gemfile
+  - gemfiles/mysql/4-1.gemfile
+  - gemfiles/mysql/4-2.gemfile
   - gemfiles/postgresql/3-0.gemfile
   - gemfiles/postgresql/3-1.gemfile
   - gemfiles/postgresql/3-2.gemfile
   - gemfiles/postgresql/4-0.gemfile
+  - gemfiles/postgresql/4-1.gemfile
+  - gemfiles/postgresql/4-2.gemfile
   - gemfiles/sqlite3/3-0.gemfile
   - gemfiles/sqlite3/3-1.gemfile
   - gemfiles/sqlite3/3-2.gemfile
   - gemfiles/sqlite3/4-0.gemfile
   - gemfiles/sqlite3/4-0-protected_attributes.gemfile
+  - gemfiles/sqlite3/4-1.gemfile
+  - gemfiles/sqlite3/4-2.gemfile
 rvm:
   - 1.9.3
   - 2.0.0
@@ -34,4 +40,20 @@ matrix:
     - rvm: jruby-head
     - rvm: rbx-2
     - rvm: ruby-head
+    - gemfile: gemfiles/mysql/4-2.gemfile
+    - gemfile: gemfiles/postgresql/4-2.gemfile
+    - gemfile: gemfiles/sqlite3/4-2.gemfile
+  exclude:
+    - gemfile: gemfiles/mysql/4-1.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/mysql/4-2.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/postgresql/4-1.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/postgresql/4-2.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/sqlite3/4-1.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/sqlite3/4-2.gemfile
+      rvm: 1.9.3
 sudo: false
