@@ -28,4 +28,13 @@ migration to add a column to your delayed_jobs table.
     rails g delayed_job:upgrade
     rake db:migrate
 
+## Upgrading from base to trecker.com customizations
+
+If you're upgrading Delayed Job base version, run the trecker generator to create a
+migration to add the staff_id column to your delayed_jobs table. It is used
+for prohibiting 2..n Delayed Job workers to pick jobs from the same staff.
+
+    rails g delayed_job:trecker
+    rake db:migrate
+
 That's it. Use [delayed_job as normal](http://github.com/collectiveidea/delayed_job).

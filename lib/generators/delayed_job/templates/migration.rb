@@ -11,6 +11,9 @@ class CreateDelayedJobs < ActiveRecord::Migration
       table.string :locked_by                          # Who is working on this object (if locked)
       table.string :queue                              # The name of the queue this job is in
       table.timestamps
+
+      table.integer :staff_id                              # Trecker.com custom to guarantee one employee is not taken care of by multiple workers at once
+
     end
 
     add_index :delayed_jobs, [:priority, :run_at], name: "delayed_jobs_priority"
