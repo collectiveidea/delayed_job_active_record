@@ -9,7 +9,8 @@ module Delayed
 
         if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
           attr_accessible :priority, :run_at, :queue, :payload_object,
-                          :failed_at, :locked_at, :locked_by, :handler
+                          :failed_at, :locked_at, :locked_by, :handler, 
+                          :staff_id # trecker.com custom
         end
 
         scope :by_priority, lambda { order("priority ASC, run_at ASC") }
@@ -48,6 +49,14 @@ module Delayed
           ready_scope = ready_scope.where("priority >= ?", Worker.min_priority) if Worker.min_priority
           ready_scope = ready_scope.where("priority <= ?", Worker.max_priority) if Worker.max_priority
           ready_scope = ready_scope.where(queue: Worker.queues) if Worker.queues.any?
+          
+          ## trecker.com
+          #
+          #begin
+          excluded_staff_ids = where("(locked_at IS NOT NULL OR failed_at IS NOT NULL) AND staff_id IS NOT NULL").pluck(:staff_id)
+          ready_scope = ready_scope.where("staff_id NOT IN (?)", excluded_staff_ids.join(', ')) if excluded_staff_ids.any?
+          #end
+
           ready_scope = ready_scope.by_priority
 
           reserve_with_scope(ready_scope, worker, db_time_now)
