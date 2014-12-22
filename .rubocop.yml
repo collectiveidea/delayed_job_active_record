@@ -1,9 +1,5 @@
 AllCops:
   RunRailsCops: true
-  Include:
-    - 'Gemfile'
-    - 'Rakefile'
-    - 'delayed_job_active_record.gemspec'
 
 #################
 # [i] Overrides #
@@ -52,6 +48,9 @@ StringLiterals:
 #################
 # Disabled cops #
 #################
+AbcSize:
+  Enabled: false
+
 ClassAndModuleChildren:
   Enabled: false
 
