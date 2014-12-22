@@ -40,9 +40,6 @@ matrix:
     - rvm: jruby-head
     - rvm: rbx-2
     - rvm: ruby-head
-    - gemfile: gemfiles/mysql/4-2.gemfile
-    - gemfile: gemfiles/postgresql/4-2.gemfile
-    - gemfile: gemfiles/sqlite3/4-2.gemfile
   exclude:
     - gemfile: gemfiles/mysql/4-1.gemfile
       rvm: 1.9.3
