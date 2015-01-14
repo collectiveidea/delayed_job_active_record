@@ -17,9 +17,7 @@ group :test do
   gem 'rspec', '>= 2.11'
   gem 'simplecov', :require => false
 
-  gem 'activerecord', "~> 4.0.0.beta"
-
-  gem 'delayed_job', "~> 4.0.0.beta"
+  gem 'activerecord', "~> 4.0.0"
 end
 
 gemspec :path => "../../"

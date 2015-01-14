@@ -1,8 +1,28 @@
-require 'helper'
-require 'delayed/backend/active_record'
+require "helper"
+require "delayed/backend/active_record"
 
 describe Delayed::Backend::ActiveRecord::Job do
-  it_behaves_like 'a delayed_job backend'
+  it_behaves_like "a delayed_job backend"
+
+  describe "reserve_with_scope" do
+    let(:worker) { double(name: "worker01", read_ahead: 1) }
+    let(:scope)  { double(limit: limit, where: double(update_all: nil)) }
+    let(:limit)  { double(job: job) }
+    let(:job)    { double(id: 1) }
+
+    before do
+      allow(Delayed::Backend::ActiveRecord::Job.connection).to receive(:adapter_name).at_least(:once).and_return(dbms)
+    end
+
+    context "for a dbms without a specific implementation" do
+      let(:dbms) { "OtherDB" }
+
+      it "uses the plain sql version" do
+        expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_default_sql).once
+        Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+      end
+    end
+  end
 
   context "db_time_now" do
     after do
@@ -11,18 +31,18 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
 
     it "returns time in current time zone if set" do
-      Time.zone = 'Eastern Time (US & Canada)'
+      Time.zone = "Eastern Time (US & Canada)"
       expect(%(EST EDT)).to include(Delayed::Job.db_time_now.zone)
     end
 
     it "returns UTC time if that is the AR default" do
       Time.zone = nil
       ActiveRecord::Base.default_timezone = :utc
-      expect(Delayed::Backend::ActiveRecord::Job.db_time_now.zone).to eq 'UTC'
+      expect(Delayed::Backend::ActiveRecord::Job.db_time_now.zone).to eq "UTC"
     end
 
     it "returns local time if that is the AR default" do
-      Time.zone = 'Central Time (US & Canada)'
+      Time.zone = "Central Time (US & Canada)"
       ActiveRecord::Base.default_timezone = :local
       expect(%w(CST CDT)).to include(Delayed::Backend::ActiveRecord::Job.db_time_now.zone)
     end
@@ -30,7 +50,7 @@ describe Delayed::Backend::ActiveRecord::Job do
 
   describe "after_fork" do
     it "calls reconnect on the connection" do
-      ActiveRecord::Base.should_receive(:establish_connection)
+      expect(ActiveRecord::Base).to receive(:establish_connection)
       Delayed::Backend::ActiveRecord::Job.after_fork
     end
   end
@@ -38,7 +58,7 @@ describe Delayed::Backend::ActiveRecord::Job do
   describe "enqueue" do
     it "allows enqueue hook to modify job at DB level" do
       later = described_class.db_time_now + 20.minutes
-      job = Delayed::Backend::ActiveRecord::Job.enqueue :payload_object => EnqueueJobMod.new
+      job = Delayed::Backend::ActiveRecord::Job.enqueue payload_object: EnqueueJobMod.new
       expect(Delayed::Backend::ActiveRecord::Job.find(job.id).run_at).to be_within(1).of(later)
     end
   end
@@ -54,7 +74,7 @@ describe Delayed::Backend::ActiveRecord::Job do
       end
 
       it "is still accessible" do
-        job = Delayed::Backend::ActiveRecord::Job.enqueue :payload_object => EnqueueJobMod.new
+        job = Delayed::Backend::ActiveRecord::Job.enqueue payload_object: EnqueueJobMod.new
         expect(Delayed::Backend::ActiveRecord::Job.find(job.id).handler).to_not be_blank
       end
     end
@@ -65,14 +85,14 @@ describe Delayed::Backend::ActiveRecord::Job do
       ::ActiveRecord::Base.table_name_prefix = nil
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
 
-      expect(Delayed::Backend::ActiveRecord::Job.table_name).to eq 'delayed_jobs'
+      expect(Delayed::Backend::ActiveRecord::Job.table_name).to eq "delayed_jobs"
     end
 
     it "when prefix is set, prepend it before default table name" do
-      ::ActiveRecord::Base.table_name_prefix = 'custom_'
+      ::ActiveRecord::Base.table_name_prefix = "custom_"
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
 
-      expect(Delayed::Backend::ActiveRecord::Job.table_name).to eq 'custom_delayed_jobs'
+      expect(Delayed::Backend::ActiveRecord::Job.table_name).to eq "custom_delayed_jobs"
 
       ::ActiveRecord::Base.table_name_prefix = nil
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
