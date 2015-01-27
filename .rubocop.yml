@@ -1,0 +1,91 @@
+AllCops:
+  RunRailsCops: true
+
+#################
+# [i] Overrides #
+#################
+
+CollectionMethods:
+  # Mapping from undesired method to desired_method
+  # e.g. to use `detect` over `find`:
+  #
+  # CollectionMethods:
+  #   PreferredMethods:
+  #     find: detect
+  PreferredMethods:
+    collect: 'map'
+    collect!: 'map!'
+    reduce: 'inject'
+    find_all: 'select'
+    find: 'detect'
+
+# Multi-line method chaining should be done with leading dots.
+DotPosition:
+  EnforcedStyle: trailing
+
+# Align ends correctly.
+EndAlignment:
+  AlignWith: variable
+
+IfUnlessModifier:
+  MaxLineLength: 75
+
+LineLength:
+  Max: 200
+
+SignalException:
+  EnforcedStyle: only_raise
+
+SpaceInsideBlockBraces:
+  SpaceBeforeBlockParameters: false
+
+SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+StringLiterals:
+  EnforcedStyle: double_quotes
+
+#################
+# Disabled cops #
+#################
+AbcSize:
+  Enabled: false
+
+ClassAndModuleChildren:
+  Enabled: false
+
+ClassLength:
+  Enabled: false
+
+CyclomaticComplexity:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+EachWithObject:
+  Enabled: false
+
+FormatString:
+  Enabled: false
+
+Lambda:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
+
+NegatedIf:
+  Enabled: false
+
+Semicolon:
+  Enabled: false
+
+SingleLineBlockParams:
+  Enabled: false
+
+TrailingComma:
+  Enabled: false
+
+WordArray:
+  Enabled: false

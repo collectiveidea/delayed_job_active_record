@@ -4,20 +4,20 @@ gem 'rake'
 
 group :test do
   platforms :jruby do
-    gem 'jruby-openssl'
     gem 'activerecord-jdbc-adapter'
-    gem 'activerecord-jdbcsqlite3-adapter'
+    gem 'activerecord-jdbcpostgresql-adapter'
+    gem 'jdbc-postgres'
   end
 
   platforms :ruby, :mswin, :mingw do
-    gem 'sqlite3'
+    gem 'pg'
   end
 
   gem 'coveralls', :require => false
   gem 'rspec', '>= 2.11'
   gem 'simplecov', :require => false
 
-  gem 'activerecord', "~> 4.0.0"
+  gem 'activerecord', "~> 4.2.0"
 end
 
 gemspec :path => "../../"
