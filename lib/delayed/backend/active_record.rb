@@ -83,7 +83,8 @@ module Delayed
 
         def self.reserve_with_scope_using_default_sql(ready_scope, worker, now)
           # This is our old fashion, tried and true, but slower lookup
-          ready_scope.limit(worker.read_ahead).detect do |job|
+          bad_sql = ready_scope.select("id").limit(worker.read_ahead).to_sql
+          joins("JOIN (#{bad_sql}) ids ON ids.id = delayed_jobs.id").readonly(false).detect do |job|
             count = ready_scope.where(:id => job.id).update_all(:locked_at => now, :locked_by => worker.name)
             count == 1 && job.reload
           end
