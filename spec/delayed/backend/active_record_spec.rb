@@ -2,8 +2,6 @@ require 'helper'
 require 'delayed/backend/active_record'
 
 describe Delayed::Backend::ActiveRecord::Job do
-  it_behaves_like 'a delayed_job backend'
-
   describe "reserve_with_scope" do
     let(:worker) { double(name: "worker01", read_ahead: 1) }
     let(:scope)  { double(limit: limit, where: double(update_all: nil)) }
