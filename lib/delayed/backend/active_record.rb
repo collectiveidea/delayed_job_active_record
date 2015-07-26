@@ -2,6 +2,23 @@ require "active_record/version"
 module Delayed
   module Backend
     module ActiveRecord
+      class Configuration
+        attr_accessor :reserve_sql_strategy
+
+        def initialize
+          self.reserve_sql_strategy = :optimized_sql
+        end
+      end
+
+      class << self
+        attr_accessor :configuration
+
+        def configure
+          self.configuration ||= Configuration.new
+          yield(configuration)
+        end
+      end
+
       # A job object that is persisted to the database.
       # Contains the work object as a YAML field.
       class Job < ::ActiveRecord::Base
@@ -54,7 +71,20 @@ module Delayed
         end
 
         def self.reserve_with_scope(ready_scope, worker, now)
+          case Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy
           # Optimizations for faster lookups on some common databases
+          when :optimized_sql
+            reserve_with_scope_using_optimized_sql(ready_scope, worker, now)
+          # Slower but in some cases more unproblematic strategy to lookup records
+          # See https://github.com/collectiveidea/delayed_job_active_record/pull/89 for more details.
+          when :default_sql
+            reserve_with_scope_using_default_sql(ready_scope, worker, now)
+          else
+            raise "Invalid value for 'reserve_sql_strategy' configuration option"
+          end
+        end
+
+        def self.reserve_with_scope_using_optimized_sql(ready_scope, worker, now)
           case connection.adapter_name
           when "PostgreSQL"
             # Custom SQL required for PostgreSQL because postgres does not support UPDATE...LIMIT
@@ -91,6 +121,7 @@ module Delayed
             return nil if count == 0
             # MSSQL JDBC doesn't support OUTPUT INSERTED.* for returning a result set, so query locked row
             where(locked_at: now, locked_by: worker.name, failed_at: nil).first
+          # Fallback for unknown / other DBMS
           else
             reserve_with_scope_using_default_sql(ready_scope, worker, now)
           end
@@ -125,3 +156,5 @@ module Delayed
     end
   end
 end
+
+Delayed::Backend::ActiveRecord.configuration = Delayed::Backend::ActiveRecord::Configuration.new

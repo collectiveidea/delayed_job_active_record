@@ -7,19 +7,52 @@ describe Delayed::Backend::ActiveRecord::Job do
   describe "reserve_with_scope" do
     let(:worker) { double(name: "worker01", read_ahead: 1) }
     let(:scope)  { double(limit: limit, where: double(update_all: nil)) }
-    let(:limit)  { double(job: job) }
+    let(:limit)  { double(job: job, update_all: nil) }
     let(:job)    { double(id: 1) }
 
     before do
       allow(Delayed::Backend::ActiveRecord::Job.connection).to receive(:adapter_name).at_least(:once).and_return(dbms)
+      Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy = reserve_sql_strategy
     end
 
-    context "for a dbms without a specific implementation" do
-      let(:dbms) { "OtherDB" }
+    context "with reserve_sql_strategy option set to :optimized_sql (default)" do
+      let(:reserve_sql_strategy) { :optimized_sql }
+
+      context "for mysql adapters" do
+        let(:dbms) { "MySQL" }
+
+        it "uses the optimized sql version" do
+          expect(Delayed::Backend::ActiveRecord::Job).to_not receive(:reserve_with_scope_using_default_sql)
+          Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+        end
+      end
+
+      context "for a dbms without a specific implementation" do
+        let(:dbms) { "OtherDB" }
+
+        it "uses the plain sql version" do
+          expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_default_sql).once
+          Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+        end
+      end
+    end
+
+    context "with reserve_sql_strategy option set to :default_sql" do
+      let(:dbms) { "MySQL" }
+      let(:reserve_sql_strategy) { :default_sql }
 
       it "uses the plain sql version" do
         expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_default_sql).once
         Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+      end
+    end
+
+    context "with reserve_with_scope option set to a invalid value" do
+      let(:dbms) { "MySQL" }
+      let(:reserve_sql_strategy) { :invalid }
+
+      it "raises an error" do
+        expect { Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now) }.to raise_error "Invalid value for 'reserve_sql_strategy' configuration option"
       end
     end
   end
