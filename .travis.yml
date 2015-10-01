@@ -3,26 +3,54 @@ before_script:
   - mysql -e 'create database delayed_job_test;'
   - psql -c 'create database delayed_job_test;' -U postgres
 script: bundle exec rspec
+env:
+  global:
+    - JRUBY_OPTS="$JRUBY_OPTS --debug"
 gemfile:
   - gemfiles/mysql/3-0.gemfile
   - gemfiles/mysql/3-1.gemfile
   - gemfiles/mysql/3-2.gemfile
   - gemfiles/mysql/4-0.gemfile
+  - gemfiles/mysql/4-1.gemfile
+  - gemfiles/mysql/4-2.gemfile
   - gemfiles/postgresql/3-0.gemfile
   - gemfiles/postgresql/3-1.gemfile
   - gemfiles/postgresql/3-2.gemfile
   - gemfiles/postgresql/4-0.gemfile
+  - gemfiles/postgresql/4-1.gemfile
+  - gemfiles/postgresql/4-2.gemfile
   - gemfiles/sqlite3/3-0.gemfile
   - gemfiles/sqlite3/3-1.gemfile
   - gemfiles/sqlite3/3-2.gemfile
   - gemfiles/sqlite3/4-0.gemfile
   - gemfiles/sqlite3/4-0-protected_attributes.gemfile
+  - gemfiles/sqlite3/4-1.gemfile
+  - gemfiles/sqlite3/4-2.gemfile
 rvm:
-  - rbx-19mode
-  - jruby-19mode
   - 1.9.3
   - 2.0.0
+  - 2.1
+  - jruby-19mode
+  - jruby-head
+  - rbx-2
+  - ruby-head
 matrix:
   allow_failures:
-    - rvm: rbx-19mode
     - rvm: jruby-19mode
+    - rvm: jruby-head
+    - rvm: rbx-2
+    - rvm: ruby-head
+  exclude:
+    - gemfile: gemfiles/mysql/4-1.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/mysql/4-2.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/postgresql/4-1.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/postgresql/4-2.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/sqlite3/4-1.gemfile
+      rvm: 1.9.3
+    - gemfile: gemfiles/sqlite3/4-2.gemfile
+      rvm: 1.9.3
+sudo: false
