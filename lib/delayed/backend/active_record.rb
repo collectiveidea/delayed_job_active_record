@@ -56,7 +56,7 @@ module Delayed
         def self.reserve_with_scope(ready_scope, worker, now)
           # Optimizations for faster lookups on some common databases
           case connection.adapter_name
-          when "PostgreSQL"
+          when "PostgreSQL", "PostGIS"
             # Custom SQL required for PostgreSQL because postgres does not support UPDATE...LIMIT
             # This locks the single record 'FOR UPDATE' in the subquery
             # http://www.postgresql.org/docs/9.0/static/sql-select.html#SQL-FOR-UPDATE-SHARE
