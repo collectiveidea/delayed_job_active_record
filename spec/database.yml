@@ -4,6 +4,12 @@ mysql:
   username: root
   encoding: utf8
 
+mysql2:
+  adapter: mysql2
+  database: delayed_job_test
+  username: root
+  encoding: utf8
+
 postgresql:
   adapter: postgresql
   database: delayed_job_test
