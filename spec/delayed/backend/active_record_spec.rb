@@ -4,6 +4,24 @@ require "delayed/backend/active_record"
 describe Delayed::Backend::ActiveRecord::Job do
   it_behaves_like "a delayed_job backend"
 
+  describe "configuration" do
+    describe "reserve_sql_strategy" do
+      it "allows :optimized_sql" do
+        Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy = :optimized_sql
+        expect(Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy).to eq(:optimized_sql)
+      end
+
+      it "allows :default_sql" do
+        Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy = :default_sql
+        expect(Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy).to eq(:default_sql)
+      end
+
+      it "raises an argument error on invalid entry" do
+        expect { Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy = :invald }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
   describe "reserve_with_scope" do
     let(:worker) { double(name: "worker01", read_ahead: 1) }
     let(:scope)  { double(limit: limit, where: double(update_all: nil)) }
@@ -44,15 +62,6 @@ describe Delayed::Backend::ActiveRecord::Job do
       it "uses the plain sql version" do
         expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_default_sql).once
         Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
-      end
-    end
-
-    context "with reserve_with_scope option set to a invalid value" do
-      let(:dbms) { "MySQL" }
-      let(:reserve_sql_strategy) { :invalid }
-
-      it "raises an error" do
-        expect { Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now) }.to raise_error "Invalid value for 'reserve_sql_strategy' configuration option"
       end
     end
   end

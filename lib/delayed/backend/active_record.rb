@@ -3,20 +3,24 @@ module Delayed
   module Backend
     module ActiveRecord
       class Configuration
-        attr_accessor :reserve_sql_strategy
+        attr_reader :reserve_sql_strategy
 
         def initialize
           self.reserve_sql_strategy = :optimized_sql
         end
+
+        def reserve_sql_strategy=(val)
+          raise ArgumentError, "allowed values are :optimized_sql or :default_sql" unless val == :optimized_sql || val == :default_sql
+          @reserve_sql_strategy = val
+        end
       end
 
-      class << self
-        attr_accessor :configuration
+      def self.configuration
+        @configuration ||= Configuration.new
+      end
 
-        def configure
-          self.configuration ||= Configuration.new
-          yield(configuration)
-        end
+      def self.configure
+        yield(configuration)
       end
 
       # A job object that is persisted to the database.
@@ -79,8 +83,6 @@ module Delayed
           # See https://github.com/collectiveidea/delayed_job_active_record/pull/89 for more details.
           when :default_sql
             reserve_with_scope_using_default_sql(ready_scope, worker, now)
-          else
-            raise "Invalid value for 'reserve_sql_strategy' configuration option"
           end
         end
 
@@ -156,5 +158,3 @@ module Delayed
     end
   end
 end
-
-Delayed::Backend::ActiveRecord.configuration = Delayed::Backend::ActiveRecord::Configuration.new
