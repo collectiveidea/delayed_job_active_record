@@ -26,15 +26,17 @@ rvm:
   - 2.2.4
   - 2.3.0
   - jruby-19mode
-  - jruby-head
   - rbx-2
-  - ruby-head
+
 matrix:
   allow_failures:
     - rvm: jruby-19mode
     - rvm: jruby-head
     - rvm: rbx-2
     - rvm: ruby-head
+    - gemfile: gemfiles/mysql2/master.gemfile
+    - gemfile: gemfiles/postgresql/master.gemfile
+    - gemfile: gemfiles/sqlite3/master.gemfile
   exclude:
     - gemfile: gemfiles/mysql2/5-0.gemfile
       rvm: 2.0.0
@@ -54,10 +56,44 @@ matrix:
       rvm: 2.1
     - gemfile: gemfiles/sqlite3/5-0.gemfile
       rvm: jruby-19mode
-  # legacy testing
-  # things still run and we don't have a good reason to break it
-  # but we don't need to keep running the full matrix
   include:
+    # The Future
+    - gemfile: gemfiles/mysql2/master.gemfile
+      rvm: 2.3.0
+    - gemfile: gemfiles/postgresql/master.gemfile
+      rvm: 2.3.0
+    - gemfile: gemfiles/sqlite3/master.gemfile
+      rvm: 2.3.0
+
+    - rvm: ruby-head
+      gemfile: gemfiles/mysql/4-2.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/mysql2/5-0.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/postgresql/4-2.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/postgresql/5-0.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/sqlite3/4-2.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/sqlite3/5-0.gemfile
+
+    - rvm: jruby-head
+      gemfile: gemfiles/mysql/4-2.gemfile
+    - rvm: jruby-head
+      gemfile: gemfiles/mysql2/5-0.gemfile
+    - rvm: jruby-head
+      gemfile: gemfiles/postgresql/4-2.gemfile
+    - rvm: jruby-head
+      gemfile: gemfiles/postgresql/5-0.gemfile
+    - rvm: jruby-head
+      gemfile: gemfiles/sqlite3/4-2.gemfile
+    - rvm: jruby-head
+      gemfile: gemfiles/sqlite3/5-0.gemfile
+
+    # legacy testing
+    # things still run and we don't have a good reason to break it
+    # but we don't need to keep running the full matrix
     - gemfile: gemfiles/mysql/3-0.gemfile
       rvm: 2.0.0
     - gemfile: gemfiles/mysql/3-1.gemfile
