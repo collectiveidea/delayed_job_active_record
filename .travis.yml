@@ -5,7 +5,7 @@ before_script:
 script: bundle exec rspec
 env:
   global:
-    - JRUBY_OPTS="$JRUBY_OPTS --debug"
+    - JRUBY_OPTS="$JRUBY_OPTS -Xcli.debug=true --debug"
 gemfile:
   - gemfiles/mysql/4-0.gemfile
   - gemfiles/mysql/4-1.gemfile
