@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 Gem::Specification.new do |spec|
   spec.add_dependency "activerecord", [">= 3.0", "< 5"]
   spec.add_dependency "delayed_job",  [">= 3.0", "< 5"]
