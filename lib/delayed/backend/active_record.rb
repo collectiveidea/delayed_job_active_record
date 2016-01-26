@@ -39,6 +39,18 @@ module Delayed
         def self.clear_locks!(worker_name)
           where(locked_by: worker_name).update_all(locked_by: nil, locked_at: nil)
         end
+        
+        def self.queues_max_parallel_execution_reached
+          return nil unless Worker.default_max_workers_by_queue || Worker.max_workers_by_queue.present?
+          excepted_queue_names = []
+          queues_counter = where("locked_by IS NOT NULL").group(:queue).count
+          queues_counter.each do |name, nb|
+            if Worker.max_workers_by_queue[name] && nb >= Worker.max_workers_by_queue[name] || Worker.default_max_workers_by_queue && nb >= Worker.default_max_workers_by_queue
+              excepted_queue_names << name
+            end
+          end
+          excepted_queue_names
+        end
 
         def self.reserve(worker, max_run_time = Worker.max_run_time) # rubocop:disable CyclomaticComplexity
           # scope to filter to records that are "ready to run"
@@ -48,6 +60,9 @@ module Delayed
           ready_scope = ready_scope.where("priority >= ?", Worker.min_priority) if Worker.min_priority
           ready_scope = ready_scope.where("priority <= ?", Worker.max_priority) if Worker.max_priority
           ready_scope = ready_scope.where(queue: Worker.queues) if Worker.queues.any?
+          if (excepted_queue_names = queues_max_parallel_execution_reached).present?
+            ready_scope = ready_scope.where("queue NOT IN (?)", excepted_queue_names)
+          end
           ready_scope = ready_scope.by_priority
 
           reserve_with_scope(ready_scope, worker, db_time_now)
