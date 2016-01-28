@@ -40,10 +40,10 @@ module Delayed
           where(locked_by: worker_name).update_all(locked_by: nil, locked_at: nil)
         end
         
-        def self.queues_max_parallel_execution_reached
+        def self.queues_max_parallel_execution_reached(worker_name, max_run_time)
           return nil unless Worker.default_max_workers_by_queue || Worker.max_workers_by_queue.present?
           excepted_queue_names = []
-          queues_counter = where("locked_by IS NOT NULL").group(:queue).count
+          queues_counter = where("locked_at IS NOT NULL AND locked_at >= ? AND locked_by != ?", db_time_now - max_run_time, worker_name).group(:queue).count
           queues_counter.each do |name, nb|
             if Worker.max_workers_by_queue[name] && nb >= Worker.max_workers_by_queue[name] || Worker.default_max_workers_by_queue && nb >= Worker.default_max_workers_by_queue
               excepted_queue_names << name
@@ -60,7 +60,7 @@ module Delayed
           ready_scope = ready_scope.where("priority >= ?", Worker.min_priority) if Worker.min_priority
           ready_scope = ready_scope.where("priority <= ?", Worker.max_priority) if Worker.max_priority
           ready_scope = ready_scope.where(queue: Worker.queues) if Worker.queues.any?
-          if (excepted_queue_names = queues_max_parallel_execution_reached).present?
+          if (excepted_queue_names = queues_max_parallel_execution_reached(worker.name, max_run_time)).present?
             ready_scope = ready_scope.where("queue NOT IN (?)", excepted_queue_names)
           end
           ready_scope = ready_scope.by_priority
