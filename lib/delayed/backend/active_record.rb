@@ -129,9 +129,9 @@ module Delayed
 
         def self.reserve_with_scope_using_default_sql(ready_scope, worker, now)
           # This is our old fashion, tried and true, but slower lookup
-          ready_scope.limit(worker.read_ahead).pluck(:id).detect do |job_id|
+          ready_scope.limit(worker.read_ahead).pluck(:id).flat_map do |job_id|
             count = ready_scope.where(id: job_id).update_all(locked_at: now, locked_by: worker.name)
-            count == 1 && find(:id => job_id)
+            count == 1 && where(id: job_id)
           end
         end
 
