@@ -24,6 +24,7 @@ group :test do
   gem "rspec", ">= 3"
   gem "rubocop", ">= 0.23"
   gem "simplecov", require: false
+  gem "redlock"
 end
 
 gemspec
