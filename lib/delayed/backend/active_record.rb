@@ -1,4 +1,6 @@
 require "active_record/version"
+require "redlock"
+
 module Delayed
   module Backend
     module ActiveRecord
