@@ -5,12 +5,14 @@ module Delayed
   module Backend
     module ActiveRecord
       class Configuration
-        attr_accessor :reserve_sql_strategy, :redlock
+        attr_accessor :reserve_sql_strategy, :redlock_instance
 
         def initialize
           self.reserve_sql_strategy = :optimized_sql
+        end
 
-          self.redlock = Redlock::Client.new(['redis://127.0.0.1:6379'])
+        def self.redlock
+          self.redlock_instance ||= Redlock::Client.new($REDIS_CONFIG)
         end
       end
 
