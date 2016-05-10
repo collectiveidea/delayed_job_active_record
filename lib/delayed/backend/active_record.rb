@@ -5,7 +5,8 @@ module Delayed
   module Backend
     module ActiveRecord
       class Configuration
-        attr_accessor :reserve_sql_strategy, :redlock_instance
+        attr_accessor :reserve_sql_strategy
+        cattr_accessor :redlock_instance
 
         def initialize
           self.reserve_sql_strategy = :optimized_sql
