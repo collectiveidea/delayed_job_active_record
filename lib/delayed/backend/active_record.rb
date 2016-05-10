@@ -89,6 +89,8 @@ module Delayed
             reserve_with_scope_using_racerpeter_sql(ready_scope, worker, now)
           when :redis_sql
             reserve_with_scope_using_redis_sql(ready_scope, worker, now)
+          when :redis_sql_alt
+            reserve_with_scope_using_redis_sql_alt(ready_scope, worker, now)
           else
             raise "Invalid value for 'reserve_sql_strategy' configuration option"
           end
@@ -157,9 +159,23 @@ module Delayed
           end
         end
 
+        def self.reserve_with_scope_using_redis_sql_alt(ready_scope, worker, now)
+          # Use redis for locking
+          Delayed::Backend::ActiveRecord.configuration.class.redlock.lock("delayed_job", 1000) do |locked|
+            if locked
+              ready_scope.limit(1).pluck(:id).detect do |job_id|
+                job_to_lock = where(id: job_id)
+                if job_to_lock.update_all(locked_at: now, locked_by: worker.name)
+                  job_to_lock.first
+                end
+              end
+            end
+          end
+        end
+
         def self.reserve_with_scope_using_redis_sql(ready_scope, worker, now)
           # Use redis for locking
-          Delayed::Backend::ActiveRecord.configuration.redlock.lock("delayed_job", 1000) do |locked|
+          Delayed::Backend::ActiveRecord.configuration.class.redlock.lock("delayed_job", 1000) do |locked|
             if locked
               the_job_id = ready_scope.limit(1).pluck(:id).detect do |job_id|
                 count = ready_scope.where(id: job_id).update_all(locked_at: now, locked_by: worker.name)
