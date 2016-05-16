@@ -23,10 +23,12 @@ gemfile:
 rvm:
   - 2.0.0
   - 2.1
-  - 2.2.4
-  - 2.3.0
-  - jruby-19mode
+  - 2.2.5
+  - 2.3.1
+  - jruby-9.0.5.0
   - rbx-2
+
+jdk: oraclejdk8
 
 matrix:
   allow_failures:
@@ -42,28 +44,22 @@ matrix:
       rvm: 2.0.0
     - gemfile: gemfiles/mysql2/5-0.gemfile
       rvm: 2.1
-    - gemfile: gemfiles/mysql2/5-0.gemfile
-      rvm: jruby-19mode
     - gemfile: gemfiles/postgresql/5-0.gemfile
       rvm: 2.0.0
     - gemfile: gemfiles/postgresql/5-0.gemfile
       rvm: 2.1
-    - gemfile: gemfiles/postgresql/5-0.gemfile
-      rvm: jruby-19mode
     - gemfile: gemfiles/sqlite3/5-0.gemfile
       rvm: 2.0.0
     - gemfile: gemfiles/sqlite3/5-0.gemfile
       rvm: 2.1
-    - gemfile: gemfiles/sqlite3/5-0.gemfile
-      rvm: jruby-19mode
   include:
     # The Future
     - gemfile: gemfiles/mysql2/master.gemfile
-      rvm: 2.3.0
+      rvm: 2.3.1
     - gemfile: gemfiles/postgresql/master.gemfile
-      rvm: 2.3.0
+      rvm: 2.3.1
     - gemfile: gemfiles/sqlite3/master.gemfile
-      rvm: 2.3.0
+      rvm: 2.3.1
 
     - rvm: ruby-head
       gemfile: gemfiles/mysql/4-2.gemfile
