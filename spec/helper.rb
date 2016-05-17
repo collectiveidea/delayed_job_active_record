@@ -22,9 +22,6 @@ require "delayed_job_active_record"
 require "delayed/backend/shared_spec"
 
 Delayed::Worker.logger = Logger.new("/tmp/dj.log")
-Delayed::Backend::ActiveRecord.configure do |config|
-  config.reserve_sql_strategy = :default_sql
-end
 
 ENV["RAILS_ENV"] = "test"
 

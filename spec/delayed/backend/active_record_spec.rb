@@ -59,10 +59,10 @@ describe Delayed::Backend::ActiveRecord::Job do
 
     context "with reserve_sql_strategy option set to :redis_sql" do
       let(:dbms) { "MySQL" }
-      let(:reserve_sql_strategy) { :redis_sql }
+      let(:reserve_sql_strategy) { :redis_sql_alt }
 
       it "uses the plain sql version" do
-        expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_redis_sql).once
+        expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_redis_sql_alt).once
         Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
       end
     end
