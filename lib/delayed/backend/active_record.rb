@@ -162,7 +162,7 @@ module Delayed
           # Use redis for locking
           the_return = nil
 
-          Delayed::Backend::ActiveRecord.configuration.class.redlock.lock("delayed_job", 1000) do |locked|
+          Delayed::Backend::ActiveRecord.configuration.class.redlock.lock("delayed_job", 10000) do |locked|
             if locked
               first_ready_job = ready_scope.first
               if first_ready_job && first_ready_job.update(locked_at: now, locked_by: worker.name)
