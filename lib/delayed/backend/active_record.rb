@@ -196,4 +196,12 @@ module Delayed
   end
 end
 
+module Delayed
+  module Backend
+    module AlternateActiveRecord
+      include Delayed::Backend::ActiveRecord
+    end
+  end
+end
+
 Delayed::Backend::ActiveRecord.configuration = Delayed::Backend::ActiveRecord::Configuration.new
