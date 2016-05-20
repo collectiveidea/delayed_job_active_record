@@ -192,6 +192,9 @@ module Delayed
           super
         end
       end
+
+      class NoNewrelicSamplerJob < Job
+      end
     end
   end
 end
