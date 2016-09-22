@@ -24,7 +24,7 @@ module Delayed
         set_delayed_job_table_name
 
         def self.ready_to_run(worker_name, max_run_time)
-          where("(run_at <= ? AND (locked_at IS NULL OR locked_at < ?) OR locked_by = ?) AND failed_at IS NULL", db_time_now, db_time_now - max_run_time, worker_name)
+          where("run_at <= ? AND (locked_at IS NULL OR locked_at < ?) AND failed_at IS NULL", db_time_now, db_time_now - max_run_time)
         end
 
         def self.before_fork
@@ -45,8 +45,13 @@ module Delayed
           ready_scope = ready_to_run(worker.name, max_run_time)
 
           # scope to filter to the single next eligible job
-          ready_scope = ready_scope.where(:queue => Worker.queues) if Worker.queues.any?
-          ready_scope = ready_scope.by_priority
+          if Delayed::Worker.queues.any?
+            if Delayed::Worker.queues.length == 1
+              ready_scope = ready_scope.where(:queue => Delayed::Worker.queues.first)
+            else
+              ready_scope = ready_scope.where(:queue => Delayed::Worker.queues)
+            end
+          end
 
           reserve_with_scope(ready_scope, worker, db_time_now)
         end
@@ -83,8 +88,7 @@ module Delayed
 
         def self.reserve_with_scope_using_default_sql(ready_scope, worker, now)
           # This is our old fashion, tried and true, but slower lookup
-          bad_sql = ready_scope.select("id").limit(worker.read_ahead).to_sql
-          joins("JOIN (#{bad_sql}) ids ON ids.id = delayed_jobs.id").readonly(false).detect do |job|
+          ready_scope.by_priority.limit(worker.read_ahead).detect do |job|
             count = ready_scope.where(:id => job.id).update_all(:locked_at => now, :locked_by => worker.name)
             count == 1 && job.reload
           end
