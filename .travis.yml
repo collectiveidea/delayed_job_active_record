@@ -11,15 +11,18 @@ gemfile:
   - gemfiles/mysql/4-1.gemfile
   - gemfiles/mysql/4-2.gemfile
   - gemfiles/mysql2/5-0.gemfile
+  - gemfiles/mysql2/5-1.gemfile
   - gemfiles/postgresql/4-0.gemfile
   - gemfiles/postgresql/4-1.gemfile
   - gemfiles/postgresql/4-2.gemfile
   - gemfiles/postgresql/5-0.gemfile
+  - gemfiles/postgresql/5-1.gemfile
   - gemfiles/sqlite3/4-0.gemfile
   - gemfiles/sqlite3/4-0-protected_attributes.gemfile
   - gemfiles/sqlite3/4-1.gemfile
   - gemfiles/sqlite3/4-2.gemfile
   - gemfiles/sqlite3/5-0.gemfile
+  - gemfiles/sqlite3/5-1.gemfile
 rvm:
   - 2.0.0
   - 2.1
@@ -44,13 +47,25 @@ matrix:
       rvm: 2.0.0
     - gemfile: gemfiles/mysql2/5-0.gemfile
       rvm: 2.1
+    - gemfile: gemfiles/mysql2/5-1.gemfile
+      rvm: 2.0.0
+    - gemfile: gemfiles/mysql2/5-1.gemfile
+      rvm: 2.1
     - gemfile: gemfiles/postgresql/5-0.gemfile
       rvm: 2.0.0
     - gemfile: gemfiles/postgresql/5-0.gemfile
       rvm: 2.1
+    - gemfile: gemfiles/postgresql/5-1.gemfile
+      rvm: 2.0.0
+    - gemfile: gemfiles/postgresql/5-1.gemfile
+      rvm: 2.1
     - gemfile: gemfiles/sqlite3/5-0.gemfile
       rvm: 2.0.0
     - gemfile: gemfiles/sqlite3/5-0.gemfile
+      rvm: 2.1
+    - gemfile: gemfiles/sqlite3/5-1.gemfile
+      rvm: 2.0.0
+    - gemfile: gemfiles/sqlite3/5-1.gemfile
       rvm: 2.1
   include:
     # The Future
