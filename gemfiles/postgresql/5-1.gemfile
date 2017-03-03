@@ -4,9 +4,7 @@ gem 'rake'
 
 group :test do
   platforms :jruby do
-    gem 'activerecord-jdbc-adapter'
-    gem 'activerecord-jdbcpostgresql-adapter'
-    gem 'jdbc-postgres'
+    gem 'activerecord-jdbcpostgresql-adapter', git: 'https://github.com/jruby/activerecord-jdbc-adapter', branch: 'rails-5'
   end
 
   platforms :ruby, :mswin, :mingw do

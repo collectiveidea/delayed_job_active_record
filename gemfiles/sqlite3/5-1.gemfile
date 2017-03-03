@@ -5,8 +5,7 @@ gem 'rake'
 group :test do
   platforms :jruby do
     gem 'jruby-openssl'
-    gem 'activerecord-jdbc-adapter'
-    gem 'activerecord-jdbcsqlite3-adapter'
+    gem 'activerecord-jdbcsqlite3-adapter', git: 'https://github.com/jruby/activerecord-jdbc-adapter', branch: 'rails-5'
   end
 
   platforms :ruby, :mswin, :mingw do
