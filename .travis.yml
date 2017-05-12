@@ -34,15 +34,14 @@ jdk: oraclejdk8
 
 matrix:
   allow_failures:
-    - rvm: jruby-19mode
     - rvm: jruby-head
     - rvm: rbx-2
     - rvm: ruby-head
     - gemfile: gemfiles/mysql2/master.gemfile
     - gemfile: gemfiles/postgresql/master.gemfile
     - gemfile: gemfiles/sqlite3/master.gemfile
-  include:
-    # The Future
+
+  include: # The Future
     - gemfile: gemfiles/mysql2/master.gemfile
       rvm: 2.4.1
     - gemfile: gemfiles/postgresql/master.gemfile
@@ -53,15 +52,15 @@ matrix:
     - rvm: ruby-head
       gemfile: gemfiles/mysql/4-2.gemfile
     - rvm: ruby-head
-      gemfile: gemfiles/mysql2/5-0.gemfile
+      gemfile: gemfiles/mysql2/5-1.gemfile
     - rvm: ruby-head
       gemfile: gemfiles/postgresql/4-2.gemfile
     - rvm: ruby-head
-      gemfile: gemfiles/postgresql/5-0.gemfile
+      gemfile: gemfiles/postgresql/5-1.gemfile
     - rvm: ruby-head
       gemfile: gemfiles/sqlite3/4-2.gemfile
     - rvm: ruby-head
-      gemfile: gemfiles/sqlite3/5-0.gemfile
+      gemfile: gemfiles/sqlite3/5-1.gemfile
 
     - rvm: jruby-head
       gemfile: gemfiles/mysql/4-2.gemfile
@@ -70,10 +69,10 @@ matrix:
     - rvm: jruby-head
       gemfile: gemfiles/postgresql/4-2.gemfile
     - rvm: jruby-head
-      gemfile: gemfiles/postgresql/5-0.gemfile
+      gemfile: gemfiles/postgresql/5-1.gemfile
     - rvm: jruby-head
       gemfile: gemfiles/sqlite3/4-2.gemfile
     - rvm: jruby-head
-      gemfile: gemfiles/sqlite3/5-0.gemfile
+      gemfile: gemfiles/sqlite3/5-1.gemfile
 
 sudo: false
