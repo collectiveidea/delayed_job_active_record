@@ -24,10 +24,9 @@ gemfile:
   - gemfiles/sqlite3/5-0.gemfile
   - gemfiles/sqlite3/5-1.gemfile
 rvm:
-  - 2.0.0
-  - 2.1
-  - 2.2.5
-  - 2.3.1
+  - 2.2.10
+  - 2.3.4
+  - 2.4.1
   - jruby-9.0.5.0
   - rbx-2
 
@@ -42,39 +41,14 @@ matrix:
     - gemfile: gemfiles/mysql2/master.gemfile
     - gemfile: gemfiles/postgresql/master.gemfile
     - gemfile: gemfiles/sqlite3/master.gemfile
-  exclude:
-    - gemfile: gemfiles/mysql2/5-0.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/mysql2/5-0.gemfile
-      rvm: 2.1
-    - gemfile: gemfiles/mysql2/5-1.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/mysql2/5-1.gemfile
-      rvm: 2.1
-    - gemfile: gemfiles/postgresql/5-0.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/postgresql/5-0.gemfile
-      rvm: 2.1
-    - gemfile: gemfiles/postgresql/5-1.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/postgresql/5-1.gemfile
-      rvm: 2.1
-    - gemfile: gemfiles/sqlite3/5-0.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/sqlite3/5-0.gemfile
-      rvm: 2.1
-    - gemfile: gemfiles/sqlite3/5-1.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/sqlite3/5-1.gemfile
-      rvm: 2.1
   include:
     # The Future
     - gemfile: gemfiles/mysql2/master.gemfile
-      rvm: 2.3.1
+      rvm: 2.4.1
     - gemfile: gemfiles/postgresql/master.gemfile
-      rvm: 2.3.1
+      rvm: 2.4.1
     - gemfile: gemfiles/sqlite3/master.gemfile
-      rvm: 2.3.1
+      rvm: 2.4.1
 
     - rvm: ruby-head
       gemfile: gemfiles/mysql/4-2.gemfile
@@ -102,25 +76,4 @@ matrix:
     - rvm: jruby-head
       gemfile: gemfiles/sqlite3/5-0.gemfile
 
-    # legacy testing
-    # things still run and we don't have a good reason to break it
-    # but we don't need to keep running the full matrix
-    - gemfile: gemfiles/mysql/3-0.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/mysql/3-1.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/mysql/3-2.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/postgresql/3-0.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/postgresql/3-1.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/postgresql/3-2.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/sqlite3/3-0.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/sqlite3/3-1.gemfile
-      rvm: 2.0.0
-    - gemfile: gemfiles/sqlite3/3-2.gemfile
-      rvm: 2.0.0
 sudo: false
