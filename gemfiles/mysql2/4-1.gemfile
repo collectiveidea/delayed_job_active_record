@@ -4,13 +4,11 @@ gem 'rake'
 
 group :test do
   platforms :jruby do
-    gem 'activerecord-jdbc-adapter'
     gem 'activerecord-jdbcmysql-adapter'
-    gem 'jdbc-mysql'
   end
 
   platforms :ruby, :mswin, :mingw do
-    gem 'mysql', '~> 2.9'
+    gem 'mysql2'
   end
 
   gem 'coveralls', :require => false

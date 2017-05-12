@@ -6,73 +6,89 @@ script: bundle exec rspec
 env:
   global:
     - JRUBY_OPTS="$JRUBY_OPTS -Xcli.debug=true --debug"
-gemfile:
-  - gemfiles/mysql/4-0.gemfile
-  - gemfiles/mysql/4-1.gemfile
+gemfile: # Supported
   - gemfiles/mysql/4-2.gemfile
   - gemfiles/mysql2/5-0.gemfile
   - gemfiles/mysql2/5-1.gemfile
-  - gemfiles/postgresql/4-0.gemfile
-  - gemfiles/postgresql/4-1.gemfile
   - gemfiles/postgresql/4-2.gemfile
   - gemfiles/postgresql/5-0.gemfile
   - gemfiles/postgresql/5-1.gemfile
-  - gemfiles/sqlite3/4-0.gemfile
-  - gemfiles/sqlite3/4-0-protected_attributes.gemfile
-  - gemfiles/sqlite3/4-1.gemfile
   - gemfiles/sqlite3/4-2.gemfile
   - gemfiles/sqlite3/5-0.gemfile
   - gemfiles/sqlite3/5-1.gemfile
-rvm:
+rvm: # Supported
   - 2.2.7
   - 2.3.4
   - 2.4.1
   - jruby-9.1.8.0
-  - rbx-2
 
 jdk: oraclejdk8
 
 matrix:
   allow_failures:
-    - rvm: jruby-head
-    - rvm: rbx-2
-    - rvm: ruby-head
-    - gemfile: gemfiles/mysql2/master.gemfile
-    - gemfile: gemfiles/postgresql/master.gemfile
-    - gemfile: gemfiles/sqlite3/master.gemfile
+    - rvm: jruby-head # Future
+    - rvm: rbx-2 # Parallel dimension
+    - rvm: ruby-head # Future
+    - gemfile: gemfiles/mysql2/4-0.gemfile # Past
+    - gemfile: gemfiles/mysql2/4-1.gemfile # Past
+    - gemfile: gemfiles/mysql2/master.gemfile # Future
+    - gemfile: gemfiles/postgresql/4-0.gemfile # Past
+    - gemfile: gemfiles/postgresql/4-1.gemfile # Past
+    - gemfile: gemfiles/postgresql/master.gemfile # Future
+    - gemfile: gemfiles/sqlite3/4-0.gemfile # Past
+    - gemfile: gemfiles/sqlite3/4-1.gemfile # Past
+    - gemfile: gemfiles/sqlite3/master.gemfile # Future
 
-  include: # The Future
+  include:
+    #
+    # The future
+    #
+    # Active Record head
     - gemfile: gemfiles/mysql2/master.gemfile
       rvm: 2.4.1
     - gemfile: gemfiles/postgresql/master.gemfile
       rvm: 2.4.1
     - gemfile: gemfiles/sqlite3/master.gemfile
       rvm: 2.4.1
-
-    - rvm: ruby-head
-      gemfile: gemfiles/mysql/4-2.gemfile
+    # MRI Ruby head
     - rvm: ruby-head
       gemfile: gemfiles/mysql2/5-1.gemfile
     - rvm: ruby-head
-      gemfile: gemfiles/postgresql/4-2.gemfile
-    - rvm: ruby-head
       gemfile: gemfiles/postgresql/5-1.gemfile
     - rvm: ruby-head
-      gemfile: gemfiles/sqlite3/4-2.gemfile
-    - rvm: ruby-head
       gemfile: gemfiles/sqlite3/5-1.gemfile
-
+    # JRuby head
     - rvm: jruby-head
-      gemfile: gemfiles/mysql/4-2.gemfile
-    - rvm: jruby-head
-      gemfile: gemfiles/mysql2/5-0.gemfile
-    - rvm: jruby-head
-      gemfile: gemfiles/postgresql/4-2.gemfile
+      gemfile: gemfiles/mysql2/5-1.gemfile
     - rvm: jruby-head
       gemfile: gemfiles/postgresql/5-1.gemfile
     - rvm: jruby-head
-      gemfile: gemfiles/sqlite3/4-2.gemfile
-    - rvm: jruby-head
       gemfile: gemfiles/sqlite3/5-1.gemfile
+    #
+    # The past
+    #
+    # EOL Active Record
+    - gemfile: gemfiles/mysql2/4-0.gemfile
+      rvm: 2.3.4
+    - gemfile: gemfiles/mysql2/4-1.gemfile
+      rvm: 2.3.4
+    - gemfile: gemfiles/postgresql/4-0.gemfile
+      rvm: 2.3.4
+    - gemfile: gemfiles/postgresql/4-1.gemfile
+      rvm: 2.3.4
+    - gemfile: gemfiles/sqlite3/4-0.gemfile
+      rvm: 2.3.4
+    - gemfile: gemfiles/sqlite3/4-1.gemfile
+      rvm: 2.3.4
+    #
+    # The parallel dimension
+    #
+    # Rubinius
+    - gemfile: gemfiles/mysql2/5-1.gemfile
+      rvm: rbx-2
+    - gemfile: gemfiles/postgresql/5-1.gemfile
+      rvm: rbx-2
+    - gemfile: gemfiles/sqlite3/5-1.gemfile
+      rvm: rbx-2
 
 sudo: false
