@@ -24,7 +24,7 @@ gemfile:
   - gemfiles/sqlite3/5-0.gemfile
   - gemfiles/sqlite3/5-1.gemfile
 rvm:
-  - 2.2.10
+  - 2.2.7
   - 2.3.4
   - 2.4.1
   - jruby
