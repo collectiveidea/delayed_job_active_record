@@ -9,6 +9,7 @@ group :test do
 
   platforms :ruby, :mswin, :mingw do
     gem 'mysql2'
+    gem 'activerecord-mysql2-adapter'
   end
 
   gem 'coveralls', :require => false
