@@ -66,31 +66,31 @@ matrix:
     #
     # EOL Active Record
     - gemfile: gemfiles/mysql2/3-0.gemfile
-      rvm: 2.3.4
+      rvm: 2.2.7
     - gemfile: gemfiles/mysql2/3-1.gemfile
-      rvm: 2.3.4
+      rvm: 2.2.7
     - gemfile: gemfiles/mysql2/3-2.gemfile
-      rvm: 2.3.4
+      rvm: 2.2.7
     - gemfile: gemfiles/mysql2/4-0.gemfile
       rvm: 2.3.4
     - gemfile: gemfiles/mysql2/4-1.gemfile
       rvm: 2.3.4
     - gemfile: gemfiles/postgresql/3-0.gemfile
-      rvm: 2.3.4
+      rvm: 2.2.7
     - gemfile: gemfiles/postgresql/3-1.gemfile
-      rvm: 2.3.4
+      rvm: 2.2.7
     - gemfile: gemfiles/postgresql/3-2.gemfile
-      rvm: 2.3.4
+      rvm: 2.2.7
     - gemfile: gemfiles/postgresql/4-0.gemfile
       rvm: 2.3.4
     - gemfile: gemfiles/postgresql/4-1.gemfile
       rvm: 2.3.4
     - gemfile: gemfiles/sqlite3/3-0.gemfile
-      rvm: 2.3.4
+      rvm: 2.2.7
     - gemfile: gemfiles/sqlite3/3-1.gemfile
-      rvm: 2.3.4
+      rvm: 2.2.7
     - gemfile: gemfiles/sqlite3/3-2.gemfile
-      rvm: 2.3.4
+      rvm: 2.2.7
     - gemfile: gemfiles/sqlite3/4-0.gemfile
       rvm: 2.3.4
     - gemfile: gemfiles/sqlite3/4-1.gemfile
