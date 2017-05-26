@@ -7,7 +7,7 @@ env:
   global:
     - JRUBY_OPTS="$JRUBY_OPTS -Xcli.debug=true --debug"
 gemfile: # Supported
-  - gemfiles/mysql/4-2.gemfile
+  - gemfiles/mysql2/4-2.gemfile
   - gemfiles/mysql2/5-0.gemfile
   - gemfiles/mysql2/5-1.gemfile
   - gemfiles/postgresql/4-2.gemfile
