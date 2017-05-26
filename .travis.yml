@@ -32,23 +32,8 @@ matrix:
     - rvm: jruby-head # Future
     - rvm: rbx-2 # Parallel dimension
     - rvm: ruby-head # Future
-    - gemfile: gemfiles/mysql2/3-0.gemfile # Past
-    - gemfile: gemfiles/mysql2/3-1.gemfile # Past
-    - gemfile: gemfiles/mysql2/3-2.gemfile # Past
-    - gemfile: gemfiles/mysql2/4-0.gemfile # Past
-    - gemfile: gemfiles/mysql2/4-1.gemfile # Past
     - gemfile: gemfiles/mysql2/master.gemfile # Future
-    - gemfile: gemfiles/postgresql/3-0.gemfile # Past
-    - gemfile: gemfiles/postgresql/3-1.gemfile # Past
-    - gemfile: gemfiles/postgresql/3-2.gemfile # Past
-    - gemfile: gemfiles/postgresql/4-0.gemfile # Past
-    - gemfile: gemfiles/postgresql/4-1.gemfile # Past
     - gemfile: gemfiles/postgresql/master.gemfile # Future
-    - gemfile: gemfiles/sqlite3/3-0.gemfile # Past
-    - gemfile: gemfiles/sqlite3/3-1.gemfile # Past
-    - gemfile: gemfiles/sqlite3/3-2.gemfile # Past
-    - gemfile: gemfiles/sqlite3/4-0.gemfile # Past
-    - gemfile: gemfiles/sqlite3/4-1.gemfile # Past
     - gemfile: gemfiles/sqlite3/master.gemfile # Future
 
   include:
