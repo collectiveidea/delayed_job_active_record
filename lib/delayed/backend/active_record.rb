@@ -112,14 +112,13 @@ module Delayed
             return nil if count == 0
             where(locked_at: now, locked_by: worker.name, failed_at: nil).first
           when "MSSQL", "Teradata"
-            # The MSSQL driver doesn't generate a limit clause when update_all
-            # is called directly
-            subsubquery_sql = ready_scope.limit(1).to_sql
-            # select("id") doesn't generate a subquery, so force a subquery
-            subquery_sql = "SELECT id FROM (#{subsubquery_sql}) AS x"
-            quoted_table_name = connection.quote_table_name(table_name)
-            sql = ["UPDATE #{quoted_table_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery_sql})", now, worker.name]
-            count = connection.execute(sanitize_sql(sql))
+            count = 0
+            ids = ready_scope.limit(worker.read_ahead).pluck(:id)
+            if ids.present?
+              quoted_table_name = connection.quote_table_name(table_name)
+              sql = ["UPDATE #{quoted_table_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{ids.join(',')})", now, worker.name]
+              count = connection.execute(sanitize_sql(sql))
+            end
             return nil if count == 0
             # MSSQL JDBC doesn't support OUTPUT INSERTED.* for returning a result set, so query locked row
             where(locked_at: now, locked_by: worker.name, failed_at: nil).first
