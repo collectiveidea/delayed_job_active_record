@@ -23,10 +23,10 @@ describe Delayed::Backend::ActiveRecord::Job do
   end
 
   describe "reserve_with_scope" do
-    let(:worker) { double(name: "worker01", read_ahead: 1) }
-    let(:scope)  { double(limit: limit, where: double(update_all: nil)) }
-    let(:limit)  { double(job: job, update_all: nil) }
-    let(:job)    { double(id: 1) }
+    let(:worker) { double("Worker", name: "worker01", read_ahead: 1) }
+    let(:scope)  { double("Scope", limit: limit)  }
+    let(:limit)  { double("Limit", job: job, lock: []) }
+    let(:job)    { double("Job", id: 1) }
 
     before do
       allow(Delayed::Backend::ActiveRecord::Job.connection).to receive(:adapter_name).at_least(:once).and_return(dbms)
@@ -63,6 +63,20 @@ describe Delayed::Backend::ActiveRecord::Job do
         expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_default_sql).once
         Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
       end
+    end
+  end
+
+  describe "reserve_with_scope_using_optimized_sql" do
+    let(:worker)    { double("Worker", name: "worker01", read_ahead: 1) }
+    let(:scope)     { double("Scope", limit: relation)  }
+    let(:record)    { double("Record", update_attributes: true) }
+    let(:relation)  { double("ActiveRecord::Relation", job: job, lock: double("ActiveRecord::Relation", first: record)) }
+    let(:job)       { double("Job", id: 1) }
+    let(:dbms)      { "MySQL" }
+
+    it 'calls SELECT then UPDATE to take advantage of indexes' do
+      expect(record).to receive(:update_attributes)
+      Delayed::Backend::ActiveRecord::Job.reserve_with_scope_using_optimized_sql(scope, worker, Time.now)
     end
   end
 
