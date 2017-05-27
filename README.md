@@ -5,11 +5,11 @@ you're reading the documentation for the master branch.
 
 # DelayedJob ActiveRecord Backend
 
-[![Gem Version](https://badge.fury.io/rb/delayed_job_active_record.png)](https://rubygems.org/gems/delayed_job_active_record)
-[![Build Status](https://travis-ci.org/collectiveidea/delayed_job_active_record.png)](https://travis-ci.org/collectiveidea/delayed_job_active_record)
-[![Dependency Status](https://gemnasium.com/collectiveidea/delayed_job_active_record.png)](https://gemnasium.com/collectiveidea/delayed_job_active_record)
-[![Code Climate](https://codeclimate.com/github/collectiveidea/delayed_job_active_record.png)](https://codeclimate.com/github/collectiveidea/delayed_job_active_record)
-[![Coverage Status](https://coveralls.io/repos/collectiveidea/delayed_job_active_record/badge.png?branch=master)](https://coveralls.io/r/collectiveidea/delayed_job_active_record)
+[![Gem Version](https://img.shields.io/gem/v/delayed_job_active_record.svg)](https://rubygems.org/gems/delayed_job_active_record)
+[![Build Status](https://img.shields.io/travis/collectiveidea/delayed_job_active_record.svg)](https://travis-ci.org/collectiveidea/delayed_job_active_record)
+[![Dependency Status](https://img.shields.io/gemnasium/collectiveidea/delayed_job_active_record.svg)](https://gemnasium.com/collectiveidea/delayed_job_active_record)
+[![Code Climate](https://img.shields.io/codeclimate/github/collectiveidea/delayed_job_active_record.svg)](https://codeclimate.com/github/collectiveidea/delayed_job_active_record)
+[![Coverage Status](https://img.shields.io/coveralls/collectiveidea/delayed_job_active_record.svg)](https://coveralls.io/r/collectiveidea/delayed_job_active_record)
 
 ## Installation
 
