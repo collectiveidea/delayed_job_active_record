@@ -33,7 +33,7 @@ module Delayed
                           :failed_at, :locked_at, :locked_by, :handler
         end
 
-        scope :by_priority, lambda { order("priority ASC, run_at ASC") }
+        scope :by_priority, lambda { order("priority ASC, run_at ASC, id ASC") }
 
         before_save :set_default_run_at
 
