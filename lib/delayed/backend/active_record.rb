@@ -145,10 +145,11 @@ module Delayed
           now = now.change(usec: 0)
           # This works on MySQL and possibly some other DBs that support
           # UPDATE...LIMIT. It uses separate queries to lock and return the job
-          count = ready_scope.limit(1).update_all(locked_at: now, locked_by: worker.name)
+          sets = "locked_at = :now, locked_by = :name, id = (SELECT @dj_update_id := id)"
+          count = ready_scope.limit(1).update_all([sets, now: now, name: worker.name])
           return nil if count == 0
 
-          where(locked_at: now, locked_by: worker.name, failed_at: nil).first
+          find_by("id = @dj_update_id")
         end
 
         def self.reserve_with_scope_using_optimized_mssql(ready_scope, worker, now)
