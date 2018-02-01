@@ -4,11 +4,9 @@ gem "rake"
 
 group :test do
   platforms :jruby do
-    gem "activerecord-jdbcmysql-adapter", git: "https://github.com/jruby/activerecord-jdbc-adapter", branch: "rails-5"
-
-    gem "activerecord-jdbcpostgresql-adapter", git: "https://github.com/jruby/activerecord-jdbc-adapter", branch: "rails-5"
-
-    gem "activerecord-jdbcsqlite3-adapter", git: "https://github.com/jruby/activerecord-jdbc-adapter", branch: "rails-5"
+    gem "activerecord-jdbcmysql-adapter"
+    gem "activerecord-jdbcpostgresql-adapter"
+    gem "activerecord-jdbcsqlite3-adapter"
   end
 
   platforms :ruby, :mswin, :mingw do
