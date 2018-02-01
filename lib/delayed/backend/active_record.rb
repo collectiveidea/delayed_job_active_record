@@ -38,7 +38,7 @@ module Delayed
                           :failed_at, :locked_at, :locked_by, :handler
         end
 
-        scope :by_priority, lambda { order("priority ASC, run_at ASC") }
+        scope :by_priority, lambda { order(:priority, :run_at) }
         scope :min_priority, lambda { where("priority >= ?", Worker.min_priority) if Worker.min_priority }
         scope :max_priority, lambda { where("priority <= ?", Worker.max_priority) if Worker.max_priority }
         scope :for_queues, lambda { |queues = Worker.queues| where(queue: queues) if Array(queues).any? }
@@ -52,11 +52,14 @@ module Delayed
 
         set_delayed_job_table_name
 
-        def self.ready_to_run(worker_name, max_run_time)
-          where(
-            "failed_at IS NULL AND run_at <= :now AND (locked_at IS NULL OR locked_at < :timeout OR locked_by = :name)",
-            now: db_time_now, timeout: db_time_now - max_run_time, name: worker_name
-          )
+        def self.ready_to_run(worker_name, max_run_time) # rubocop:disable Metrics/AbcSize
+          not_failed = arel_table[:failed_at].eq(nil)
+          time_to_run = arel_table[:run_at].lteq(db_time_now)
+          not_locked = arel_table[:locked_at].eq(nil)
+          lock_expired = arel_table[:locked_at].lt(db_time_now - max_run_time)
+          locked_by_me = arel_table[:locked_by].eq(worker_name)
+
+          where(not_failed.and(time_to_run).and(not_locked.or(lock_expired).or(locked_by_me)))
         end
 
         def self.before_fork
@@ -127,10 +130,10 @@ module Delayed
           # Note: active_record would attempt to generate UPDATE...LIMIT like
           # SQL for Postgres if we use a .limit() filter, but it would not
           # use 'FOR UPDATE' and we would have many locking conflicts
-          quoted_name = connection.quote_table_name(table_name)
-          subquery    = ready_scope.limit(1).lock(true).select("id").to_sql
-          sql         = "UPDATE #{quoted_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery}) RETURNING *"
-          reserved    = find_by_sql([sql, now, worker.name])
+          quoted_name = Delayed::Job.arel_table.alias(:dj).to_sql
+          subquery = ready_scope.limit(1).lock(true).select(:id).to_sql
+          sql = "UPDATE #{quoted_name} SET locked_at = ?, locked_by = ? WHERE dj.id IN (#{subquery}) RETURNING dj.*"
+          reserved = find_by_sql([sql, now, worker.name])
           reserved[0]
         end
 
