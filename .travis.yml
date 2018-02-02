@@ -47,6 +47,13 @@ matrix:
     #
     # The future
     #
+    # MRI 2.5.0
+    - rvm: 2.5.0
+      gemfile: gemfiles/mysql2/5-1.gemfile
+    - rvm: 2.5.0
+      gemfile: gemfiles/postgresql/5-1.gemfile
+    - rvm: 2.5.0
+      gemfile: gemfiles/sqlite3/5-1.gemfile
     # Active Record head
     - gemfile: gemfiles/mysql2/master.gemfile
       rvm: 2.4.3
