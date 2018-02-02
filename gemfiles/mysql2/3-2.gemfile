@@ -3,14 +3,8 @@ source 'https://rubygems.org'
 gem 'rake'
 
 group :test do
-  platforms :jruby do
-    gem 'activerecord-jdbcmysql-adapter', '< 50.0'
-  end
-
-  platforms :ruby, :mswin, :mingw do
-    gem 'mysql2', '~> 0.3.10'
-    gem 'activerecord-mysql2-adapter'
-  end
+  gem 'mysql2', '~> 0.3.10'
+  gem 'activerecord-mysql2-adapter'
 
   gem 'coveralls', :require => false
   gem 'rspec', '>= 2.11'
