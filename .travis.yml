@@ -20,9 +20,9 @@ gemfile: # Supported
   - gemfiles/sqlite3/5-0.gemfile
   - gemfiles/sqlite3/5-1.gemfile
 rvm: # Supported
-  - 2.2.7
-  - 2.3.4
-  - 2.4.1
+  - 2.2.9
+  - 2.3.6
+  - 2.4.3
   - jruby-9.1.8.0
 
 jdk: oraclejdk8
@@ -49,11 +49,11 @@ matrix:
     #
     # Active Record head
     - gemfile: gemfiles/mysql2/master.gemfile
-      rvm: 2.4.1
+      rvm: 2.4.3
     - gemfile: gemfiles/postgresql/master.gemfile
-      rvm: 2.4.1
+      rvm: 2.4.3
     - gemfile: gemfiles/sqlite3/master.gemfile
-      rvm: 2.4.1
+      rvm: 2.4.3
     # MRI Ruby head
     - rvm: ruby-head
       gemfile: gemfiles/mysql2/5-1.gemfile
@@ -73,35 +73,35 @@ matrix:
     #
     # EOL Active Record
     - gemfile: gemfiles/mysql2/3-0.gemfile
-      rvm: 2.2.7
+      rvm: 2.2.9
     - gemfile: gemfiles/mysql2/3-1.gemfile
-      rvm: 2.2.7
+      rvm: 2.2.9
     - gemfile: gemfiles/mysql2/3-2.gemfile
-      rvm: 2.2.7
+      rvm: 2.2.9
     - gemfile: gemfiles/mysql2/4-0.gemfile
-      rvm: 2.3.4
+      rvm: 2.3.6
     - gemfile: gemfiles/mysql2/4-1.gemfile
-      rvm: 2.3.4
+      rvm: 2.3.6
     - gemfile: gemfiles/postgresql/3-0.gemfile
-      rvm: 2.2.7
+      rvm: 2.2.9
     - gemfile: gemfiles/postgresql/3-1.gemfile
-      rvm: 2.2.7
+      rvm: 2.2.9
     - gemfile: gemfiles/postgresql/3-2.gemfile
-      rvm: 2.2.7
+      rvm: 2.2.9
     - gemfile: gemfiles/postgresql/4-0.gemfile
-      rvm: 2.3.4
+      rvm: 2.3.6
     - gemfile: gemfiles/postgresql/4-1.gemfile
-      rvm: 2.3.4
+      rvm: 2.3.6
     - gemfile: gemfiles/sqlite3/3-0.gemfile
-      rvm: 2.2.7
+      rvm: 2.2.9
     - gemfile: gemfiles/sqlite3/3-1.gemfile
-      rvm: 2.2.7
+      rvm: 2.2.9
     - gemfile: gemfiles/sqlite3/3-2.gemfile
-      rvm: 2.2.7
+      rvm: 2.2.9
     - gemfile: gemfiles/sqlite3/4-0.gemfile
-      rvm: 2.3.4
+      rvm: 2.3.6
     - gemfile: gemfiles/sqlite3/4-1.gemfile
-      rvm: 2.3.4
+      rvm: 2.3.6
     #
     # The parallel dimension
     #
