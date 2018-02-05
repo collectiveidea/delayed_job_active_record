@@ -3,13 +3,7 @@ source 'https://rubygems.org'
 gem 'rake'
 
 group :test do
-  platforms :jruby do
-    gem 'activerecord-jdbcpostgresql-adapter'
-  end
-
-  platforms :ruby, :mswin, :mingw do
-    gem 'pg'
-  end
+  gem 'pg', "~> 0.18"
 
   gem 'coveralls', :require => false
   gem 'rspec', '>= 2.11'

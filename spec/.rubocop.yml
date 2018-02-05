@@ -1,0 +1,14 @@
+inherit_from:
+  - ../.rubocop.yml
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/FilePath:
+  Enabled: false
