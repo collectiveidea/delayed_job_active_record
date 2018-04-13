@@ -1,21 +1,21 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gem 'rake'
+gem "rake"
 
 group :test do
   platforms :jruby do
-    gem 'activerecord-jdbcmysql-adapter', '< 50.0'
+    gem "activerecord-jdbcmysql-adapter", "< 50.0"
   end
 
   platforms :ruby, :mswin, :mingw do
-    gem 'mysql2', '>= 0.3.13', '< 0.5'
+    gem "mysql2", ">= 0.3.13", "< 0.5"
   end
 
-  gem 'coveralls', :require => false
-  gem 'rspec', '>= 2.11'
-  gem 'simplecov', :require => false
+  gem "coveralls", require: false
+  gem "rspec", ">= 2.11"
+  gem "simplecov", require: false
 
-  gem 'activerecord', "~> 4.2.0"
+  gem "activerecord", "~> 4.2.0"
 end
 
-gemspec :path => "../../"
+gemspec path: "../../"

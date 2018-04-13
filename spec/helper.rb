@@ -31,7 +31,7 @@ gemfile = ENV["BUNDLE_GEMFILE"]
 db_adapter ||= gemfile && gemfile[%r{gemfiles/(.*?)/}] && $1 # rubocop:disable PerlBackrefs
 db_adapter ||= "sqlite3"
 
-config = YAML.safe_load(File.read("spec/database.yml"))
+config = YAML.load(File.read("spec/database.yml"))
 ActiveRecord::Base.establish_connection config[db_adapter]
 ActiveRecord::Base.logger = Delayed::Worker.logger
 ActiveRecord::Migration.verbose = false
@@ -75,8 +75,8 @@ class Story < ActiveRecord::Base
     text
   end
 
-  def whatever(n, _)
-    tell * n
+  def whatever(number)
+    tell * number
   end
   default_scope { where(scoped: true) }
 
