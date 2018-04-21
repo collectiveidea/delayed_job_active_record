@@ -36,7 +36,7 @@ ActiveRecord::Base.establish_connection config[db_adapter]
 ActiveRecord::Base.logger = Delayed::Worker.logger
 ActiveRecord::Migration.verbose = false
 
-migration_template = File.open("lib/generators/delayed_job/templates/migration.rb")
+migration_template = File.open("lib/generators/delayed_job/templates/migration.rb.erb")
 
 # need to eval the template with the migration_version intact
 migration_context =

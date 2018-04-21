@@ -8,7 +8,7 @@ module DelayedJob
   class UpgradeGenerator < ActiveRecordGenerator
     def create_migration_file
       migration_template(
-        "upgrade_migration.rb",
+        "upgrade_migration.rb.erb",
         "db/migrate/add_queue_to_delayed_jobs.rb",
         migration_version: migration_version
       )
