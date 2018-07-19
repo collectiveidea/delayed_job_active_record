@@ -156,4 +156,19 @@ describe Delayed::Backend::ActiveRecord::Job do
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
     end
   end
+
+  # NOTE: other scopes aren't explicitly tested
+  # testing should happen in delayed_job - lib/delayed/backend/shared_spec.rb
+  describe ".for_current_version" do
+    let(:valid_attributes) { { priority: 1, attempts: 1, handler: "--" } }
+
+    it "returns items scoped to the version in Delayed::Backend::ActiveRecord.configuration" do
+      Delayed::Backend::ActiveRecord.configuration.version = "123"
+      job = Delayed::Backend::ActiveRecord::Job.create! valid_attributes.merge(version: "other")
+      expect(Delayed::Backend::ActiveRecord::Job.for_current_version).not_to include(job)
+
+      job.update_attributes! version: "123"
+      expect(Delayed::Backend::ActiveRecord::Job.for_current_version).to include(job)
+    end
+  end
 end
