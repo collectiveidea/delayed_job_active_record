@@ -4,9 +4,11 @@ module Delayed
     module ActiveRecord
       class Configuration
         attr_reader :reserve_sql_strategy
+        attr_accessor :version
 
         def initialize
           self.reserve_sql_strategy = :optimized_sql
+          self.version = nil
         end
 
         def reserve_sql_strategy=(val)
