@@ -32,7 +32,8 @@ module Delayed
 
         if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
           attr_accessible :priority, :run_at, :queue, :payload_object,
-                          :failed_at, :locked_at, :locked_by, :handler
+                          :failed_at, :locked_at, :locked_by, :handler,
+                          :version
         end
 
         scope :by_priority, lambda { order("priority ASC, run_at ASC") }
