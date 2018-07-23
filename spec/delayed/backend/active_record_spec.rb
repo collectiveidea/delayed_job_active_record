@@ -21,11 +21,6 @@ describe Delayed::Backend::ActiveRecord::Job do
       it "raises an argument error on invalid entry" do
         expect { configuration.reserve_sql_strategy = :invald }.to raise_error(ArgumentError)
       end
-
-      it "allows :version" do
-        configuration.version = "123"
-        expect(configuration.version).to eq("123")
-      end
     end
   end
 
@@ -162,8 +157,8 @@ describe Delayed::Backend::ActiveRecord::Job do
   describe ".for_current_version" do
     let(:valid_attributes) { { priority: 1, attempts: 1, handler: "--" } }
 
-    it "returns items scoped to the version in Delayed::Backend::ActiveRecord.configuration" do
-      Delayed::Backend::ActiveRecord.configuration.version = "123"
+    it "returns items scoped to Delayed::Worker.current_version" do
+      Delayed::Worker.current_version = "123"
       job = Delayed::Backend::ActiveRecord::Job.create! valid_attributes.merge(version: "other")
       expect(Delayed::Backend::ActiveRecord::Job.for_current_version).not_to include(job)
 

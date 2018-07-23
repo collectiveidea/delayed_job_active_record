@@ -4,11 +4,9 @@ module Delayed
     module ActiveRecord
       class Configuration
         attr_reader :reserve_sql_strategy
-        attr_accessor :version
 
         def initialize
           self.reserve_sql_strategy = :optimized_sql
-          self.version = nil
         end
 
         def reserve_sql_strategy=(val)
@@ -42,7 +40,7 @@ module Delayed
         scope :min_priority, lambda { where("priority >= ?", Worker.min_priority) if Worker.min_priority }
         scope :max_priority, lambda { where("priority <= ?", Worker.max_priority) if Worker.max_priority }
         scope :for_queues, lambda { |queues = Worker.queues| where(queue: queues) if Array(queues).any? }
-        scope :for_current_version, lambda { where(version: Delayed::Backend::ActiveRecord.configuration.version) }
+        scope :for_current_version, lambda { where(version: Worker.current_version) }
 
         before_save :set_default_run_at
 
