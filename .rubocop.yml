@@ -93,9 +93,6 @@ Style/Semicolon:
 Style/SingleLineBlockParams:
   Enabled: false
 
-Style/TrailingCommaInLiteral:
-  Enabled: false
-
 Style/WordArray:
   Enabled: false
 
