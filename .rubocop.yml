@@ -149,3 +149,8 @@ Style/FormatStringToken:
 
 Style/NumericPredicate:
   Enabled: false
+
+Naming/FileName:
+  Enabled: true
+  Exclude:
+    - gemfiles/**/*
