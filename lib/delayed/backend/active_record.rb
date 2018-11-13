@@ -58,6 +58,10 @@ module Delayed
           )
         end
 
+        def self.recover_from(_error)
+          ::ActiveRecord::Base.connection.verify!
+        end
+
         def self.before_fork
           ::ActiveRecord::Base.clear_all_connections!
         end
