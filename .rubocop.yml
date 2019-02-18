@@ -77,6 +77,9 @@ Style/FormatString:
 Style/Lambda:
   Enabled: false
 
+Style/MultipleComparison:
+  Enabled: false
+
 Style/NegatedIf:
   Enabled: false
 
