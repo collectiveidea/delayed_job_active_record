@@ -1,4 +1,8 @@
 language: ruby
+services:
+  - postgresql
+addons:
+  postgresql: '9.6'
 branches:
   only:
     - master
