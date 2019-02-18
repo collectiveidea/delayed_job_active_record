@@ -5,6 +5,8 @@ branches:
 services:
   - mysql
   - postgresql
+addons:
+  postgresql: '9.6'
 before_script:
   - mysql -e 'create database delayed_job_test;'
   - mysql --version
