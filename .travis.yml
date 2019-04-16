@@ -22,10 +22,9 @@ gemfile: # Supported
   - gemfiles/sqlite3/5-1.gemfile
   - gemfiles/sqlite3/5-2.gemfile
 rvm: # Supported
-  - 2.3.8
-  - 2.4.5
-  - 2.5.3
-  - 2.6.1
+  - 2.4.6
+  - 2.5.5
+  - 2.6.2
   - jruby-9.1.8.0
 
 jdk: oraclejdk8
@@ -64,17 +63,17 @@ matrix:
     # The future
     #
     # Active Record head
-    - rvm: 2.5.3
+    - rvm: 2.5.5
       gemfile: gemfiles/mysql2/master.gemfile
-    - rvm: 2.5.3
+    - rvm: 2.5.5
       gemfile: gemfiles/postgresql/master.gemfile
-    - rvm: 2.5.3
+    - rvm: 2.5.5
       gemfile: gemfiles/sqlite3/master.gemfile
-    - rvm: 2.6.1
+    - rvm: 2.6.2
       gemfile: gemfiles/mysql2/master.gemfile
-    - rvm: 2.6.1
+    - rvm: 2.6.2
       gemfile: gemfiles/postgresql/master.gemfile
-    - rvm: 2.6.1
+    - rvm: 2.6.2
       gemfile: gemfiles/sqlite3/master.gemfile
     # MRI Ruby head
     - rvm: ruby-head
