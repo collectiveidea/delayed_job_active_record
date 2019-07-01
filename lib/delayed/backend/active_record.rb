@@ -13,6 +13,7 @@ module Delayed
           if !(val == :optimized_sql || val == :default_sql)
             raise ArgumentError, "allowed values are :optimized_sql or :default_sql"
           end
+
           @reserve_sql_strategy = val
         end
       end
@@ -147,6 +148,7 @@ module Delayed
           # UPDATE...LIMIT. It uses separate queries to lock and return the job
           count = ready_scope.limit(1).update_all(locked_at: now, locked_by: worker.name)
           return nil if count == 0
+
           where(locked_at: now, locked_by: worker.name, failed_at: nil).first
         end
 
@@ -160,6 +162,7 @@ module Delayed
           sql = "UPDATE #{quoted_table_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery_sql})"
           count = connection.execute(sanitize_sql([sql, now, worker.name]))
           return nil if count == 0
+
           # MSSQL JDBC doesn't support OUTPUT INSERTED.* for returning a result set, so query locked row
           where(locked_at: now, locked_by: worker.name, failed_at: nil).first
         end

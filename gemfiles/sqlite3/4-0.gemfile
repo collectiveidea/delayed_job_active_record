@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gem "rake"
 
 group :test do
-  gem "sqlite3"
+  gem "sqlite3", "< 1.4"
 
   gem "coveralls", require: false
   gem "rspec", ">= 2.11"
