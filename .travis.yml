@@ -7,6 +7,9 @@ before_script:
   - mysql --version
   - psql -c 'create database delayed_job_test;' -U postgres
 script: bundle exec $COMMAND
+services:
+  - mysql
+  - postgresql
 env:
   global:
     - JRUBY_OPTS="$JRUBY_OPTS -Xcli.debug=true --debug"
