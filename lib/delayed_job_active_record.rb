@@ -2,7 +2,7 @@
 
 require "delayed_job"
 
-if defined?(Rails)
+if defined?(Rails::Railtie)
   require "delayed/backend/active_record/railtie"
 else
   require "active_record"
