@@ -36,6 +36,17 @@ ActiveRecord::Base.establish_connection config[db_adapter]
 ActiveRecord::Base.logger = Delayed::Worker.logger
 ActiveRecord::Migration.verbose = false
 
+# MySQL 5.7 no longer supports null default values for the primary key
+# Override the default primary key type in Rails <= 4.0
+# https://stackoverflow.com/a/34555109
+if db_adapter == "mysql2" &&
+   (::ActiveRecord::VERSION::MAJOR == 3 ||
+   (::ActiveRecord::VERSION::MAJOR == 4 && ActiveRecord::VERSION::MINOR == 0))
+  class ActiveRecord::ConnectionAdapters::Mysql2Adapter
+    NATIVE_DATABASE_TYPES[:primary_key] = "int(11) auto_increment PRIMARY KEY"
+  end
+end
+
 migration_template = File.open("lib/generators/delayed_job/templates/migration.rb")
 
 # need to eval the template with the migration_version intact
