@@ -2,6 +2,7 @@ mysql:
   adapter: mysql
   database: delayed_job_test
   username: root
+  password: password
   encoding: utf8
 
 mysql2:

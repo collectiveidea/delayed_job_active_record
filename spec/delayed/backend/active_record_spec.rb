@@ -71,6 +71,35 @@ describe Delayed::Backend::ActiveRecord::Job do
         expect(Delayed::Backend::ActiveRecord::Job).to have_received(:reserve_with_scope_using_default_sql).once
       end
     end
+
+    context "with reserve_sql_strategy option set to :racerpeter_sql" do
+      let(:dbms) { "MySQL" }
+      let(:reserve_sql_strategy) { :racerpeter_sql }
+
+      it "uses the racerpeter sql version" do
+        expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_racerpeter_sql).once
+        Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+      end
+    end
+
+    context "with reserve_sql_strategy option set to :redis_sql" do
+      let(:dbms) { "MySQL" }
+      let(:reserve_sql_strategy) { :redis_sql_alt }
+
+      it "uses the plain sql version" do
+        expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_redis_sql_alt).once
+        Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+      end
+    end
+
+    context "with reserve_with_scope option set to a invalid value" do
+      let(:dbms) { "MySQL" }
+      let(:reserve_sql_strategy) { :invalid }
+
+      it "raises an error" do
+        expect { Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now) }.to raise_error "Invalid value for 'reserve_sql_strategy' configuration option"
+      end
+    end
   end
 
   context "db_time_now" do
