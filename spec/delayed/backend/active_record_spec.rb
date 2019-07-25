@@ -18,8 +18,18 @@ describe Delayed::Backend::ActiveRecord::Job do
         expect(configuration.reserve_sql_strategy).to eq(:default_sql)
       end
 
+      it "allows :racerpeter_sql" do
+        configuration.reserve_sql_strategy = :racerpeter_sql
+        expect(configuration.reserve_sql_strategy).to eq(:racerpeter_sql)
+      end
+
+      it "allows :redis_sql_alt" do
+        configuration.reserve_sql_strategy = :redis_sql_alt
+        expect(configuration.reserve_sql_strategy).to eq(:redis_sql_alt)
+      end
+
       it "raises an argument error on invalid entry" do
-        expect { configuration.reserve_sql_strategy = :invald }.to raise_error(ArgumentError)
+        expect { configuration.reserve_sql_strategy = :invalid }.to raise_error(ArgumentError)
       end
     end
   end
@@ -31,6 +41,7 @@ describe Delayed::Backend::ActiveRecord::Job do
     let(:where) { instance_double(relation_class, update_all: 0) }
     let(:scope) { instance_double(relation_class, limit: limit, where: where) }
     let(:job) { instance_double(Delayed::Job, id: 1) }
+    let(:reserve_sql_strategy) { :optimized_sql }
 
     before do
       allow(Delayed::Backend::ActiveRecord::Job.connection).to receive(:adapter_name).at_least(:once).and_return(dbms)
@@ -77,8 +88,9 @@ describe Delayed::Backend::ActiveRecord::Job do
       let(:reserve_sql_strategy) { :racerpeter_sql }
 
       it "uses the racerpeter sql version" do
-        expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_racerpeter_sql).once
-        Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+        allow(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_racerpeter_sql)
+        Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.current)
+        expect(Delayed::Backend::ActiveRecord::Job).to have_received(:reserve_with_scope_using_racerpeter_sql).once
       end
     end
 
@@ -87,17 +99,21 @@ describe Delayed::Backend::ActiveRecord::Job do
       let(:reserve_sql_strategy) { :redis_sql_alt }
 
       it "uses the plain sql version" do
-        expect(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_redis_sql_alt).once
-        Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+        allow(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_redis_sql_alt)
+        Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.current)
+        expect(Delayed::Backend::ActiveRecord::Job).to have_received(:reserve_with_scope_using_redis_sql_alt).once
       end
     end
 
     context "with reserve_with_scope option set to a invalid value" do
       let(:dbms) { "MySQL" }
-      let(:reserve_sql_strategy) { :invalid }
+      let(:invalid_reserve_sql_strategy) { :invalid }
 
       it "raises an error" do
-        expect { Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now) }.to raise_error "Invalid value for 'reserve_sql_strategy' configuration option"
+        expect {
+          Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy = invalid_reserve_sql_strategy
+          Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
+        }.to raise_error(ArgumentError)
       end
     end
   end

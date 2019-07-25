@@ -5,7 +5,7 @@ module Delayed
   module Backend
     module ActiveRecord
       class Configuration
-        attr_accessor :reserve_sql_strategy
+        attr_reader :reserve_sql_strategy
         cattr_accessor :redlock_instance
 
         def initialize
@@ -13,8 +13,8 @@ module Delayed
         end
 
         def reserve_sql_strategy=(val)
-          if !(val == :optimized_sql || val == :default_sql)
-            raise ArgumentError, "allowed values are :optimized_sql or :default_sql"
+          if !(val == :optimized_sql || val == :default_sql || val == :racerpeter_sql || val == :redis_sql_alt)
+            raise ArgumentError, "allowed values are :optimized_sql, :default_sql, :racerpeter_sql, or :redis_sql_alt"
           end
           @reserve_sql_strategy = val
         end
