@@ -20,6 +20,7 @@ group :test do
   gem "coveralls", require: false
   gem "rspec", ">= 3"
   gem "rubocop"
+  gem "rubocop-rails"
   gem "rubocop-rspec"
   gem "simplecov", require: false
 end
