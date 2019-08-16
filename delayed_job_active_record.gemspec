@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Gem::Specification.new do |spec|
   spec.add_dependency "activerecord", [">= 3.0", "< 5.3"]
   spec.add_dependency "delayed_job",  [">= 3.0", "< 5"]

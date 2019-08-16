@@ -1,5 +1,6 @@
-# Load the rubocop-rspec gem
-require: rubocop-rspec
+require:
+  - rubocop-rails
+  - rubocop-rspec
 
 Rails:
   Enabled: true
