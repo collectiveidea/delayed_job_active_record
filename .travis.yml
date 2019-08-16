@@ -99,17 +99,11 @@ matrix:
     # EOL Active Record
     # Rails 3.2 was maintained longer and is ruby 2.2 compatible
     - rvm: 2.2.10
-      gemfile: gemfiles/mysql2/3-2.gemfile
-    - rvm: 2.2.10
       gemfile: gemfiles/postgresql/3-2.gemfile
     - rvm: 2.2.10
       gemfile: gemfiles/sqlite3/3-2.gemfile
     # Rails <= 4.0 was only compatible with ruby 2.0
     # The test were running, but there are known incompatibilites
-    - rvm: 2.0.0-p648
-      gemfile: gemfiles/mysql2/3-0.gemfile
-    - rvm: 2.0.0-p648
-      gemfile: gemfiles/mysql2/3-1.gemfile
     - rvm: 2.0.0-p648
       gemfile: gemfiles/postgresql/3-0.gemfile
     - rvm: 2.0.0-p648
@@ -118,8 +112,6 @@ matrix:
       gemfile: gemfiles/sqlite3/3-0.gemfile
     - rvm: 2.0.0-p648
       gemfile: gemfiles/sqlite3/3-1.gemfile
-    - rvm: 2.0.0-p648
-      gemfile: gemfiles/mysql2/4-0.gemfile
     - rvm: 2.0.0-p648
       gemfile: gemfiles/postgresql/4-0.gemfile
     - rvm: 2.0.0-p648
