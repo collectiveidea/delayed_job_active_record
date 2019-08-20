@@ -20,12 +20,15 @@ gemfile: # Supported
   - gemfiles/mysql2/4-2.gemfile
   - gemfiles/mysql2/5-1.gemfile
   - gemfiles/mysql2/5-2.gemfile
+  - gemfiles/mysql2/6-0.gemfile
   - gemfiles/postgresql/4-2.gemfile
   - gemfiles/postgresql/5-1.gemfile
   - gemfiles/postgresql/5-2.gemfile
+  - gemfiles/postgresql/6-0.gemfile
   - gemfiles/sqlite3/4-2.gemfile
   - gemfiles/sqlite3/5-1.gemfile
   - gemfiles/sqlite3/5-2.gemfile
+  - gemfiles/sqlite3/6-0.gemfile
 rvm: # Supported
   - 2.3.8
   - 2.4.6
@@ -43,19 +46,20 @@ matrix:
     - gemfile: gemfiles/mysql2/master.gemfile # Future
     - gemfile: gemfiles/postgresql/master.gemfile # Future
     - gemfile: gemfiles/sqlite3/master.gemfile # Future
-    # The two combinations below are currently broken. We should stop allowing
-    # failure as the issue is resolved. See:
-    # https://github.com/jruby/activerecord-jdbc-adapter/issues/700
-    - rvm: jruby-9.2.7.0
-      gemfile: gemfiles/mysql2/5-1.gemfile
-    - rvm: jruby-9.2.7.0
-      gemfile: gemfiles/postgresql/5-1.gemfile
-    - rvm: jruby-9.2.7.0
-      gemfile: gemfiles/mysql2/5-2.gemfile
-    - rvm: jruby-9.2.7.0
-      gemfile: gemfiles/postgresql/5-2.gemfile
-    - rvm: jruby-9.2.7.0
-      gemfile: gemfiles/sqlite3/5-2.gemfile
+
+  exclude:
+    - gemfile: gemfiles/mysql2/6-0.gemfile
+      rvm: 2.3.8
+    - gemfile: gemfiles/mysql2/6-0.gemfile
+      rvm: 2.4.6
+    - gemfile: gemfiles/postgresql/6-0.gemfile
+      rvm: 2.3.8
+    - gemfile: gemfiles/postgresql/6-0.gemfile
+      rvm: 2.4.6
+    - gemfile: gemfiles/sqlite3/6-0.gemfile
+      rvm: 2.3.8
+    - gemfile: gemfiles/sqlite3/6-0.gemfile
+      rvm: 2.4.6
 
   include:
     #
