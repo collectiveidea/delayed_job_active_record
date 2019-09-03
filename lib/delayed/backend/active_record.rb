@@ -15,7 +15,7 @@ module Delayed
         end
 
         def reserve_sql_strategy=(val)
-          if !(val == :optimized_sql || val == :default_sql || val == :racerpeter_sql || val == :redis_sql_alt)
+          if [:optimized_sql, :default_sql, :racerpeter_sql, :redis_sql_alt].exclude?(val)
             raise ArgumentError, "allowed values are :optimized_sql, :default_sql, :racerpeter_sql, or :redis_sql_alt"
           end
           @reserve_sql_strategy = val
