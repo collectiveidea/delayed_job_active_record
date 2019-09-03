@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source "https://rubygems.org"
 
 gem "rake"
@@ -17,5 +19,7 @@ group :test do
 
   gem "activerecord", github: "rails"
 end
+
+gem "delayed_job", github: "collectiveidea/delayed_job"
 
 gemspec path: "../../"
