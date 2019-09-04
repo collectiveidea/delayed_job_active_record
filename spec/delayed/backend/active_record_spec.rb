@@ -36,14 +36,6 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
-  describe 'redlock' do
-    let(:configuration_klass) { Delayed::Backend::ActiveRecord::Configuration }
-
-    it 'initializes a Redlock client with the current instance of Redis' do
-      expect(configuration_klass.redlock).to be_a(Redlock::Client)
-    end
-  end
-
   describe "reserve_with_scope" do
     let(:relation_class) { Delayed::Job.limit(1).class }
     let(:worker) { instance_double(Delayed::Worker, name: "worker01", read_ahead: 1) }
