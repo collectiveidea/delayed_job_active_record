@@ -36,6 +36,14 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
+  describe 'redlock' do
+    let(:configuration_klass) { Delayed::Backend::ActiveRecord::Configuration }
+
+    it 'initializes a Redlock client with the current instance of Redis' do
+      expect(configuration_klass.redlock).to be_a(Redlock::Client)
+    end
+  end
+
   describe "reserve_with_scope" do
     let(:relation_class) { Delayed::Job.limit(1).class }
     let(:worker) { instance_double(Delayed::Worker, name: "worker01", read_ahead: 1) }
@@ -60,6 +68,46 @@ describe Delayed::Backend::ActiveRecord::Job do
           allow(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_default_sql)
           Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.current)
           expect(Delayed::Backend::ActiveRecord::Job).not_to have_received(:reserve_with_scope_using_default_sql)
+        end
+      end
+
+      context "for PostgreSQL adapters" do
+        let(:dbms) { "PostgreSQL" }
+
+        it "uses the optimized sql version" do
+          allow(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_optimized_postgres)
+          Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.current)
+          expect(Delayed::Backend::ActiveRecord::Job).to have_received(:reserve_with_scope_using_optimized_postgres)
+        end
+      end
+
+      context "for PostGIS adapters" do
+        let(:dbms) { "PostGIS" }
+
+        it "uses the optimized sql version" do
+          allow(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_optimized_postgres)
+          Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.current)
+          expect(Delayed::Backend::ActiveRecord::Job).to have_received(:reserve_with_scope_using_optimized_postgres)
+        end
+      end
+
+      context "for MSSQL adapters" do
+        let(:dbms) { "MSSQL" }
+
+        it "uses the optimized sql version" do
+          allow(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_optimized_mssql)
+          Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.current)
+          expect(Delayed::Backend::ActiveRecord::Job).to have_received(:reserve_with_scope_using_optimized_mssql)
+        end
+      end
+
+      context "for Teradata adapters" do
+        let(:dbms) { "Teradata" }
+
+        it "uses the optimized sql version" do
+          allow(Delayed::Backend::ActiveRecord::Job).to receive(:reserve_with_scope_using_optimized_mssql)
+          Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.current)
+          expect(Delayed::Backend::ActiveRecord::Job).to have_received(:reserve_with_scope_using_optimized_mssql)
         end
       end
 
@@ -111,11 +159,15 @@ describe Delayed::Backend::ActiveRecord::Job do
       let(:dbms) { "MySQL" }
       let(:invalid_reserve_sql_strategy) { :invalid }
 
+      before do
+        allow(Delayed::Backend::ActiveRecord).to receive(:configuration)
+          .and_return(OpenStruct.new(reserve_sql_strategy: invalid_reserve_sql_strategy))
+      end
+
       it "raises an error" do
         expect {
-          Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy = invalid_reserve_sql_strategy
           Delayed::Backend::ActiveRecord::Job.reserve_with_scope(scope, worker, Time.now)
-        }.to raise_error(ArgumentError)
+        }.to raise_error(RuntimeError)
       end
     end
   end
@@ -144,6 +196,14 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
+  describe "before_fork" do
+    it "calls clear_all_connections!" do
+      allow(ActiveRecord::Base).to receive(:clear_all_connections!)
+      Delayed::Backend::ActiveRecord::Job.before_fork
+      expect(ActiveRecord::Base).to have_received(:clear_all_connections!)
+    end
+  end
+
   describe "after_fork" do
     it "calls reconnect on the connection" do
       allow(ActiveRecord::Base).to receive(:establish_connection)
@@ -161,6 +221,19 @@ describe Delayed::Backend::ActiveRecord::Job do
   end
 
   if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
+    it 'allows mass assignment' do
+      expect(Delayed::Backend::ActiveRecord::Job.accessible_attributes).to include(
+        :priority,
+        :run_at,
+        :queue,
+        :payload_object,
+        :failed_at,
+        :locked_at,
+        :locked_by,
+        :handler
+      )
+    end
+
     context "ActiveRecord::Base.send(:attr_accessible, nil)" do
       before do
         Delayed::Backend::ActiveRecord::Job.send(:attr_accessible, nil)
