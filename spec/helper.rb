@@ -72,6 +72,8 @@ migration_ruby = ERB.new(migration_template.read).result(migration_context.new.m
 eval(migration_ruby) # rubocop:disable Security/Eval
 
 ActiveRecord::Schema.define do
+  drop_table :delayed_jobs, if_exists: true
+
   CreateDelayedJobs.up
 
   create_table :stories, primary_key: :story_id, force: true do |table|
