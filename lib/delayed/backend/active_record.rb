@@ -129,11 +129,14 @@ module Delayed
           # http://www.postgresql.org/docs/9.0/static/sql-select.html#SQL-FOR-UPDATE-SHARE
           # Note: active_record would attempt to generate UPDATE...LIMIT like
           # SQL for Postgres if we use a .limit() filter, but it would not
-          # use 'FOR UPDATE' and we would have many locking conflicts
+          # use 'FOR UPDATE' and we would have many locking conflicts.
+          # This was further updated for some edge cases around locking multiple records
+          # with solutions discussed at length here
+          # https://dba.stackexchange.com/questions/69471/postgres-update-limit-1
           quoted_name = Delayed::Job.arel_table.alias(:dj).to_sql
-          subquery = ready_scope.limit(1).lock(true).select(:id).to_sql
-          sql = "UPDATE #{quoted_name} SET locked_at = ?, locked_by = ? WHERE dj.id IN (#{subquery}) RETURNING dj.*"
-          reserved = find_by_sql([sql, now, worker.name])
+          subquery = ready_scope.where("pg_try_advisory_xact_lock(id)").limit(1).lock(true).select(:id).to_sql
+          sql = "UPDATE #{quoted_name} SET locked_at = ?, locked_by = ? WHERE dj.id = (#{subquery}) RETURNING dj.*"
+          reserved = transaction { find_by_sql([sql, now, worker.name]) }
           reserved[0]
         end
 
