@@ -72,7 +72,10 @@ migration_ruby = ERB.new(migration_template.read).result(migration_context.new.m
 eval(migration_ruby) # rubocop:disable Security/Eval
 
 ActiveRecord::Schema.define do
-  drop_table :delayed_jobs, if_exists: true
+  if table_exists?(:delayed_jobs)
+    # `if_exists: true` was only added in Rails 5
+    drop_table :delayed_jobs
+  end
 
   CreateDelayedJobs.up
 
