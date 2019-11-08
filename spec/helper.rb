@@ -20,7 +20,7 @@ require "rspec"
 
 begin
   require "protected_attributes"
-rescue LoadError # rubocop:disable HandleExceptions
+rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
 require "delayed_job_active_record"
 require "delayed/backend/shared_spec"
@@ -30,7 +30,7 @@ ENV["RAILS_ENV"] = "test"
 
 db_adapter = ENV["ADAPTER"]
 gemfile = ENV["BUNDLE_GEMFILE"]
-db_adapter ||= gemfile && gemfile[%r{gemfiles/(.*?)/}] && $1 # rubocop:disable PerlBackrefs
+db_adapter ||= gemfile && gemfile[%r{gemfiles/(.*?)/}] && $1 # rubocop:disable Style/PerlBackrefs
 db_adapter ||= "sqlite3"
 
 config = YAML.load(File.read("spec/database.yml"))
