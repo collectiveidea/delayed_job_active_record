@@ -112,11 +112,18 @@ module Delayed
         end
 
         def self.reserve_with_scope_using_default_sql(ready_scope, worker, now)
-          # This is our old fashion, tried and true, but slower lookup
-          ready_scope.limit(worker.read_ahead).detect do |job|
+          # This is our old fashion, tried and true, but possibly slower lookup
+          # Instead of reading the entire job record for our detect loop, just pluck the ID,
+          # and only read the job record after we've successfully locked the job.
+          # This can be particularly helpful when operating a large job cluster that uses
+          # a large read_ahead value to increase the odds of successfully locking a job with
+          # one method call to reserve_with_scope.
+          locked_job = ready_scope.limit(worker.read_ahead).select(:id).detect do |job|
             count = ready_scope.where(id: job.id).update_all(locked_at: now, locked_by: worker.name)
-            count == 1 && job.reload
+            count == 1
           end
+
+          locked_job.reload if locked_job
         end
 
         def self.reserve_with_scope_using_optimized_postgres(ready_scope, worker, now)
