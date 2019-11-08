@@ -115,12 +115,12 @@ module Delayed
           # This can be particularly helpful when operating a large job cluster that uses
           # a large read_ahead value to increase the odds of successfully locking a job with
           # one method call to reserve_with_scope.
-          locked_job_id = ready_scope.limit(worker.read_ahead).select(:id).detect do |job|
+          locked_job = ready_scope.limit(worker.read_ahead).select(:id).detect do |job|
             count = ready_scope.where(id: job.id).update_all(locked_at: now, locked_by: worker.name)
             count == 1
           end
 
-          find(locked_job_id) if locked_job_id
+          find(locked_job.id) if locked_job
         end
 
         def self.reserve_with_scope_using_optimized_postgres(ready_scope, worker, now)
