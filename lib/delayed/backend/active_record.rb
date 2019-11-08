@@ -120,7 +120,7 @@ module Delayed
             count == 1
           end
 
-          find(locked_job.id) if locked_job
+          locked_job.reload if locked_job
         end
 
         def self.reserve_with_scope_using_optimized_postgres(ready_scope, worker, now)
