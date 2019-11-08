@@ -147,13 +147,16 @@ module Delayed
           # while updating. But during the where clause, for mysql(>=5.6.4),
           # it queries with precision as well. So removing the precision
           now = now.change(usec: 0)
+
           # This works on MySQL and possibly some other DBs that support
           # UPDATE...LIMIT. It uses separate queries to lock and return the job
           sets = "locked_at = :now, locked_by = :name, id = (SELECT @dj_update_id := id)"
-          count = ready_scope.limit(1).update_all([sets, now: now, name: worker.name])
-          return nil if count == 0
+          transaction do
+            count = ready_scope.limit(1).update_all([sets, now: now, name: worker.name])
+            return nil if count == 0
 
-          find_by("id = @dj_update_id")
+            where("id = @dj_update_id").first
+          end
         end
 
         def self.reserve_with_scope_using_optimized_mssql(ready_scope, worker, now)
