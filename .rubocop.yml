@@ -1,5 +1,6 @@
-# Load the rubocop-rspec gem
-require: rubocop-rspec
+require:
+  - rubocop-rails
+  - rubocop-rspec
 
 Rails:
   Enabled: true
@@ -29,25 +30,25 @@ Style/EmptyMethod:
   EnforcedStyle: expanded
 
 # Align ends correctly.
-EndAlignment:
+Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
 
-LineLength:
+Metrics/LineLength:
   Max: 120
 
-SignalException:
+Style/SignalException:
   EnforcedStyle: only_raise
 
-SpaceInsideBlockBraces:
+Layout/SpaceInsideBlockBraces:
   SpaceBeforeBlockParameters: true
 
-SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: space
 
-BracesAroundHashParameters:
+Style/BracesAroundHashParameters:
   EnforcedStyle: context_dependent
 
-StringLiterals:
+Style/StringLiterals:
   EnforcedStyle: double_quotes
 
 #################
@@ -77,6 +78,9 @@ Style/FormatString:
 Style/Lambda:
   Enabled: false
 
+Style/MultipleComparison:
+  Enabled: false
+
 Style/NegatedIf:
   Enabled: false
 
@@ -91,9 +95,6 @@ Style/Semicolon:
   Enabled: false
 
 Style/SingleLineBlockParams:
-  Enabled: false
-
-Style/TrailingCommaInLiteral:
   Enabled: false
 
 Style/WordArray:
@@ -151,4 +152,9 @@ Style/FormatStringToken:
   Enabled: false
 
 Style/NumericPredicate:
+  Enabled: false
+
+# We still allow really old versions of Ruby and Rails
+# While I like the safe navigator, we don't want to use it here just yet
+Style/SafeNavigation:
   Enabled: false

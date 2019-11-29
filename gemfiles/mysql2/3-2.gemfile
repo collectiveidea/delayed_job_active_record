@@ -1,13 +1,15 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
 
-gem 'rake'
+source "https://rubygems.org"
 
-gem 'mysql2', '~> 0.3.10'
+gem "rake"
 
-gem 'coveralls', :require => false
-gem 'rspec', '>= 2.11'
-gem 'simplecov', :require => false
+gem "mysql2", "~> 0.3.10"
 
-gem 'activerecord', "~> 3.2.0"
+gem "coveralls", require: false
+gem "rspec", ">= 2.11"
+gem "simplecov", require: false
 
-gemspec :path => "../../"
+gem "activerecord", "~> 3.2.0"
+
+gemspec path: "../../"
