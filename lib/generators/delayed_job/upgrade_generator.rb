@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "generators/delayed_job/delayed_job_generator"
 require "generators/delayed_job/next_migration_version"
 require "rails/generators/migration"

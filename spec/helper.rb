@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "simplecov"
 require "coveralls"
 
@@ -18,7 +20,7 @@ require "rspec"
 
 begin
   require "protected_attributes"
-rescue LoadError # rubocop:disable HandleExceptions
+rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
 require "delayed_job_active_record"
 require "delayed/backend/shared_spec"
@@ -28,13 +30,27 @@ ENV["RAILS_ENV"] = "test"
 
 db_adapter = ENV["ADAPTER"]
 gemfile = ENV["BUNDLE_GEMFILE"]
-db_adapter ||= gemfile && gemfile[%r{gemfiles/(.*?)/}] && $1 # rubocop:disable PerlBackrefs
+db_adapter ||= gemfile && gemfile[%r{gemfiles/(.*?)/}] && $1 # rubocop:disable Style/PerlBackrefs
 db_adapter ||= "sqlite3"
 
-config = YAML.safe_load(File.read("spec/database.yml"))
+config = YAML.load(File.read("spec/database.yml"))
 ActiveRecord::Base.establish_connection config[db_adapter]
 ActiveRecord::Base.logger = Delayed::Worker.logger
 ActiveRecord::Migration.verbose = false
+
+# MySQL 5.7 no longer supports null default values for the primary key
+# Override the default primary key type in Rails <= 4.0
+# https://stackoverflow.com/a/34555109
+if db_adapter == "mysql2"
+  types = if defined?(ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter)
+    # ActiveRecord 3.2+
+    ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter::NATIVE_DATABASE_TYPES
+  else
+    # ActiveRecord < 3.2
+    ActiveRecord::ConnectionAdapters::Mysql2Adapter::NATIVE_DATABASE_TYPES
+  end
+  types[:primary_key] = types[:primary_key].sub(" DEFAULT NULL", "")
+end
 
 migration_template = File.open("lib/generators/delayed_job/templates/migration.rb")
 
@@ -56,6 +72,11 @@ migration_ruby = ERB.new(migration_template.read).result(migration_context.new.m
 eval(migration_ruby) # rubocop:disable Security/Eval
 
 ActiveRecord::Schema.define do
+  if table_exists?(:delayed_jobs)
+    # `if_exists: true` was only added in Rails 5
+    drop_table :delayed_jobs
+  end
+
   CreateDelayedJobs.up
 
   create_table :stories, primary_key: :story_id, force: true do |table|
@@ -75,8 +96,8 @@ class Story < ActiveRecord::Base
     text
   end
 
-  def whatever(n, _)
-    tell * n
+  def whatever(number)
+    tell * number
   end
   default_scope { where(scoped: true) }
 
