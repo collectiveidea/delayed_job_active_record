@@ -5,13 +5,19 @@ source "https://rubygems.org"
 gem "rake"
 
 group :test do
-  gem "pg", "~> 0.18"
+  platforms :jruby do
+    gem "activerecord-jdbcsqlite3-adapter"
+  end
+
+  platforms :ruby, :mswin, :mingw do
+    gem "sqlite3", "< 1.4"
+  end
 
   gem "coveralls", require: false
   gem "rspec", ">= 2.11"
   gem "simplecov", require: false
 
-  gem "activerecord", "~> 4.0.0"
+  gem "activerecord", "~> 5.1.0"
 end
 
 gemspec path: "../../"

@@ -1,11 +1,20 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+Rails:
+  Enabled: true
 AllCops:
-  RunRailsCops: true
+  Exclude:
+    - lib/**/templates/*
+    - vendor/**/*
 
 #################
 # [i] Overrides #
 #################
 
-CollectionMethods:
+Style/CollectionMethods:
+  Enabled: true
   # Mapping from undesired method to desired_method
   # e.g. to use `detect` over `find`:
   #
@@ -13,34 +22,31 @@ CollectionMethods:
   #   PreferredMethods:
   #     find: detect
   PreferredMethods:
-    collect: 'map'
-    collect!: 'map!'
     reduce: 'inject'
-    find_all: 'select'
     find: 'detect'
+    each_with_index: 'each.with_index'
 
-# Multi-line method chaining should be done with leading dots.
-DotPosition:
-  EnforcedStyle: trailing
+Style/EmptyMethod:
+  EnforcedStyle: expanded
 
 # Align ends correctly.
 EndAlignment:
-  AlignWith: variable
-
-IfUnlessModifier:
-  MaxLineLength: 75
+  EnforcedStyleAlignWith: variable
 
 LineLength:
-  Max: 200
+  Max: 120
 
 SignalException:
   EnforcedStyle: only_raise
 
 SpaceInsideBlockBraces:
-  SpaceBeforeBlockParameters: false
+  SpaceBeforeBlockParameters: true
 
 SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space
+  EnforcedStyle: space
+
+BracesAroundHashParameters:
+  EnforcedStyle: context_dependent
 
 StringLiterals:
   EnforcedStyle: double_quotes
@@ -48,44 +54,102 @@ StringLiterals:
 #################
 # Disabled cops #
 #################
-AbcSize:
+Metrics/ClassLength:
   Enabled: false
 
-ClassAndModuleChildren:
+Metrics/CyclomaticComplexity:
   Enabled: false
 
-ClassLength:
+Metrics/MethodLength:
   Enabled: false
 
-CyclomaticComplexity:
+Style/ClassAndModuleChildren:
   Enabled: false
 
-Documentation:
+Style/Documentation:
   Enabled: false
 
-EachWithObject:
+Style/EachWithObject:
   Enabled: false
 
-FormatString:
+Style/FormatString:
   Enabled: false
 
-Lambda:
+Style/Lambda:
   Enabled: false
 
-MethodLength:
+Style/MultipleComparison:
   Enabled: false
 
-NegatedIf:
+Style/NegatedIf:
   Enabled: false
 
-Semicolon:
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    "%w": "[]"
+    "%W": "[]"
+    "%i": "[]"
+    "%I": "[]"
+
+Style/Semicolon:
   Enabled: false
 
-SingleLineBlockParams:
+Style/SingleLineBlockParams:
   Enabled: false
 
-TrailingComma:
+Style/WordArray:
   Enabled: false
 
-WordArray:
+# HABTM still has a place.
+# http://collectiveidea.com/blog/archives/2014/08/11/has_and_belongs_to_many-isnt-dead/
+Rails/HasAndBelongsToMany:
+  Enabled: false
+
+# enforces using the class name in a describe block (e.g. `describe TestedClass do`)
+RSpec/DescribeClass:
+  Enabled: false
+
+# enforces using the described_class variablea (`described_class` instead of MyClass)
+RSpec/DescribedClass:
+  Enabled: false
+
+# RSpec examples are ok if they're long.
+# Explicitness is better than cleverness in tests.
+RSpec/ExampleLength:
+  Enabled: false
+
+# enforces using either `expect` or `allow` for stubs.  Since they do differnet things,
+# we should let the developer decide which to use
+RSpec/MessageExpectation:
+  Enabled: false
+
+# enforces having only one `expect` per test
+RSpec/MultipleExpectations:
+  Enabled: false
+
+# enforces rules about how many nested `describe` blocks are allowed
+RSpec/NestedGroups:
+  Enabled: false
+
+# enforces rules about using `it` or `describe` block methods instead of `feature` or `scenario`
+Capybara/FeatureMethods:
+  Enabled: false
+
+###################
+# Local overrides #
+###################
+
+Rails/ApplicationRecord:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Security/YAMLLoad:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/NumericPredicate:
   Enabled: false

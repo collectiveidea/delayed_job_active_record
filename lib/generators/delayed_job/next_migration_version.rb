@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DelayedJob
   module NextMigrationVersion
     # while methods have moved around this has been the implementation

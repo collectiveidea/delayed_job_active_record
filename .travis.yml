@@ -1,56 +1,150 @@
 language: ruby
+branches:
+  only:
+    - master
+services:
+  - mysql
+  - postgresql
+addons:
+  postgresql: '9.6'
 before_script:
   - mysql -e 'create database delayed_job_test;'
+  - mysql --version
   - psql -c 'create database delayed_job_test;' -U postgres
-script: bundle exec rspec
+script: bundle exec $COMMAND
 env:
   global:
-    - JRUBY_OPTS="$JRUBY_OPTS --debug"
-gemfile:
-  - gemfiles/mysql/3-0.gemfile
-  - gemfiles/mysql/3-1.gemfile
-  - gemfiles/mysql/3-2.gemfile
-  - gemfiles/mysql/4-0.gemfile
-  - gemfiles/mysql/4-1.gemfile
-  - gemfiles/mysql/4-2.gemfile
-  - gemfiles/postgresql/3-0.gemfile
-  - gemfiles/postgresql/3-1.gemfile
-  - gemfiles/postgresql/3-2.gemfile
-  - gemfiles/postgresql/4-0.gemfile
-  - gemfiles/postgresql/4-1.gemfile
+    - JRUBY_OPTS="$JRUBY_OPTS -Xcli.debug=true --debug"
+    - COMMAND=rspec
+gemfile: # Supported
+  - gemfiles/mysql2/4-2.gemfile
+  - gemfiles/mysql2/5-1.gemfile
+  - gemfiles/mysql2/5-2.gemfile
+  - gemfiles/mysql2/6-0.gemfile
   - gemfiles/postgresql/4-2.gemfile
-  - gemfiles/sqlite3/3-0.gemfile
-  - gemfiles/sqlite3/3-1.gemfile
-  - gemfiles/sqlite3/3-2.gemfile
-  - gemfiles/sqlite3/4-0.gemfile
-  - gemfiles/sqlite3/4-0-protected_attributes.gemfile
-  - gemfiles/sqlite3/4-1.gemfile
+  - gemfiles/postgresql/5-1.gemfile
+  - gemfiles/postgresql/5-2.gemfile
+  - gemfiles/postgresql/6-0.gemfile
   - gemfiles/sqlite3/4-2.gemfile
-rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1
-  - jruby-19mode
-  - jruby-head
-  - rbx-2
-  - ruby-head
+  - gemfiles/sqlite3/5-1.gemfile
+  - gemfiles/sqlite3/5-2.gemfile
+  - gemfiles/sqlite3/6-0.gemfile
+rvm: # Supported
+  - 2.3.8
+  - 2.4.6
+  - 2.5.5
+  - 2.6.3
+  - jruby-9.2.7.0
+
+jdk: oraclejdk11
+
 matrix:
   allow_failures:
-    - rvm: jruby-19mode
-    - rvm: jruby-head
-    - rvm: rbx-2
-    - rvm: ruby-head
+    - rvm: jruby-head # Future
+    - rvm: rbx-2 # Parallel dimension
+    - rvm: ruby-head # Future
+    - gemfile: gemfiles/mysql2/master.gemfile # Future
+    - gemfile: gemfiles/postgresql/master.gemfile # Future
+    - gemfile: gemfiles/sqlite3/master.gemfile # Future
+
   exclude:
-    - gemfile: gemfiles/mysql/4-1.gemfile
-      rvm: 1.9.3
-    - gemfile: gemfiles/mysql/4-2.gemfile
-      rvm: 1.9.3
-    - gemfile: gemfiles/postgresql/4-1.gemfile
-      rvm: 1.9.3
-    - gemfile: gemfiles/postgresql/4-2.gemfile
-      rvm: 1.9.3
-    - gemfile: gemfiles/sqlite3/4-1.gemfile
-      rvm: 1.9.3
-    - gemfile: gemfiles/sqlite3/4-2.gemfile
-      rvm: 1.9.3
+    - gemfile: gemfiles/mysql2/6-0.gemfile
+      rvm: 2.3.8
+    - gemfile: gemfiles/mysql2/6-0.gemfile
+      rvm: 2.4.6
+    - gemfile: gemfiles/postgresql/6-0.gemfile
+      rvm: 2.3.8
+    - gemfile: gemfiles/postgresql/6-0.gemfile
+      rvm: 2.4.6
+    - gemfile: gemfiles/sqlite3/6-0.gemfile
+      rvm: 2.3.8
+    - gemfile: gemfiles/sqlite3/6-0.gemfile
+      rvm: 2.4.6
+
+  include:
+    #
+    # Rubocop
+    #
+    - rvm: 2.5.5
+      gemfile: Gemfile
+      env:
+        - COMMAND=rubocop
+    #
+    # The future
+    #
+    # Active Record head
+    - rvm: 2.5.5
+      gemfile: gemfiles/mysql2/master.gemfile
+    - rvm: 2.5.5
+      gemfile: gemfiles/postgresql/master.gemfile
+    - rvm: 2.5.5
+      gemfile: gemfiles/sqlite3/master.gemfile
+    - rvm: 2.6.3
+      gemfile: gemfiles/mysql2/master.gemfile
+    - rvm: 2.6.3
+      gemfile: gemfiles/postgresql/master.gemfile
+    - rvm: 2.6.3
+      gemfile: gemfiles/sqlite3/master.gemfile
+    # MRI Ruby head
+    - rvm: ruby-head
+      gemfile: gemfiles/mysql2/5-2.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/postgresql/5-2.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/sqlite3/5-2.gemfile
+    # JRuby head
+    - rvm: jruby-head
+      gemfile: gemfiles/mysql2/5-2.gemfile
+    - rvm: jruby-head
+      gemfile: gemfiles/postgresql/5-2.gemfile
+    - rvm: jruby-head
+      gemfile: gemfiles/sqlite3/5-2.gemfile
+    #
+    # The past
+    #
+    # EOL Active Record
+    # Rails 3.2 was maintained longer and is ruby 2.2 compatible
+    - rvm: 2.2.10
+      gemfile: gemfiles/postgresql/3-2.gemfile
+    - rvm: 2.2.10
+      gemfile: gemfiles/sqlite3/3-2.gemfile
+    # Rails <= 4.0 was only compatible with ruby 2.0
+    # The test were running, but there are known incompatibilites
+    - rvm: 2.0.0-p648
+      gemfile: gemfiles/postgresql/3-0.gemfile
+    - rvm: 2.0.0-p648
+      gemfile: gemfiles/postgresql/3-1.gemfile
+    - rvm: 2.0.0-p648
+      gemfile: gemfiles/sqlite3/3-0.gemfile
+    - rvm: 2.0.0-p648
+      gemfile: gemfiles/sqlite3/3-1.gemfile
+    - rvm: 2.0.0-p648
+      gemfile: gemfiles/postgresql/4-0.gemfile
+    - rvm: 2.0.0-p648
+      gemfile: gemfiles/sqlite3/4-0.gemfile
+    # Rails 4.1 was only compatible with ruby 2.1
+    - rvm: 2.1.9
+      gemfile: gemfiles/mysql2/4-1.gemfile
+    - rvm: 2.1.9
+      gemfile: gemfiles/postgresql/4-1.gemfile
+    - rvm: 2.1.9
+      gemfile: gemfiles/sqlite3/4-1.gemfile
+    # Rails 5.0 was EOL with the release of 5.2
+    - rvm: 2.4.6
+      gemfile: gemfiles/mysql2/5-0.gemfile
+    - rvm: 2.4.6
+      gemfile: gemfiles/postgresql/5-0.gemfile
+    - rvm: 2.4.6
+      gemfile: gemfiles/sqlite3/5-0.gemfile
+    #
+    # The parallel dimension
+    #
+    # Rubinius
+    - rvm: rbx-2
+      gemfile: gemfiles/mysql2/5-1.gemfile
+    - rvm: rbx-2
+      gemfile: gemfiles/postgresql/5-1.gemfile
+    - rvm: rbx-2
+      gemfile: gemfiles/sqlite3/5-1.gemfile
+
 sudo: false

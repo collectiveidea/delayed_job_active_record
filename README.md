@@ -1,10 +1,13 @@
+**If you're viewing this at https://github.com/collectiveidea/delayed_job_active_record,
+you're reading the documentation for the master branch.
+[View documentation for the latest release
+(4.1.4).](https://github.com/collectiveidea/delayed_job_active_record/tree/v4.1.4)**
+
 # DelayedJob ActiveRecord Backend
 
-[![Gem Version](https://badge.fury.io/rb/delayed_job_active_record.png)](https://rubygems.org/gems/delayed_job_active_record)
-[![Build Status](https://travis-ci.org/collectiveidea/delayed_job_active_record.png)](https://travis-ci.org/collectiveidea/delayed_job_active_record)
-[![Dependency Status](https://gemnasium.com/collectiveidea/delayed_job_active_record.png)](https://gemnasium.com/collectiveidea/delayed_job_active_record)
-[![Code Climate](https://codeclimate.com/github/collectiveidea/delayed_job_active_record.png)](https://codeclimate.com/github/collectiveidea/delayed_job_active_record)
-[![Coverage Status](https://coveralls.io/repos/collectiveidea/delayed_job_active_record/badge.png?branch=master)](https://coveralls.io/r/collectiveidea/delayed_job_active_record)
+[![Gem Version](https://img.shields.io/gem/v/delayed_job_active_record.svg)](https://rubygems.org/gems/delayed_job_active_record)
+[![Build Status](https://img.shields.io/travis/collectiveidea/delayed_job_active_record.svg)](https://travis-ci.org/collectiveidea/delayed_job_active_record)
+[![Coverage Status](https://img.shields.io/coveralls/collectiveidea/delayed_job_active_record.svg)](https://coveralls.io/r/collectiveidea/delayed_job_active_record)
 
 ## Installation
 
@@ -19,6 +22,12 @@ delayed_job table.
 
     rails g delayed_job:active_record
     rake db:migrate
+
+## Problems locking jobs
+
+You can try using the legacy locking code. It is usually slower but works better for certain people.
+
+    Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy = :default_sql
 
 ## Upgrading from 2.x to 3.0.0
 

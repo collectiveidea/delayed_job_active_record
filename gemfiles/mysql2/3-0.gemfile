@@ -5,13 +5,13 @@ source "https://rubygems.org"
 gem "rake"
 
 group :test do
-  gem "pg", "~> 0.18"
+  gem "activerecord-mysql2-adapter"
 
   gem "coveralls", require: false
   gem "rspec", ">= 2.11"
   gem "simplecov", require: false
 
-  gem "activerecord", "~> 4.0.0"
+  gem "activerecord", "~> 3.0.0"
 end
 
 gemspec path: "../../"
