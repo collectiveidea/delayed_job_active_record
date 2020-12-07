@@ -1,18 +1,21 @@
 # frozen_string_literal: true
 
 require "simplecov"
-require "coveralls"
+require "simplecov-lcov"
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+SimpleCov::Formatter::LcovFormatter.config do |c|
+  c.report_with_single_file = true
+  c.single_report_path = "coverage/lcov.info"
+end
+SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
   [
     SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter
+    SimpleCov::Formatter::LcovFormatter
   ]
 )
 
 SimpleCov.start do
   add_filter "/spec/"
-  minimum_coverage(73.33)
 end
 
 require "logger"

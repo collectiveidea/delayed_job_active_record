@@ -13,9 +13,9 @@ group :test do
     gem "mysql2"
   end
 
-  gem "coveralls", require: false
   gem "rspec", ">= 2.11"
   gem "simplecov", require: false
+  gem "simplecov-lcov", require: false
 
   gem "activerecord", "~> 5.0.0"
 end

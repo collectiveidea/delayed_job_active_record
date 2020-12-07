@@ -17,12 +17,12 @@ group :test do
     gem "sqlite3"
   end
 
-  gem "coveralls", require: false
   gem "rspec", ">= 3"
   gem "rubocop"
   gem "rubocop-rails"
   gem "rubocop-rspec"
   gem "simplecov", require: false
+  gem "simplecov-lcov", require: false
 end
 
 gemspec

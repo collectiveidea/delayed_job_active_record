@@ -7,9 +7,9 @@ gem "rake"
 group :test do
   gem "sqlite3", "< 1.4"
 
-  gem "coveralls", require: false
   gem "rspec", ">= 2.11"
   gem "simplecov", require: false
+  gem "simplecov-lcov", require: false
 
   gem "activerecord", "~> 4.0.0"
 end

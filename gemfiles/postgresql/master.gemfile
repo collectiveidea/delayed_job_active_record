@@ -13,9 +13,9 @@ group :test do
     gem "pg", "~> 0.18"
   end
 
-  gem "coveralls", require: false
   gem "rspec", ">= 2.11"
   gem "simplecov", require: false
+  gem "simplecov-lcov", require: false
 
   gem "activerecord", github: "rails"
 end
