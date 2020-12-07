@@ -1,19 +1,26 @@
 mysql:
   adapter: mysql
+  host: 127.0.0.1
   database: delayed_job_test
   username: root
+  port: 3306
   encoding: utf8
 
 mysql2:
   adapter: mysql2
+  host: 127.0.0.1
   database: delayed_job_test
   username: root
+  port: 3306
   encoding: utf8
 
 postgresql:
   adapter: postgresql
+  host: 127.0.0.1
   database: delayed_job_test
   username: postgres
+  password: postgres
+  port: 5432
 
 sqlite3:
   adapter: sqlite3
