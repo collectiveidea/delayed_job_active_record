@@ -20,7 +20,7 @@ require "rspec"
 
 begin
   require "protected_attributes"
-rescue LoadError # rubocop:disable Lint/HandleExceptions
+rescue LoadError # rubocop:disable Lint/SuppressedException
 end
 require "delayed_job_active_record"
 require "delayed/backend/shared_spec"
