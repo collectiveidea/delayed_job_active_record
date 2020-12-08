@@ -74,8 +74,6 @@ jobs:
           #   gemfile: gemfiles/sqlite3/4-0.gemfile
           # Rails 4.1 was only compatible with ruby 2.1
           - ruby: 2.1
-            gemfile: gemfiles/mysql2/4-1.gemfile
-          - ruby: 2.1
             gemfile: gemfiles/postgresql/4-1.gemfile
           - ruby: 2.1
             gemfile: gemfiles/sqlite3/4-1.gemfile
