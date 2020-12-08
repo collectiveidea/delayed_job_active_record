@@ -117,6 +117,7 @@ jobs:
           #   gemfile: gemfiles/postgresql/6-0.gemfile
           # - rvm: rbx-2
           #   gemfile: gemfiles/sqlite3/6-0.gemfile
+    continue-on-error: ${{ endsWith(matrix.gemfile, 'master.gemfile') || endsWith(matrix.ruby, 'head') }}
     services:
       postgres:
         image: postgres
