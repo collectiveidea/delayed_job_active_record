@@ -120,7 +120,8 @@ jobs:
     continue-on-error: ${{ endsWith(matrix.gemfile, 'master.gemfile') || endsWith(matrix.ruby, 'head') }}
     services:
       postgres:
-        image: postgres
+        # AR before 4.2.6 doesn't work with 12
+        image: postgres:11-alpine
         # Provide the password for postgres
         env:
           POSTGRES_DB: delayed_job_test
