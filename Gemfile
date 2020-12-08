@@ -18,11 +18,17 @@ group :test do
   end
 
   gem "rspec", ">= 3"
-  gem "rubocop"
-  gem "rubocop-rails"
-  gem "rubocop-rspec"
+
   gem "simplecov", ">= 0.20.0", require: false
   gem "simplecov-lcov", ">= 0.8.0", require: false
+end
+
+group :rubocop do
+  gem "rubocop"
+  gem "rubocop-packaging"
+  gem "rubocop-performance"
+  gem "rubocop-rails"
+  gem "rubocop-rspec"
 end
 
 gemspec
