@@ -10,7 +10,7 @@ group :test do
   end
 
   platforms :ruby, :mswin, :mingw do
-    gem "mysql2"
+    gem "mysql2", ">= 0.4.4"
   end
 
   gem "rspec", ">= 2.11"
