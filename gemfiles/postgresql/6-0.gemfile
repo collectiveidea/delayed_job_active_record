@@ -6,7 +6,7 @@ gem "rake"
 
 group :test do
   platforms :jruby do
-    gem "activerecord-jdbcpostgresql-adapter", ">= 60.0.rc1"
+    gem "activerecord-jdbcpostgresql-adapter"
   end
 
   platforms :ruby, :mswin, :mingw do
