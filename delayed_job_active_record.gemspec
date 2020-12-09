@@ -12,5 +12,5 @@ Gem::Specification.new do |spec|
   spec.name           = "delayed_job_active_record"
   spec.require_paths  = ["lib"]
   spec.summary        = "ActiveRecord backend for DelayedJob"
-  spec.version        = "4.1.4"
+  spec.version        = "4.1.5"
 end
