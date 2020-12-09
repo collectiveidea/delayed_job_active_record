@@ -14,9 +14,15 @@ jobs:
       matrix:
         ruby: [2.5, 2.6, 2.7, jruby]
         gemfile:
+          - gemfiles/mysql2/5-2.gemfile
+          - gemfiles/postgresql/5-2.gemfile
+          - gemfiles/sqlite3/5-2.gemfile
           - gemfiles/mysql2/6-0.gemfile
           - gemfiles/postgresql/6-0.gemfile
           - gemfiles/sqlite3/6-0.gemfile
+          - gemfiles/mysql2/6-1.gemfile
+          - gemfiles/postgresql/6-1.gemfile
+          - gemfiles/sqlite3/6-1.gemfile
         include:
           #
           # The future
@@ -36,18 +42,18 @@ jobs:
             gemfile: gemfiles/sqlite3/master.gemfile
           # MRI Ruby head
           - ruby: head
-            gemfile: gemfiles/mysql2/6-0.gemfile
+            gemfile: gemfiles/mysql2/6-1.gemfile
           - ruby: head
-            gemfile: gemfiles/postgresql/6-0.gemfile
+            gemfile: gemfiles/postgresql/6-1.gemfile
           - ruby: head
-            gemfile: gemfiles/sqlite3/6-0.gemfile
+            gemfile: gemfiles/sqlite3/6-1.gemfile
           # JRuby head
           - ruby: jruby-head
-            gemfile: gemfiles/mysql2/6-0.gemfile
+            gemfile: gemfiles/mysql2/6-1.gemfile
           - ruby: jruby-head
-            gemfile: gemfiles/postgresql/6-0.gemfile
+            gemfile: gemfiles/postgresql/6-1.gemfile
           - ruby: jruby-head
-            gemfile: gemfiles/sqlite3/6-0.gemfile
+            gemfile: gemfiles/sqlite3/6-1.gemfile
           #
           # The past
           #
@@ -98,13 +104,6 @@ jobs:
             gemfile: gemfiles/postgresql/5-1.gemfile
           - ruby: 2.5
             gemfile: gemfiles/sqlite3/5-1.gemfile
-          # While not yet EOL, 5.2 is only tested against up to ruby 2.5 https://github.com/rails/rails/blob/5-2-stable/.travis.yml
-          - ruby: 2.5
-            gemfile: gemfiles/mysql2/5-2.gemfile
-          - ruby: 2.5
-            gemfile: gemfiles/postgresql/5-2.gemfile
-          - ruby: 2.5
-            gemfile: gemfiles/sqlite3/5-2.gemfile
           #
           # The parallel dimension
           #

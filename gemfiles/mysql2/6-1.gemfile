@@ -6,6 +6,7 @@ gem "rake"
 
 group :test do
   platforms :jruby do
+    # Remove github when 61.0 releases
     gem "activerecord-jdbcmysql-adapter", github: "jruby/activerecord-jdbc-adapter"
   end
 
@@ -17,9 +18,7 @@ group :test do
   gem "simplecov", ">= 0.20.0", require: false
   gem "simplecov-lcov", ">= 0.8.0", require: false
 
-  gem "activerecord", github: "rails"
+  gem "activerecord", "~> 6.1.0"
 end
-
-gem "delayed_job", github: "collectiveidea/delayed_job"
 
 gemspec path: "../../"

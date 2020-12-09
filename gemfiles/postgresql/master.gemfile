@@ -10,7 +10,7 @@ group :test do
   end
 
   platforms :ruby, :mswin, :mingw do
-    gem "pg", "~> 0.18"
+    gem "pg", "~> 1.1"
   end
 
   gem "rspec", ">= 2.11"
