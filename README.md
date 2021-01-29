@@ -1,12 +1,12 @@
 **If you're viewing this at https://github.com/collectiveidea/delayed_job_active_record,
 you're reading the documentation for the master branch.
 [View documentation for the latest release
-(4.1.4).](https://github.com/collectiveidea/delayed_job_active_record/tree/v4.1.4)**
+(4.1.5).](https://github.com/collectiveidea/delayed_job_active_record/tree/v4.1.5)**
 
 # DelayedJob ActiveRecord Backend
 
 [![Gem Version](https://img.shields.io/gem/v/delayed_job_active_record.svg)](https://rubygems.org/gems/delayed_job_active_record)
-[![Build Status](https://img.shields.io/travis/collectiveidea/delayed_job_active_record.svg)](https://travis-ci.org/collectiveidea/delayed_job_active_record)
+![CI](https://github.com/collectiveidea/delayed_job_active_record/workflows/CI/badge.svg)
 [![Coverage Status](https://img.shields.io/coveralls/collectiveidea/delayed_job_active_record.svg)](https://coveralls.io/r/collectiveidea/delayed_job_active_record)
 
 ## Installation

@@ -1,18 +1,21 @@
 # frozen_string_literal: true
 
 require "simplecov"
-require "coveralls"
+require "simplecov-lcov"
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+SimpleCov::Formatter::LcovFormatter.config do |c|
+  c.report_with_single_file = true
+  c.single_report_path = "coverage/lcov.info"
+end
+SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
   [
     SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter
+    SimpleCov::Formatter::LcovFormatter
   ]
 )
 
 SimpleCov.start do
   add_filter "/spec/"
-  minimum_coverage(73.33)
 end
 
 require "logger"
@@ -20,7 +23,7 @@ require "rspec"
 
 begin
   require "protected_attributes"
-rescue LoadError # rubocop:disable HandleExceptions
+rescue LoadError # rubocop:disable Lint/SuppressedException
 end
 require "delayed_job_active_record"
 require "delayed/backend/shared_spec"
@@ -30,7 +33,7 @@ ENV["RAILS_ENV"] = "test"
 
 db_adapter = ENV["ADAPTER"]
 gemfile = ENV["BUNDLE_GEMFILE"]
-db_adapter ||= gemfile && gemfile[%r{gemfiles/(.*?)/}] && $1 # rubocop:disable PerlBackrefs
+db_adapter ||= gemfile && gemfile[%r{gemfiles/(.*?)/}] && $1 # rubocop:disable Style/PerlBackrefs
 db_adapter ||= "sqlite3"
 
 config = YAML.load(File.read("spec/database.yml"))
@@ -72,6 +75,11 @@ migration_ruby = ERB.new(migration_template.read).result(migration_context.new.m
 eval(migration_ruby) # rubocop:disable Security/Eval
 
 ActiveRecord::Schema.define do
+  if table_exists?(:delayed_jobs)
+    # `if_exists: true` was only added in Rails 5
+    drop_table :delayed_jobs
+  end
+
   CreateDelayedJobs.up
 
   create_table :stories, primary_key: :story_id, force: true do |table|

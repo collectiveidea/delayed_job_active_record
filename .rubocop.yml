@@ -1,4 +1,6 @@
 require:
+  - rubocop-packaging
+  - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
 
@@ -8,6 +10,8 @@ AllCops:
   Exclude:
     - lib/**/templates/*
     - vendor/**/*
+  NewCops: enable
+  SuggestExtensions: false
 
 #################
 # [i] Overrides #
@@ -30,30 +34,32 @@ Style/EmptyMethod:
   EnforcedStyle: expanded
 
 # Align ends correctly.
-EndAlignment:
+Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
 
-LineLength:
+Layout/LineLength:
   Max: 120
 
-SignalException:
+Style/SignalException:
   EnforcedStyle: only_raise
 
-SpaceInsideBlockBraces:
+Layout/SpaceInsideBlockBraces:
   SpaceBeforeBlockParameters: true
 
-SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: space
 
-BracesAroundHashParameters:
-  EnforcedStyle: context_dependent
-
-StringLiterals:
+Style/StringLiterals:
   EnforcedStyle: double_quotes
 
 #################
 # Disabled cops #
 #################
+# We actually still work with ruby 2.0 but this setting only supports 2.4+
+# We aren't going to drop old versions just to make rubocop happy.
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
 Metrics/ClassLength:
   Enabled: false
 
@@ -105,6 +111,9 @@ Style/WordArray:
 Rails/HasAndBelongsToMany:
   Enabled: false
 
+Rails/RakeEnvironment:
+  Enabled: false
+
 # enforces using the class name in a describe block (e.g. `describe TestedClass do`)
 RSpec/DescribeClass:
   Enabled: false
@@ -127,12 +136,15 @@ RSpec/MessageExpectation:
 RSpec/MultipleExpectations:
   Enabled: false
 
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
 # enforces rules about how many nested `describe` blocks are allowed
 RSpec/NestedGroups:
   Enabled: false
 
 # enforces rules about using `it` or `describe` block methods instead of `feature` or `scenario`
-Capybara/FeatureMethods:
+RSpec/Capybara/FeatureMethods:
   Enabled: false
 
 ###################
@@ -152,4 +164,9 @@ Style/FormatStringToken:
   Enabled: false
 
 Style/NumericPredicate:
+  Enabled: false
+
+# We still allow really old versions of Ruby and Rails
+# While I like the safe navigator, we don't want to use it here just yet
+Style/SafeNavigation:
   Enabled: false
