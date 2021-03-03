@@ -42,6 +42,7 @@ module Delayed
         scope :min_priority, lambda { where("priority >= ?", Worker.min_priority) if Worker.min_priority }
         scope :max_priority, lambda { where("priority <= ?", Worker.max_priority) if Worker.max_priority }
         scope :for_queues, lambda { |queues = Worker.queues| where(queue: queues) if Array(queues).any? }
+        scope :not_for_queues, lambda { |queues = Worker.queues| where.not(queue: queues) if Array(queues).any? }
 
         before_save :set_default_run_at
 
@@ -79,8 +80,13 @@ module Delayed
             ready_to_run(worker.name, max_run_time)
             .min_priority
             .max_priority
-            .for_queues
             .by_priority
+
+          if Worker.exclude_specified_queues
+            ready_scope = ready_scope.not_for_queues
+          else
+            ready_scope = ready_scope.for_queues
+          end
 
           reserve_with_scope(ready_scope, worker, db_time_now)
         end
