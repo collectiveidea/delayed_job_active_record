@@ -131,7 +131,7 @@ module Delayed
           # use 'FOR UPDATE' and we would have many locking conflicts
           quoted_name = connection.quote_table_name(table_name)
           subquery    = ready_scope.limit(1).lock(true).select("id").to_sql
-          sql         = "UPDATE #{quoted_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery}) RETURNING *"
+          sql         = "WITH pending AS (#{subquery}) UPDATE #{quoted_name} SET locked_at = ?, locked_by = ? FROM pending WHERE #{quoted_name}.id = pending.id RETURNING *"
           reserved    = find_by_sql([sql, now, worker.name])
           reserved[0]
         end
