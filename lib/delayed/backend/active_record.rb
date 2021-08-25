@@ -42,7 +42,7 @@ module Delayed
         scope :min_priority, lambda { where("priority >= ?", Worker.min_priority) if Worker.min_priority }
         scope :max_priority, lambda { where("priority <= ?", Worker.max_priority) if Worker.max_priority }
         scope :for_queues, lambda { |queues = Worker.queues| where(queue: queues) if Array(queues).any? }
-        scope :not_for_queues, lambda { |queues = Worker.queues| where.not(queue: queues) if Array(queues).any? }
+        scope :not_for_queues, lambda { |queues = Worker.queues| where.not(queue: queues).yield_self { |scope| Array(queues).include?(nil) ? scope : scope.or(where(queue: nil)) } if Array(queues).any? }
 
         before_save :set_default_run_at
 
