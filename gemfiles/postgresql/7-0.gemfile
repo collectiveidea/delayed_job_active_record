@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "rake"
+
+group :test do
+  platforms :ruby, :mswin, :mingw do
+    gem "pg", "~> 1.1"
+  end
+
+  gem "rspec", ">= 2.11"
+  gem "simplecov", ">= 0.20.0", require: false
+  gem "simplecov-lcov", ">= 0.8.0", require: false
+
+  gem "activerecord", "~> 7.0.0.alpha2"
+end
+
+gemspec path: "../../"
