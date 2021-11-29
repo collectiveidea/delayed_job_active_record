@@ -135,6 +135,37 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
+  describe "#last_error=" do
+    subject(:job_with_last_error) do
+      described_class.new(payload_object: EnqueueJobMod.new, last_error: error_message)
+    end
+
+    describe "with a short error message" do
+      let(:error_message) { "foo" }
+
+      it "does not touch the message" do
+        expect(job_with_last_error.last_error).to eq error_message
+      end
+
+      it "allows to persist the record" do
+        expect { job_with_last_error.save! }.not_to raise_error
+      end
+    end
+
+    describe "with a (too) long error message" do
+      let(:error_message) { "X" * (described_class::MAX_LAST_ERROR_LENGTH + 1) }
+
+      it "truncates error message length so that it fits into last_error column" do
+        expect(job_with_last_error.last_error.length).to eq described_class::MAX_LAST_ERROR_LENGTH
+        expect(job_with_last_error.last_error).to eq error_message[0...described_class::MAX_LAST_ERROR_LENGTH]
+      end
+
+      it "allows to persist the record" do
+        expect { job_with_last_error.save! }.not_to raise_error
+      end
+    end
+  end
+
   context "ActiveRecord::Base.table_name_prefix" do
     it "when prefix is not set, use 'delayed_jobs' as table name" do
       ::ActiveRecord::Base.table_name_prefix = nil

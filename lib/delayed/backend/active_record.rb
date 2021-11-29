@@ -183,6 +183,12 @@ module Delayed
           reset
           super
         end
+
+        MAX_LAST_ERROR_LENGTH = (2**16) - 1 # TEXT column can hold up to 2^16 characters
+
+        def last_error=(message)
+          super(message[0...MAX_LAST_ERROR_LENGTH])
+        end
       end
     end
   end
