@@ -13,7 +13,7 @@ group :test do
   gem "simplecov", ">= 0.20.0", require: false
   gem "simplecov-lcov", ">= 0.8.0", require: false
 
-  gem "activerecord", "~> 7.0.0.alpha2"
+  gem "activerecord", "~> 7.0.1"
 end
 
 gemspec path: "../../"
