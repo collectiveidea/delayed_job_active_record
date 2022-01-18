@@ -1,7 +1,7 @@
 **If you're viewing this at https://github.com/collectiveidea/delayed_job_active_record,
 you're reading the documentation for the master branch.
 [View documentation for the latest release
-(4.1.6).](https://github.com/collectiveidea/delayed_job_active_record/tree/v4.1.6)**
+(4.1.7).](https://github.com/collectiveidea/delayed_job_active_record/tree/v4.1.7)**
 
 # DelayedJob ActiveRecord Backend
 
