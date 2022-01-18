@@ -12,8 +12,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['2.7', '3.0', '3.1']
+        ruby: ['2.7', '3.0', '3.1', 'jruby-9.3']
         gemfile:
+          - gemfiles/mysql2/6-0.gemfile
+          - gemfiles/postgresql/6-0.gemfile
+          - gemfiles/sqlite3/6-0.gemfile
+          - gemfiles/mysql2/6-1.gemfile
+          - gemfiles/postgresql/6-1.gemfile
+          - gemfiles/sqlite3/6-1.gemfile
           - gemfiles/mysql2/7-0.gemfile
           - gemfiles/postgresql/7-0.gemfile
           - gemfiles/sqlite3/7-0.gemfile
@@ -24,15 +30,21 @@ jobs:
           # Active Record head
           - ruby: '2.7'
             gemfile: gemfiles/mysql2/master.gemfile
-          - ruby: '3.0'
+          - ruby: '2.7'
             gemfile: gemfiles/postgresql/master.gemfile
           - ruby: '2.7'
             gemfile: gemfiles/sqlite3/master.gemfile
           - ruby: '3.0'
             gemfile: gemfiles/mysql2/master.gemfile
-          - ruby: '2.7'
+          - ruby: '3.0'
             gemfile: gemfiles/postgresql/master.gemfile
           - ruby: '3.0'
+            gemfile: gemfiles/sqlite3/master.gemfile
+          - ruby: '3.1'
+            gemfile: gemfiles/mysql2/master.gemfile
+          - ruby: '3.1'
+            gemfile: gemfiles/postgresql/master.gemfile
+          - ruby: '3.1'
             gemfile: gemfiles/sqlite3/master.gemfile
           # MRI Ruby head
           - ruby: head
@@ -54,31 +66,43 @@ jobs:
             gemfile: gemfiles/postgresql/6-1.gemfile
           - ruby: jruby-head
             gemfile: gemfiles/sqlite3/6-1.gemfile
+
           #
-          # The current
+          # Current
           #
-          - ruby: '2.5'
-            gemfile: gemfiles/mysql2/6-1.gemfile
-          - ruby: '2.5'
-            gemfile: gemfiles/postgresql/6-1.gemfile
-          - ruby: '2.5'
-            gemfile: gemfiles/sqlite3/6-1.gemfile
+          # MRI Ruby 2.6
+          - ruby: '2.6'
+            gemfile: gemfiles/mysql2/6-0.gemfile
+          - ruby: '2.6'
+            gemfile: gemfiles/postgresql/6-0.gemfile
+          - ruby: '2.6'
+            gemfile: gemfiles/sqlite3/6-0.gemfile
           - ruby: '2.6'
             gemfile: gemfiles/mysql2/6-1.gemfile
           - ruby: '2.6'
             gemfile: gemfiles/postgresql/6-1.gemfile
           - ruby: '2.6'
             gemfile: gemfiles/sqlite3/6-1.gemfile
+          # Rails 5.2
+          - ruby: '2.6'
+            gemfile: gemfiles/mysql2/5-2.gemfile
+          - ruby: '2.6'
+            gemfile: gemfiles/postgresql/5-2.gemfile
+          - ruby: '2.6'
+            gemfile: gemfiles/sqlite3/5-2.gemfile
           - ruby: '2.7'
-            gemfile: gemfiles/mysql2/6-1.gemfile
+            gemfile: gemfiles/mysql2/5-2.gemfile
           - ruby: '2.7'
-            gemfile: gemfiles/postgresql/6-1.gemfile
+            gemfile: gemfiles/postgresql/5-2.gemfile
           - ruby: '2.7'
-            gemfile: gemfiles/sqlite3/6-1.gemfile
-          - ruby: jruby-9.2
-            gemfile: gemfiles/mysql2/6-1.gemfile
-          - ruby: jruby-9.3
-            gemfile: gemfiles/postgresql/6-1.gemfile
+            gemfile: gemfiles/sqlite3/5-2.gemfile
+          - ruby: 'jruby-9.2'
+            gemfile: gemfiles/mysql2/5-2.gemfile
+          - ruby: 'jruby-9.2'
+            gemfile: gemfiles/postgresql/5-2.gemfile
+          - ruby: 'jruby-9.2'
+            gemfile: gemfiles/sqlite3/5-2.gemfile
+
           #
           # The past
           #
@@ -90,19 +114,18 @@ jobs:
             gemfile: gemfiles/sqlite3/3-2.gemfile
           # Rails <= 4.0 was only compatible with ruby 2.0
           # The test were running, but there are known incompatibilites
-          # (Isn't supported on Github Actions)
-          # - rvm: 2.0.0-p648
-          #   gemfile: gemfiles/postgresql/3-0.gemfile
-          # - rvm: 2.0.0-p648
-          #   gemfile: gemfiles/sqlite3/3-0.gemfile
-          # - rvm: 2.0.0-p648
-          #   gemfile: gemfiles/postgresql/3-1.gemfile
-          # - rvm: 2.0.0-p648
-          #   gemfile: gemfiles/sqlite3/3-1.gemfile
-          # - rvm: 2.0.0-p648
-          #   gemfile: gemfiles/postgresql/4-0.gemfile
-          # - rvm: 2.0.0-p648
-          #   gemfile: gemfiles/sqlite3/4-0.gemfile
+          - ruby: 2.0.0
+            gemfile: gemfiles/postgresql/3-0.gemfile
+          - ruby: 2.0.0
+            gemfile: gemfiles/sqlite3/3-0.gemfile
+          - ruby: 2.0.0
+            gemfile: gemfiles/postgresql/3-1.gemfile
+          - ruby: 2.0.0
+            gemfile: gemfiles/sqlite3/3-1.gemfile
+          - ruby: 2.0.0
+            gemfile: gemfiles/postgresql/4-0.gemfile
+          - ruby: 2.0.0
+            gemfile: gemfiles/sqlite3/4-0.gemfile
           # Rails 4.1 was only compatible with ruby 2.1
           - ruby: '2.1'
             gemfile: gemfiles/postgresql/4-1.gemfile
@@ -129,17 +152,7 @@ jobs:
             gemfile: gemfiles/postgresql/5-1.gemfile
           - ruby: '2.5'
             gemfile: gemfiles/sqlite3/5-1.gemfile
-          # Rails 6.0 was EOL with the release of 7.0 and compatible with ruby 2.6
-          - ruby: '2.6'
-            gemfile: gemfiles/mysql2/6-0.gemfile
-          - ruby: '2.6'
-            gemfile: gemfiles/postgresql/6-0.gemfile
-          - ruby: '2.6'
-            gemfile: gemfiles/sqlite3/6-0.gemfile
-          - ruby: jruby-9.2
-            gemfile: gemfiles/mysql2/6-0.gemfile
-          - ruby: jruby-9.3
-            gemfile: gemfiles/postgresql/6-0.gemfile
+
           #
           # The parallel dimension
           #
