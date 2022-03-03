@@ -12,13 +12,13 @@ group :test do
   end
 
   platforms :ruby, :mswin, :mingw do
-    gem "mysql2", "~> 0.4.5"
-    gem "pg", "~> 0.18"
+    gem "mysql2"
+    gem "pg"
     gem "sqlite3"
   end
 
   gem "coveralls", require: false
-  gem "rspec", ">= 3"
+  gem "rspec"
   gem "rubocop"
   gem "rubocop-rails"
   gem "rubocop-rspec"
