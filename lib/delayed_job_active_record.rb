@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
+require "active_record"
 require "delayed_job"
+require "delayed/backend/active_record"
 
-if defined?(Rails::Railtie)
-  require "delayed/backend/active_record/railtie"
-else
-  require "active_record"
-  require "delayed/backend/active_record"
-
-  Delayed::Worker.backend = :active_record
-end
+Delayed::Worker.backend = :active_record
