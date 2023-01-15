@@ -115,7 +115,7 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
-  if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
+  if ActiveRecord::VERSION::MAJOR < 4 || defined?(ActiveRecord::MassAssignmentSecurity)
     context "ActiveRecord::Base.send(:attr_accessible, nil)" do
       before do
         Delayed::Backend::ActiveRecord::Job.send(:attr_accessible, nil)
@@ -137,19 +137,19 @@ describe Delayed::Backend::ActiveRecord::Job do
 
   context "ActiveRecord::Base.table_name_prefix" do
     it "when prefix is not set, use 'delayed_jobs' as table name" do
-      ::ActiveRecord::Base.table_name_prefix = nil
+      ActiveRecord::Base.table_name_prefix = nil
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
 
       expect(Delayed::Backend::ActiveRecord::Job.table_name).to eq "delayed_jobs"
     end
 
     it "when prefix is set, prepend it before default table name" do
-      ::ActiveRecord::Base.table_name_prefix = "custom_"
+      ActiveRecord::Base.table_name_prefix = "custom_"
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
 
       expect(Delayed::Backend::ActiveRecord::Job.table_name).to eq "custom_delayed_jobs"
 
-      ::ActiveRecord::Base.table_name_prefix = nil
+      ActiveRecord::Base.table_name_prefix = nil
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
     end
   end
