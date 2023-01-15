@@ -31,10 +31,13 @@ require "delayed/backend/shared_spec"
 Delayed::Worker.logger = Logger.new("/tmp/dj.log")
 ENV["RAILS_ENV"] = "test"
 
-db_adapter = ENV["ADAPTER"]
-gemfile = ENV["BUNDLE_GEMFILE"]
-db_adapter ||= gemfile && gemfile[%r{gemfiles/(.*?)/}] && $1 # rubocop:disable Style/PerlBackrefs
-db_adapter ||= "sqlite3"
+db_adapter = ENV.fetch("ADAPTER") do
+  if %r{gemfiles/(.*?)/} =~ ENV.fetch("BUNDLE_GEMFILE", nil)
+    $1 # rubocop:disable Style/PerlBackrefs
+  else
+    "sqlite3"
+  end
+end
 
 config = YAML.load(File.read("spec/database.yml"))
 ActiveRecord::Base.establish_connection config[db_adapter]
