@@ -72,7 +72,16 @@ module Delayed
 
         # When a worker is exiting, make sure we don't have any locked jobs.
         def self.clear_locks!(worker_name)
-          where(locked_by: worker_name).update_all(locked_by: nil, locked_at: nil)
+          case Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy
+          # Optimizations for faster lookups on some common databases
+          when :optimized_sql
+            where(locked_by: worker_name).update_all(locked_by: nil, locked_at: nil)
+          # Slower but in some cases more unproblematic strategy to lookup records
+          # See https://github.com/collectiveidea/delayed_job_active_record/pull/89 for more details.
+          when :default_sql
+            job_ids = where(locked_by: worker_name).pluck(:id)
+            where(id: job_ids).update_all(locked_by: nil, locked_at: nil) if job_ids.present?
+          end
         end
 
         def self.reserve(worker, max_run_time = Worker.max_run_time)
