@@ -31,4 +31,5 @@ group :rubocop do
   gem "rubocop-rspec"
 end
 
+gem "delayed_job", github: "jdelStrother/delayed_job", branch: "ruby3"
 gemspec
