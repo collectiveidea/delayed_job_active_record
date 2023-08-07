@@ -17,6 +17,7 @@ group :test do
     gem "sqlite3"
   end
 
+  gem "delayed_job", git: "https://github.com/jdelStrother/delayed_job", branch: "ruby3"
   gem "rspec", ">= 3"
 
   gem "simplecov", ">= 0.20.0", require: false
