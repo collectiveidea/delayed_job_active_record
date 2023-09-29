@@ -23,6 +23,9 @@ jobs:
           - gemfiles/mysql2/7-0.gemfile
           - gemfiles/postgresql/7-0.gemfile
           - gemfiles/sqlite3/7-0.gemfile
+          - gemfiles/mysql2/7-1.gemfile
+          - gemfiles/postgresql/7-1.gemfile
+          - gemfiles/sqlite3/7-1.gemfile
         include:
           #
           # The future
