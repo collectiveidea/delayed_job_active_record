@@ -172,10 +172,18 @@ module Delayed
         def self.db_time_now
           if Time.zone
             Time.zone.now
-          elsif ::ActiveRecord::Base.default_timezone == :utc
+          elsif default_timezone == :utc
             Time.now.utc
           else
             Time.now # rubocop:disable Rails/TimeZone
+          end
+        end
+
+        def self.default_timezone
+          if ::ActiveRecord.respond_to?(:default_timezone)
+            ::ActiveRecord.default_timezone
+          else
+            ::ActiveRecord::Base.default_timezone
           end
         end
 

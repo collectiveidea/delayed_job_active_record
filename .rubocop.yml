@@ -12,6 +12,7 @@ AllCops:
     - vendor/**/*
   NewCops: enable
   SuggestExtensions: false
+  TargetRubyVersion: 2.0
 
 #################
 # [i] Overrides #
@@ -147,6 +148,9 @@ RSpec/NestedGroups:
 RSpec/Capybara/FeatureMethods:
   Enabled: false
 
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
 ###################
 # Local overrides #
 ###################
@@ -164,9 +168,4 @@ Style/FormatStringToken:
   Enabled: false
 
 Style/NumericPredicate:
-  Enabled: false
-
-# We still allow really old versions of Ruby and Rails
-# While I like the safe navigator, we don't want to use it here just yet
-Style/SafeNavigation:
   Enabled: false

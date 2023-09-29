@@ -76,9 +76,17 @@ describe Delayed::Backend::ActiveRecord::Job do
   end
 
   context "db_time_now" do
+    def use_default_timezone(timezone)
+      if ActiveRecord.respond_to?(:default_timezone=)
+        ActiveRecord.default_timezone = timezone
+      else
+        ActiveRecord::Base.default_timezone = timezone
+      end
+    end
+
     after do
       Time.zone = nil
-      ActiveRecord::Base.default_timezone = :local
+      use_default_timezone(:local)
     end
 
     it "returns time in current time zone if set" do
@@ -88,13 +96,13 @@ describe Delayed::Backend::ActiveRecord::Job do
 
     it "returns UTC time if that is the AR default" do
       Time.zone = nil
-      ActiveRecord::Base.default_timezone = :utc
+      use_default_timezone(:utc)
       expect(Delayed::Backend::ActiveRecord::Job.db_time_now.zone).to eq "UTC"
     end
 
     it "returns local time if that is the AR default" do
       Time.zone = "Arizona"
-      ActiveRecord::Base.default_timezone = :local
+      use_default_timezone(:local)
       expect(Delayed::Backend::ActiveRecord::Job.db_time_now.zone).to eq("MST")
     end
   end
@@ -115,7 +123,7 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
-  if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
+  if ActiveRecord::VERSION::MAJOR < 4 || defined?(ActiveRecord::MassAssignmentSecurity)
     context "ActiveRecord::Base.send(:attr_accessible, nil)" do
       before do
         Delayed::Backend::ActiveRecord::Job.send(:attr_accessible, nil)
@@ -137,19 +145,19 @@ describe Delayed::Backend::ActiveRecord::Job do
 
   context "ActiveRecord::Base.table_name_prefix" do
     it "when prefix is not set, use 'delayed_jobs' as table name" do
-      ::ActiveRecord::Base.table_name_prefix = nil
+      ActiveRecord::Base.table_name_prefix = nil
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
 
       expect(Delayed::Backend::ActiveRecord::Job.table_name).to eq "delayed_jobs"
     end
 
     it "when prefix is set, prepend it before default table name" do
-      ::ActiveRecord::Base.table_name_prefix = "custom_"
+      ActiveRecord::Base.table_name_prefix = "custom_"
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
 
       expect(Delayed::Backend::ActiveRecord::Job.table_name).to eq "custom_delayed_jobs"
 
-      ::ActiveRecord::Base.table_name_prefix = nil
+      ActiveRecord::Base.table_name_prefix = nil
       Delayed::Backend::ActiveRecord::Job.set_delayed_job_table_name
     end
   end
