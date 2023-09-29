@@ -163,6 +163,10 @@ Security/YAMLLoad:
 Style/FormatStringToken:
   Enabled: false
 
+# We still allow really old versions of Ruby and Rails
+Style/HashSyntax:
+  Enabled: false
+
 Style/NumericPredicate:
   Enabled: false
 
