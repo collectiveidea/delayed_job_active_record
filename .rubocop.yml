@@ -147,6 +147,9 @@ RSpec/NestedGroups:
 RSpec/Capybara/FeatureMethods:
   Enabled: false
 
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
 ###################
 # Local overrides #
 ###################
