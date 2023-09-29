@@ -6,7 +6,7 @@ module DelayedJob
     # since ActiveRecord 3.0
     def next_migration_number(dirname)
       next_migration_number = current_migration_number(dirname) + 1
-      timestamped_migrations = 
+      timestamped_migrations =
         if ActiveRecord.respond_to?(:timestamped_migrations)
           ActiveRecord.timestamped_migrations
         else
