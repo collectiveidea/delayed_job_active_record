@@ -76,9 +76,17 @@ describe Delayed::Backend::ActiveRecord::Job do
   end
 
   context "db_time_now" do
+    def set_default_timezone(timezone)
+      if ActiveRecord.respond_to?(:default_timezone=)
+        ActiveRecord.default_timezone = timezone
+      else
+        ActiveRecord::Base.default_timezone = timezone
+      end
+    end
+
     after do
       Time.zone = nil
-      ActiveRecord::Base.default_timezone = :local
+      set_default_timezone(:local)
     end
 
     it "returns time in current time zone if set" do
@@ -88,13 +96,13 @@ describe Delayed::Backend::ActiveRecord::Job do
 
     it "returns UTC time if that is the AR default" do
       Time.zone = nil
-      ActiveRecord::Base.default_timezone = :utc
+      set_default_timezone(:utc)
       expect(Delayed::Backend::ActiveRecord::Job.db_time_now.zone).to eq "UTC"
     end
 
     it "returns local time if that is the AR default" do
       Time.zone = "Arizona"
-      ActiveRecord::Base.default_timezone = :local
+      set_default_timezone(:local)
       expect(Delayed::Backend::ActiveRecord::Job.db_time_now.zone).to eq("MST")
     end
   end
