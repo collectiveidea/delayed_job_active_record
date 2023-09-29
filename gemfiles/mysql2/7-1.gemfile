@@ -5,6 +5,11 @@ source "https://rubygems.org"
 gem "rake"
 
 group :test do
+  platforms :jruby do
+    # Remove github when 71.0 releases
+    gem "activerecord-jdbcmysql-adapter", github: "jruby/activerecord-jdbc-adapter"
+  end
+
   platforms :ruby, :mswin, :mingw do
     gem "mysql2", "~> 0.5"
   end
