@@ -6,3 +6,5 @@ bin
 coverage
 pkg/*
 gemfiles/**/*.gemfile.lock
+.idea/
+.ruby-version
