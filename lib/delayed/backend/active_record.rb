@@ -62,7 +62,7 @@ module Delayed
         end
 
         def self.before_fork
-          ::ActiveRecord::Base.clear_all_connections!
+          ::ActiveRecord::Base.connection_handler.clear_all_connections!
         end
 
         def self.after_fork
