@@ -129,9 +129,17 @@ module Delayed
           # Note: active_record would attempt to generate UPDATE...LIMIT like
           # SQL for Postgres if we use a .limit() filter, but it would not
           # use 'FOR UPDATE' and we would have many locking conflicts
+          # On PostgreSQL >= 9.5 we leverage SKIP LOCK to avoid multiple workers blocking each other
+          # when attempting to get the next available job
+          # https://www.postgresql.org/docs/9.5/sql-select.html#SQL-FOR-UPDATE-SHARE
+          skip_locked = ""
+          if connection.respond_to?(:postgresql_version) && connection.postgresql_version >= 90500
+            skip_locked = " SKIP LOCKED"
+          end
+
           quoted_name = connection.quote_table_name(table_name)
           subquery    = ready_scope.limit(1).lock(true).select("id").to_sql
-          sql         = "UPDATE #{quoted_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery}) RETURNING *"
+          sql         = "UPDATE #{quoted_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery}#{skip_locked}) RETURNING *"
           reserved    = find_by_sql([sql, now, worker.name])
           reserved[0]
         end
