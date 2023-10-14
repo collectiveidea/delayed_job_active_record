@@ -6,9 +6,13 @@ module Delayed
     module ActiveRecord
       class Configuration
         attr_reader :reserve_sql_strategy
+        attr_accessor :retry_interval
+        attr_accessor :max_retry_times
 
         def initialize
           self.reserve_sql_strategy = :optimized_sql
+          self.retry_interval = 1.0 # sec
+          self.max_retry_times = 10
         end
 
         def reserve_sql_strategy=(val)
@@ -71,7 +75,24 @@ module Delayed
 
         # When a worker is exiting, make sure we don't have any locked jobs.
         def self.clear_locks!(worker_name)
-          where(locked_by: worker_name).update_all(locked_by: nil, locked_at: nil)
+          n_tries = 1
+          begin
+            where(locked_by: worker_name).update_all(locked_by: nil, locked_at: nil)
+            if n_tries > 1
+              Worker.logger.info("Succeed clear locks after #{n_tries} times")
+            end
+          rescue ::ActiveRecord::Deadlocked => e
+            if n_tries >= Delayed::Backend::ActiveRecord.configuration.max_retry_times
+              Worker.logger.error("Error when clear locks: #{n_tries}-times #{e.class} #{e.message}")
+              raise
+            end
+
+            interval_sec = Delayed::Backend::ActiveRecord.configuration.retry_interval
+            Worker.logger.warn("Retrying clear locks after #{interval_sec} seconds: #{n_tries}-times #{e.class} #{e.message}")
+            sleep(interval_sec)
+            n_tries += 1
+            retry
+          end
         end
 
         def self.reserve(worker, max_run_time = Worker.max_run_time)
