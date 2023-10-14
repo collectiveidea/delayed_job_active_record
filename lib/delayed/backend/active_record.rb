@@ -41,7 +41,16 @@ module Delayed
         scope :by_priority, lambda { order("priority ASC, run_at ASC") }
         scope :min_priority, lambda { where("priority >= ?", Worker.min_priority) if Worker.min_priority }
         scope :max_priority, lambda { where("priority <= ?", Worker.max_priority) if Worker.max_priority }
-        scope :for_queues, lambda { |queues = Worker.queues| where(queue: queues) if Array(queues).any? }
+        scope :for_queues, lambda { |queues = Worker.queues| 
+          if Array(queues).any?
+            if Worker.try(:exclude_specified_queues)
+              queue_column = arel_table[:queue]
+              where(queue_column.not_in(queues).or(queue_column.eq nil))
+            else
+              where(queue: queues)
+            end
+          end
+        }
 
         before_save :set_default_run_at
 
