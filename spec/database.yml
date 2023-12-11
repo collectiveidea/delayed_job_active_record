@@ -14,6 +14,14 @@ mysql2:
   port: 3306
   encoding: utf8
 
+trilogy:
+  adapter: trilogy
+  host: 127.0.0.1
+  database: delayed_job_test
+  username: root
+  port: 3306
+  encoding: utf8
+
 postgresql:
   adapter: postgresql
   host: 127.0.0.1
