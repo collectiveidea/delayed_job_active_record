@@ -101,7 +101,7 @@ module Delayed
           case connection.adapter_name
           when "PostgreSQL", "PostGIS"
             reserve_with_scope_using_optimized_postgres(ready_scope, worker, now)
-          when "MySQL", "Mysql2"
+          when "MySQL", "Mysql2", "Trilogy"
             reserve_with_scope_using_optimized_mysql(ready_scope, worker, now)
           when "MSSQL", "Teradata"
             reserve_with_scope_using_optimized_mssql(ready_scope, worker, now)
