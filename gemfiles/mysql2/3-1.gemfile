@@ -7,8 +7,8 @@ gem "rake"
 gem "mysql2", "~> 0.3.10"
 
 gem "rspec", ">= 2.11"
-gem "simplecov", ">= 0.20.0", require: false
-gem "simplecov-lcov", ">= 0.8.0", require: false
+gem "simplecov", ">= 0.17.0", require: false
+gem "simplecov-lcov", "< 0.8.0", require: false
 
 gem "activerecord", "~> 3.1.0"
 

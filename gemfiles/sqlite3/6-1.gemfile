@@ -6,8 +6,7 @@ gem "rake"
 
 group :test do
   platforms :jruby do
-    # Remove github when 61.0 releases
-    gem "activerecord-jdbcsqlite3-adapter", github: "jruby/activerecord-jdbc-adapter"
+    gem "activerecord-jdbcsqlite3-adapter"
   end
 
   platforms :ruby, :mswin, :mingw do

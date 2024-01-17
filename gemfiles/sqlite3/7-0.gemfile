@@ -5,6 +5,10 @@ source "https://rubygems.org"
 gem "rake"
 
 group :test do
+  platforms :jruby do
+    gem "activerecord-jdbcsqlite3-adapter"
+  end
+
   platforms :ruby, :mswin, :mingw do
     gem "sqlite3", "~> 1.4"
   end
