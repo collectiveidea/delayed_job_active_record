@@ -62,7 +62,11 @@ module Delayed
         end
 
         def self.before_fork
-          ::ActiveRecord::Base.connection_handler.clear_all_connections!
+          if ::ActiveRecord.version >= Gem::Version.new('7.1.0')
+            ::ActiveRecord::Base.clear_all_connections!(:all)
+          else
+            ::ActiveRecord::Base.clear_all_connections!
+          end
         end
 
         def self.after_fork
