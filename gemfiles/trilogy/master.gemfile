@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "rake"
+
+group :test do
+  platforms :ruby, :mswin, :mingw do
+    gem "trilogy"
+  end
+
+  gem "rspec", ">= 2.11"
+  gem "simplecov", ">= 0.20.0", require: false
+  gem "simplecov-lcov", ">= 0.8.0", require: false
+
+  gem "activerecord", github: "rails"
+end
+
+gem "delayed_job", github: "collectiveidea/delayed_job"
+
+gemspec path: "../../"
