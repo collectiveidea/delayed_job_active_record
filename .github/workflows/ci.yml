@@ -173,9 +173,11 @@ jobs:
           # - rvm: rbx-2
           #   gemfile: gemfiles/sqlite3/6-0.gemfile
         exclude:
-          # activerecord-jdbc-adapter for trilogy jruby
+          # jruby doesn't support trilogy
           - ruby: 'jruby-9.4'
             gemfile: gemfiles/trilogy/7-1.gemfile
+          - ruby: 'jruby-9.4'
+            gemfile: gemfiles/trilogy/7-2.gemfile
     services:
       postgres:
         # AR before 4.2.6 doesn't work with 12
