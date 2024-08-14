@@ -8,68 +8,43 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    name: Test (Ruby ${{ matrix.ruby }}, Gemfile ${{ matrix.gemfile }})
+    runs-on: ubuntu-${{ matrix.ubuntu }}
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['2.7', '3.0', '3.1', '3.2', '3.3', 'jruby-9.3']
+        ruby: ['3.1', '3.2', '3.3', 'jruby-9.4']
         gemfile:
-          - gemfiles/mysql2/6-0.gemfile
-          - gemfiles/trilogy/6-0.gemfile
-          - gemfiles/postgresql/6-0.gemfile
-          - gemfiles/sqlite3/6-0.gemfile
-          - gemfiles/mysql2/6-1.gemfile
-          - gemfiles/trilogy/6-1.gemfile
-          - gemfiles/postgresql/6-1.gemfile
-          - gemfiles/sqlite3/6-1.gemfile
-          - gemfiles/mysql2/7-0.gemfile
-          - gemfiles/trilogy/7-0.gemfile
-          - gemfiles/postgresql/7-0.gemfile
-          - gemfiles/sqlite3/7-0.gemfile
           - gemfiles/mysql2/7-1.gemfile
-          - gemfiles/trilogy/7-1.gemfile
           - gemfiles/postgresql/7-1.gemfile
           - gemfiles/sqlite3/7-1.gemfile
+          - gemfiles/trilogy/7-1.gemfile
           - gemfiles/mysql2/7-2.gemfile
-          - gemfiles/trilogy/7-2.gemfile
           - gemfiles/postgresql/7-2.gemfile
           - gemfiles/sqlite3/7-2.gemfile
+          - gemfiles/trilogy/7-2.gemfile
+        ubuntu: ['latest']
         include:
           #
-          # Current
+          # Current older ruby
           #
-          # MRI Ruby 2.6
-          - ruby: '2.6'
-            gemfile: gemfiles/mysql2/6-0.gemfile
-          - ruby: '2.6'
-            gemfile: gemfiles/postgresql/6-0.gemfile
-          - ruby: '2.6'
-            gemfile: gemfiles/sqlite3/6-0.gemfile
-          - ruby: '2.6'
-            gemfile: gemfiles/mysql2/6-1.gemfile
-          - ruby: '2.6'
-            gemfile: gemfiles/postgresql/6-1.gemfile
-          - ruby: '2.6'
-            gemfile: gemfiles/sqlite3/6-1.gemfile
-          # Rails 5.2
-          - ruby: '2.6'
-            gemfile: gemfiles/mysql2/5-2.gemfile
-          - ruby: '2.6'
-            gemfile: gemfiles/postgresql/5-2.gemfile
-          - ruby: '2.6'
-            gemfile: gemfiles/sqlite3/5-2.gemfile
           - ruby: '2.7'
-            gemfile: gemfiles/mysql2/5-2.gemfile
+            gemfile: gemfiles/mysql2/7-1.gemfile
           - ruby: '2.7'
-            gemfile: gemfiles/postgresql/5-2.gemfile
+            gemfile: gemfiles/postgresql/7-1.gemfile
           - ruby: '2.7'
-            gemfile: gemfiles/sqlite3/5-2.gemfile
-          - ruby: 'jruby-9.2'
-            gemfile: gemfiles/mysql2/5-2.gemfile
-          - ruby: 'jruby-9.2'
-            gemfile: gemfiles/postgresql/5-2.gemfile
-          - ruby: 'jruby-9.2'
-            gemfile: gemfiles/sqlite3/5-2.gemfile
+            gemfile: gemfiles/sqlite3/7-1.gemfile
+          - ruby: '2.7'
+            gemfile: gemfiles/trilogy/7-1.gemfile
+          - ruby: '3.0'
+            gemfile: gemfiles/mysql2/7-1.gemfile
+          - ruby: '3.0'
+            gemfile: gemfiles/postgresql/7-1.gemfile
+          - ruby: '3.0'
+            gemfile: gemfiles/sqlite3/7-1.gemfile
+          - ruby: '3.0'
+            gemfile: gemfiles/trilogy/7-1.gemfile
+
 
           #
           # The past
@@ -78,48 +53,106 @@ jobs:
           # Rails 3.2 was maintained longer and is ruby 2.2 compatible
           - ruby: '2.2'
             gemfile: gemfiles/postgresql/3-2.gemfile
+            ubuntu: '20.04'
           - ruby: '2.2'
             gemfile: gemfiles/sqlite3/3-2.gemfile
+            ubuntu: '20.04'
           # Rails <= 4.0 was only compatible with ruby 2.0
           # The test were running, but there are known incompatibilites
           - ruby: 2.0.0
             gemfile: gemfiles/postgresql/3-0.gemfile
+            ubuntu: '20.04'
           - ruby: 2.0.0
             gemfile: gemfiles/sqlite3/3-0.gemfile
+            ubuntu: '20.04'
           - ruby: 2.0.0
             gemfile: gemfiles/postgresql/3-1.gemfile
+            ubuntu: '20.04'
           - ruby: 2.0.0
             gemfile: gemfiles/sqlite3/3-1.gemfile
+            ubuntu: '20.04'
           - ruby: 2.0.0
             gemfile: gemfiles/postgresql/4-0.gemfile
+            ubuntu: '20.04'
           - ruby: 2.0.0
             gemfile: gemfiles/sqlite3/4-0.gemfile
+            ubuntu: '20.04'
           # Rails 4.1 was only compatible with ruby 2.1
           - ruby: '2.1'
             gemfile: gemfiles/postgresql/4-1.gemfile
+            ubuntu: '20.04'
           - ruby: '2.1'
             gemfile: gemfiles/sqlite3/4-1.gemfile
+            ubuntu: '20.04'
           # Rails 4.2 was EOL with the release of 6.0 and compatible with ruby 2.4
           - ruby: '2.4'
             gemfile: gemfiles/mysql2/4-2.gemfile
+            ubuntu: '20.04'
           - ruby: '2.4'
             gemfile: gemfiles/postgresql/4-2.gemfile
+            ubuntu: '20.04'
           - ruby: '2.4'
             gemfile: gemfiles/sqlite3/4-2.gemfile
+            ubuntu: '20.04'
           # Rails 5.0 was EOL with the release of 5.2 and compatible with ruby 2.4
           - ruby: '2.4'
             gemfile: gemfiles/mysql2/5-0.gemfile
+            ubuntu: '20.04'
           - ruby: '2.4'
             gemfile: gemfiles/postgresql/5-0.gemfile
+            ubuntu: '20.04'
           - ruby: '2.4'
             gemfile: gemfiles/sqlite3/5-0.gemfile
+            ubuntu: '20.04'
           # Rails 5.1 was EOL with the release of 6.0 and compatible with ruby 2.5
           - ruby: '2.5'
             gemfile: gemfiles/mysql2/5-1.gemfile
+            ubuntu: '20.04'
           - ruby: '2.5'
             gemfile: gemfiles/postgresql/5-1.gemfile
+            ubuntu: '20.04'
           - ruby: '2.5'
             gemfile: gemfiles/sqlite3/5-1.gemfile
+            ubuntu: '20.04'
+          # Rails 6.0 was EOL with the release of 7.2 and compatible with ruby 3.3
+          - ruby: '3.3'
+            gemfile: gemfiles/mysql2/6-0.gemfile
+            ubuntu: '22.04'
+          - ruby: '3.3'
+            gemfile: gemfiles/trilogy/6-0.gemfile
+            ubuntu: '22.04'
+          - ruby: '3.3'
+            gemfile: gemfiles/postgresql/6-0.gemfile
+            ubuntu: '22.04'
+          - ruby: '3.3'
+            gemfile: gemfiles/sqlite3/6-0.gemfile
+            ubuntu: '22.04'
+          # Rails 6.1 was EOL with the release of 7.2 and compatible with ruby 3.3
+          - ruby: '3.3'
+            gemfile: gemfiles/mysql2/6-1.gemfile
+            ubuntu: '22.04'
+          - ruby: '3.3'
+            gemfile: gemfiles/trilogy/6-1.gemfile
+            ubuntu: '22.04'
+          - ruby: '3.3'
+            gemfile: gemfiles/postgresql/6-1.gemfile
+            ubuntu: '22.04'
+          - ruby: '3.3'
+            gemfile: gemfiles/sqlite3/6-1.gemfile
+            ubuntu: '22.04'
+          # Rails 7.0 was EOL with the release of 7.2 and compatible with ruby 3.3
+          - ruby: '3.3'
+            gemfile: gemfiles/mysql2/7-0.gemfile
+            ubuntu: '22.04'
+          - ruby: '3.3'
+            gemfile: gemfiles/trilogy/7-0.gemfile
+            ubuntu: '22.04'
+          - ruby: '3.3'
+            gemfile: gemfiles/postgresql/7-0.gemfile
+            ubuntu: '22.04'
+          - ruby: '3.3'
+            gemfile: gemfiles/sqlite3/7-0.gemfile
+            ubuntu: '22.04'
 
           #
           # The parallel dimension
@@ -132,14 +165,8 @@ jobs:
           # - rvm: rbx-2
           #   gemfile: gemfiles/sqlite3/6-0.gemfile
         exclude:
-          # not exist activerecord-jdbc-adapter for trilogy
-          - ruby: 'jruby-9.3'
-            gemfile: gemfiles/trilogy/6-0.gemfile
-          - ruby: 'jruby-9.3'
-            gemfile: gemfiles/trilogy/6-1.gemfile
-          - ruby: 'jruby-9.3'
-            gemfile: gemfiles/trilogy/7-0.gemfile
-          - ruby: 'jruby-9.3'
+          # activerecord-jdbc-adapter for trilogy jruby
+          - ruby: 'jruby-9.4'
             gemfile: gemfiles/trilogy/7-1.gemfile
     services:
       postgres:
