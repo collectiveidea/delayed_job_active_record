@@ -180,6 +180,16 @@ jobs:
           #   gemfile: gemfiles/postgresql/6-0.gemfile
           # - rvm: rbx-2
           #   gemfile: gemfiles/sqlite3/6-0.gemfile
+        exclude:
+          # not exist activerecord-jdbc-adapter for trilogy
+          - ruby: 'jruby-9.3'
+            gemfile: gemfiles/trilogy/6-0.gemfile
+          - ruby: 'jruby-9.3'
+            gemfile: gemfiles/trilogy/6-1.gemfile
+          - ruby: 'jruby-9.3'
+            gemfile: gemfiles/trilogy/7-0.gemfile
+          - ruby: 'jruby-9.3'
+            gemfile: gemfiles/trilogy/7-1.gemfile
     continue-on-error: ${{ endsWith(matrix.gemfile, 'master.gemfile') || endsWith(matrix.ruby, 'head') }}
     services:
       postgres:
