@@ -195,7 +195,7 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: ruby/setup-ruby@v1
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile }}
@@ -207,7 +207,7 @@ jobs:
         BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       run: bundle exec rspec
     - name: Coveralls Parallel
-      uses: coverallsapp/github-action@master
+      uses: coverallsapp/github-action@main
       with:
         github-token: ${{ secrets.github_token }}
         flag-name: run-${{ matrix.ruby }}-${{ matrix.gemfile }}
@@ -218,7 +218,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
+      uses: coverallsapp/github-action@main
       with:
         github-token: ${{ secrets.github_token }}
         parallel-finished: true
