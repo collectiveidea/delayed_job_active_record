@@ -7,7 +7,6 @@ gem "rake"
 group :test do
   platforms :ruby, :mswin, :mingw do
     gem "activerecord-trilogy-adapter"
-    gem "trilogy"
   end
 
   gem "rspec", ">= 2.11"
@@ -15,6 +14,10 @@ group :test do
   gem "simplecov-lcov", ">= 0.8.0", require: false
 
   gem "activerecord", "~> 7.0.1"
+
+  gem "base64"
+  gem "bigdecimal"
+  gem "mutex_m"
 end
 
 gemspec path: "../../"

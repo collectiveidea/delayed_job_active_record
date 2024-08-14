@@ -6,8 +6,7 @@ gem "rake"
 
 group :test do
   platforms :jruby do
-    # Remove github when 71.0 releases
-    gem "activerecord-jdbcmysql-adapter", github: "jruby/activerecord-jdbc-adapter"
+    gem "activerecord-jdbcmysql-adapter"
   end
 
   platforms :ruby, :mswin, :mingw do
@@ -18,7 +17,7 @@ group :test do
   gem "simplecov", ">= 0.20.0", require: false
   gem "simplecov-lcov", ">= 0.8.0", require: false
 
-  gem "activerecord", "~> 7.1.0.rc1"
+  gem "activerecord", "~> 7.1.0"
 end
 
 gemspec path: "../../"
