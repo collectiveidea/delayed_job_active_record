@@ -30,6 +30,10 @@ jobs:
           - gemfiles/trilogy/7-1.gemfile
           - gemfiles/postgresql/7-1.gemfile
           - gemfiles/sqlite3/7-1.gemfile
+          - gemfiles/mysql2/7-2.gemfile
+          - gemfiles/trilogy/7-2.gemfile
+          - gemfiles/postgresql/7-2.gemfile
+          - gemfiles/sqlite3/7-2.gemfile
         include:
           #
           # Current
