@@ -6,6 +6,7 @@ gem "rake"
 
 group :test do
   platforms :jruby do
+    gem "activerecord-jdbc-adapter", github: "jruby/activerecord-jdbc-adapter"
     gem "activerecord-jdbcsqlite3-adapter", github: "jruby/activerecord-jdbc-adapter"
   end
 
