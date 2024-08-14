@@ -32,59 +32,6 @@ jobs:
           - gemfiles/sqlite3/7-1.gemfile
         include:
           #
-          # The future
-          #
-          # Active Record head
-          - ruby: '2.7'
-            gemfile: gemfiles/mysql2/master.gemfile
-          - ruby: '2.7'
-            gemfile: gemfiles/trilogy/master.gemfile
-          - ruby: '2.7'
-            gemfile: gemfiles/postgresql/master.gemfile
-          - ruby: '2.7'
-            gemfile: gemfiles/sqlite3/master.gemfile
-          - ruby: '3.0'
-            gemfile: gemfiles/mysql2/master.gemfile
-          - ruby: '3.0'
-            gemfile: gemfiles/trilogy/master.gemfile
-          - ruby: '3.0'
-            gemfile: gemfiles/postgresql/master.gemfile
-          - ruby: '3.0'
-            gemfile: gemfiles/sqlite3/master.gemfile
-          - ruby: '3.1'
-            gemfile: gemfiles/mysql2/master.gemfile
-          - ruby: '3.1'
-            gemfile: gemfiles/trilogy/master.gemfile
-          - ruby: '3.1'
-            gemfile: gemfiles/postgresql/master.gemfile
-          - ruby: '3.1'
-            gemfile: gemfiles/sqlite3/master.gemfile
-          # MRI Ruby head
-          - ruby: head
-            gemfile: gemfiles/mysql2/master.gemfile
-          - ruby: head
-            gemfile: gemfiles/trilogy/master.gemfile
-          - ruby: head
-            gemfile: gemfiles/postgresql/master.gemfile
-          - ruby: head
-            gemfile: gemfiles/sqlite3/master.gemfile
-          - ruby: head
-            gemfile: gemfiles/mysql2/7-0.gemfile
-          - ruby: head
-            gemfile: gemfiles/trilogy/7-0.gemfile
-          - ruby: head
-            gemfile: gemfiles/postgresql/7-0.gemfile
-          - ruby: head
-            gemfile: gemfiles/sqlite3/7-0.gemfile
-          # JRuby head
-          - ruby: jruby-head
-            gemfile: gemfiles/mysql2/6-1.gemfile
-          - ruby: jruby-head
-            gemfile: gemfiles/postgresql/6-1.gemfile
-          - ruby: jruby-head
-            gemfile: gemfiles/sqlite3/6-1.gemfile
-
-          #
           # Current
           #
           # MRI Ruby 2.6
@@ -190,7 +137,6 @@ jobs:
             gemfile: gemfiles/trilogy/7-0.gemfile
           - ruby: 'jruby-9.3'
             gemfile: gemfiles/trilogy/7-1.gemfile
-    continue-on-error: ${{ endsWith(matrix.gemfile, 'master.gemfile') || endsWith(matrix.ruby, 'head') }}
     services:
       postgres:
         # AR before 4.2.6 doesn't work with 12
