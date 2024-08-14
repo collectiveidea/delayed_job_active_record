@@ -18,6 +18,10 @@ group :test do
   gem "simplecov-lcov", ">= 0.8.0", require: false
 
   gem "activerecord", "~> 6.0.0"
+
+  gem "base64"
+  gem "bigdecimal"
+  gem "mutex_m"
 end
 
 gemspec path: "../../"
