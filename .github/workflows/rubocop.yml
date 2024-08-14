@@ -3,7 +3,7 @@ name: RuboCop
 on: [push, pull_request]
 
 jobs:
-  build:
+  rubocop:
     runs-on: ubuntu-latest
 
     steps:
