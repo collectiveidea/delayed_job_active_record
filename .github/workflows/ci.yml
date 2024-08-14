@@ -30,20 +30,28 @@ jobs:
           #
           - ruby: '2.7'
             gemfile: gemfiles/mysql2/7-1.gemfile
+            ubuntu: latest
           - ruby: '2.7'
             gemfile: gemfiles/postgresql/7-1.gemfile
+            ubuntu: latest
           - ruby: '2.7'
             gemfile: gemfiles/sqlite3/7-1.gemfile
+            ubuntu: latest
           - ruby: '2.7'
             gemfile: gemfiles/trilogy/7-1.gemfile
+            ubuntu: latest
           - ruby: '3.0'
             gemfile: gemfiles/mysql2/7-1.gemfile
+            ubuntu: latest
           - ruby: '3.0'
             gemfile: gemfiles/postgresql/7-1.gemfile
+            ubuntu: latest
           - ruby: '3.0'
             gemfile: gemfiles/sqlite3/7-1.gemfile
+            ubuntu: latest
           - ruby: '3.0'
             gemfile: gemfiles/trilogy/7-1.gemfile
+            ubuntu: latest
 
 
           #
