@@ -145,7 +145,7 @@ RSpec/NestedGroups:
   Enabled: false
 
 # enforces rules about using `it` or `describe` block methods instead of `feature` or `scenario`
-RSpec/Capybara/FeatureMethods:
+RSpec/Dialect:
   Enabled: false
 
 RSpec/SpecFilePathFormat:

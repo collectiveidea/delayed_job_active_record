@@ -10,5 +10,5 @@ Metrics/BlockLength:
 RSpec/ContextWording:
   Enabled: false
 
-RSpec/FilePath:
+Rails/FilePath:
   Enabled: false
