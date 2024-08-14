@@ -36,9 +36,8 @@ gemfile = ENV.fetch("BUNDLE_GEMFILE", nil)
 db_adapter ||= gemfile && gemfile[%r{gemfiles/(.*?)/}] && $1 # rubocop:disable Style/PerlBackrefs
 db_adapter ||= "sqlite3"
 
-if db_adapter == "trilogy" && ActiveRecord.version < Gem::Version.new("7.1")
-  trilogy_adapter_gem = Gem::Specification.find_by_name("activerecord-trilogy-adapter").gem_dir
-  require "#{trilogy_adapter_gem}/lib/trilogy_adapter/connection"
+if db_adapter == "trilogy" && Gem::Version.new("7.1") > Gem::Version.new(ActiveRecord::VERSION::STRING)
+  require "trilogy_adapter/connection"
   ActiveSupport.on_load(:active_record) { extend TrilogyAdapter::Connection }
 end
 
