@@ -138,7 +138,7 @@ module Delayed
           # On PostgreSQL >= 9.5 we leverage SKIP LOCK to avoid multiple workers blocking each other
           # when attempting to get the next available job
           # https://www.postgresql.org/docs/9.5/sql-select.html#SQL-FOR-UPDATE-SHARE
-          if connection.respond_to?(:postgresql_version) && connection.postgresql_version >= 9_05_00 # rubocop:disable Style/NumericLiterals
+          if connection.send(:postgresql_version) >= 9_05_00 # rubocop:disable Style/NumericLiterals
             subquery += " SKIP LOCKED"
           end
 
