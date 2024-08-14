@@ -7,7 +7,6 @@ gem "rake"
 group :test do
   platforms :ruby, :mswin, :mingw do
     gem "activerecord-trilogy-adapter"
-    gem "trilogy"
   end
 
   gem "rspec", ">= 2.11"

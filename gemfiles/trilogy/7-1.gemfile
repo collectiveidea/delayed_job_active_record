@@ -6,7 +6,7 @@ gem "rake"
 
 group :test do
   platforms :ruby, :mswin, :mingw do
-    gem "trilogy"
+    gem "trilogy", "~> 2.4"
   end
 
   gem "rspec", ">= 2.11"
