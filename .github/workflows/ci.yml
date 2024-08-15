@@ -216,6 +216,7 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+        cache-version: 2
     - name: Run tests
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile }}
