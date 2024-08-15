@@ -19,6 +19,25 @@ jobs:
           - gemfiles/mysql2/master.gemfile
           - gemfiles/sqlite3/master.gemfile
           - gemfiles/trilogy/master.gemfile
+        exclude:
+          - ruby: 'jruby-9.4'
+            gemfile: gemfiles/trilogy/master.gemfile
+          - ruby: 'jruby-head'
+            gemfile: gemfiles/trilogy/master.gemfile
+        include:
+          # jruby with rails 7.1 and 7.2 is still under development with jruby
+          - ruby: jruby-9.4
+            gemfile: gemfiles/mysql2/7-1.gemfile
+          - ruby: jruby-9.4
+            gemfile: gemfiles/postgresql/7-1.gemfile
+          - ruby: jruby-9.4
+            gemfile: gemfiles/sqlite3/7-1.gemfile
+          - ruby: jruby-9.4
+            gemfile: gemfiles/mysql2/7-2.gemfile
+          - ruby: jruby-9.4
+            gemfile: gemfiles/postgresql/7-2.gemfile
+          - ruby: jruby-9.4
+            gemfile: gemfiles/sqlite3/7-2.gemfile
     continue-on-error: true
     services:
       postgres:
