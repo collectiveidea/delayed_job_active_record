@@ -19,6 +19,11 @@ jobs:
           - gemfiles/mysql2/master.gemfile
           - gemfiles/sqlite3/master.gemfile
           - gemfiles/trilogy/master.gemfile
+        exclude:
+          - ruby: 'jruby-9.4'
+            gemfile: gemfiles/trilogy/master.gemfile
+          - ruby: 'jruby-head'
+            gemfile: gemfiles/trilogy/master.gemfile
     continue-on-error: true
     services:
       postgres:
