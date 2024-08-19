@@ -107,6 +107,19 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
+  describe "before_fork" do
+    it "clears all connections connection" do
+      allow(ActiveRecord::Base.connection_handler).to receive(:clear_all_connections!)
+      Delayed::Backend::ActiveRecord::Job.before_fork
+
+      if Gem::Version.new("7.1.0") <= Gem::Version.new(ActiveRecord::VERSION::STRING)
+        expect(ActiveRecord::Base.connection_handler).to have_received(:clear_all_connections!).with(:all)
+      else
+        expect(ActiveRecord::Base.connection_handler).to have_received(:clear_all_connections!)
+      end
+    end
+  end
+
   describe "after_fork" do
     it "calls reconnect on the connection" do
       allow(ActiveRecord::Base).to receive(:establish_connection)
