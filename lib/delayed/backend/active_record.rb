@@ -207,6 +207,20 @@ module Delayed
           reset
           super
         end
+
+        def destroy
+          retries = 0
+          begin
+            super
+          rescue ::ActiveRecord::StatementInvalid => e
+            if e.message =~ /Deadlock found when trying to get lock/ && retries < 100
+              retries +=1
+              retry
+            else
+              raise
+            end
+          end
+        end
       end
     end
   end
