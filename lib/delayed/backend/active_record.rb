@@ -119,7 +119,7 @@ module Delayed
           # This is our old fashion, tried and true, but possibly slower lookup
           # Instead of reading the entire job record for our detect loop, we select only the id,
           # and only read the full job record after we've successfully locked the job.
-          # This can have a noticable impact on large read_ahead configurations and large payload jobs.
+          # This can have a noticeable impact on large read_ahead configurations and large payload jobs.
           ready_scope.limit(worker.read_ahead).select(:id).detect do |job|
             count = ready_scope.where(id: job.id).update_all(locked_at: now, locked_by: worker.name)
             count == 1 && job.reload
@@ -184,7 +184,7 @@ module Delayed
 
         # Get the current time (GMT or local depending on DB)
         # Note: This does not ping the DB to get the time, so all your clients
-        # must have syncronized clocks.
+        # must have synchronized clocks.
         def self.db_time_now
           if Time.zone
             Time.zone.now
