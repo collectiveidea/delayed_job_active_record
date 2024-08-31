@@ -21,7 +21,7 @@ describe Delayed::Backend::ActiveRecord::Job do
       end
 
       it "raises an argument error on invalid entry" do
-        expect { configuration.reserve_sql_strategy = :invald }.to raise_error(ArgumentError)
+        expect { configuration.reserve_sql_strategy = :invalid }.to raise_error(ArgumentError)
       end
     end
   end
