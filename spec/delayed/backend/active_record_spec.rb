@@ -136,26 +136,6 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
-  if ActiveRecord::VERSION::MAJOR < 4 || defined?(ActiveRecord::MassAssignmentSecurity)
-    context "ActiveRecord::Base.send(:attr_accessible, nil)" do
-      before do
-        Delayed::Backend::ActiveRecord::Job.send(:attr_accessible, nil)
-      end
-
-      after do
-        Delayed::Backend::ActiveRecord::Job.send(
-          :attr_accessible,
-          *Delayed::Backend::ActiveRecord::Job.new.attributes.keys
-        )
-      end
-
-      it "is still accessible" do
-        job = Delayed::Backend::ActiveRecord::Job.enqueue payload_object: EnqueueJobMod.new
-        expect(Delayed::Backend::ActiveRecord::Job.find(job.id).handler).not_to be_blank
-      end
-    end
-  end
-
   context "ActiveRecord::Base.table_name_prefix" do
     it "when prefix is not set, use 'delayed_jobs' as table name" do
       ActiveRecord::Base.table_name_prefix = nil

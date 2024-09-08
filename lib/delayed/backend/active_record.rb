@@ -33,11 +33,6 @@ module Delayed
       class Job < ::ActiveRecord::Base
         include Delayed::Backend::Base
 
-        if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
-          attr_accessible :priority, :run_at, :queue, :payload_object,
-                          :failed_at, :locked_at, :locked_by, :handler
-        end
-
         scope :by_priority, lambda { order("priority ASC, run_at ASC") }
         scope :min_priority, lambda { where("priority >= ?", Worker.min_priority) if Worker.min_priority }
         scope :max_priority, lambda { where("priority <= ?", Worker.max_priority) if Worker.max_priority }

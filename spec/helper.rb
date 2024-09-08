@@ -72,7 +72,7 @@ migration_context =
     private
 
     def migration_version
-      "[#{ActiveRecord::VERSION::MAJOR}.#{ActiveRecord::VERSION::MINOR}]" if ActiveRecord::VERSION::MAJOR >= 5
+      "[#{ActiveRecord::VERSION::MAJOR}.#{ActiveRecord::VERSION::MINOR}]"
     end
   end
 
@@ -95,11 +95,8 @@ end
 
 # Purely useful for test cases...
 class Story < ActiveRecord::Base
-  if ::ActiveRecord::VERSION::MAJOR < 4 && ActiveRecord::VERSION::MINOR < 2
-    set_primary_key :story_id
-  else
-    self.primary_key = :story_id
-  end
+  self.primary_key = :story_id
+
   def tell
     text
   end

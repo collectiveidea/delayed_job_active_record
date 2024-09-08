@@ -17,6 +17,8 @@ Gem::Specification.new do |spec|
 
   spec.metadata = { "rubygems_mfa_required" => "true" }
 
-  spec.add_dependency "activerecord", [">= 3.0", "< 8.0"]
+  spec.required_ruby_version = ">= 2.5.0"
+
+  spec.add_dependency "activerecord", [">= 5.1.0", "< 8.0"]
   spec.add_dependency "delayed_job",  [">= 3.0", "< 5"]
 end

@@ -12,7 +12,7 @@ AllCops:
     - vendor/**/*
   NewCops: enable
   SuggestExtensions: false
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.5
 
 #################
 # [i] Overrides #
@@ -56,10 +56,6 @@ Style/StringLiterals:
 #################
 # Disabled cops #
 #################
-# We actually still work with ruby 2.0 but this setting only supports 2.4+
-# We aren't going to drop old versions just to make rubocop happy.
-Gemspec/RequiredRubyVersion:
-  Enabled: false
 
 Metrics/ClassLength:
   Enabled: false
