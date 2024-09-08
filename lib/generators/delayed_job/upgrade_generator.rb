@@ -14,6 +14,11 @@ module DelayedJob
         "db/migrate/add_queue_to_delayed_jobs.rb",
         migration_version: migration_version
       )
+      migration_template(
+        "columns_not_null.rb",
+        "db/migrate/columns_not_null.rb",
+        migration_version: migration_version
+      )
     end
   end
 end
