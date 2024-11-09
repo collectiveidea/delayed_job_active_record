@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name        = "delayed_job_active_record"
-  spec.version     = "4.1.10"
+  spec.version     = "4.1.11"
   spec.summary     = "ActiveRecord backend for DelayedJob"
   spec.description = "ActiveRecord backend for Delayed::Job, originally authored by Tobias Lütke"
 
