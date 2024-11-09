@@ -6,21 +6,18 @@ gem "rake"
 
 group :test do
   platforms :jruby do
-    gem "activerecord-jdbc-adapter", github: "jruby/activerecord-jdbc-adapter"
-    gem "activerecord-jdbcsqlite3-adapter", github: "jruby/activerecord-jdbc-adapter"
+    gem "activerecord-jdbcmysql-adapter"
   end
 
   platforms :ruby, :mswin, :mingw do
-    gem "sqlite3", ">= 2.1"
+    gem "pg", "~> 1.1"
   end
 
   gem "rspec", ">= 2.11"
   gem "simplecov", ">= 0.20.0", require: false
   gem "simplecov-lcov", ">= 0.8.0", require: false
 
-  gem "activerecord", github: "rails"
+  gem "activerecord", "~> 8.0.0"
 end
-
-gem "delayed_job", github: "collectiveidea/delayed_job"
 
 gemspec path: "../../"
