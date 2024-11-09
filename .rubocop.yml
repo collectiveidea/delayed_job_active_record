@@ -128,7 +128,7 @@ RSpec/DescribedClass:
 RSpec/ExampleLength:
   Enabled: false
 
-# enforces using either `expect` or `allow` for stubs.  Since they do differnet things,
+# enforces using either `expect` or `allow` for stubs.  Since they do different things,
 # we should let the developer decide which to use
 RSpec/MessageExpectation:
   Enabled: false
