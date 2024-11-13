@@ -26,6 +26,25 @@ describe Delayed::Backend::ActiveRecord::Job do
     end
   end
 
+  describe 'not_for_queues' do
+    let(:job) { Delayed::Backend::ActiveRecord::Job.create!(handler: 'something') }
+
+    it 'does not return jobs with any of the given queues' do
+      job.update_columns(queue: 'somequeue')
+      expect(Delayed::Backend::ActiveRecord::Job.not_for_queues('somequeue')).not_to include(job)
+    end
+
+    it 'returns jobs with no queue' do
+      job.update_columns(queue: nil)
+      expect(Delayed::Backend::ActiveRecord::Job.not_for_queues('somequeue')).to include(job)
+    end
+
+    it 'does not return jobs with no queue if `nil` is one of the given queues' do
+      job.update_columns(queue: nil)
+      expect(Delayed::Backend::ActiveRecord::Job.not_for_queues(['somequeue', nil])).not_to include(job)
+    end
+  end
+
   describe "reserve_with_scope" do
     let(:relation_class) { Delayed::Job.limit(1).class }
     let(:worker) { instance_double(Delayed::Worker, name: "worker01", read_ahead: 1) }
