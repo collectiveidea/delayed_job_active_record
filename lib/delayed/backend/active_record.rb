@@ -61,6 +61,10 @@ module Delayed
           )
         end
 
+        def self.recover_from(_error)
+          ::ActiveRecord::Base.connection.verify!
+        end
+
         def self.before_fork
           if Gem::Version.new("7.1.0") <= Gem::Version.new(::ActiveRecord::VERSION::STRING)
             ::ActiveRecord::Base.connection_handler.clear_all_connections!(:all)
