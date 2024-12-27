@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['3.2', '3.3']
+        ruby: ['3.2', '3.3', '3.4']
         gemfile:
           - gemfiles/mysql2/7-1.gemfile
           - gemfiles/postgresql/7-1.gemfile
@@ -237,14 +237,14 @@ jobs:
     - name: Reinstall libpg
       if: ${{ matrix.ruby < '2.4' && contains(matrix.gemfile, 'postgresql') }}
       # version located via https://pkgs.org/search/?q=libpq5 and the Ubuntu 20.04 LTS package list
-      run: sudo apt-get update && sudo apt-get install -y --allow-downgrades libpq5=12.19-0ubuntu0.20.04.1 && sudo apt-get install -y --allow-downgrades libpq-dev
+      run: sudo apt-get update && sudo apt-get install -y --allow-downgrades libpq5=12.* && sudo apt-get install -y --allow-downgrades libpq-dev
     - uses: ruby/setup-ruby@v1
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-        cache-version: 2
+        cache-version: 3
     - name: Run tests
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile }}
