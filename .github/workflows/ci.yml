@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['3.2', '3.3']
+        ruby: ['3.2', '3.3', '3.4']
         gemfile:
           - gemfiles/mysql2/7-1.gemfile
           - gemfiles/postgresql/7-1.gemfile
