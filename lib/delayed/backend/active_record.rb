@@ -159,12 +159,33 @@ module Delayed
           # while updating. But during the where clause, for mysql(>=5.6.4),
           # it queries with precision as well. So removing the precision
           now = now.change(usec: 0)
-          # This works on MySQL and possibly some other DBs that support
-          # UPDATE...LIMIT. It uses separate queries to lock and return the job
-          count = ready_scope.limit(1).update_all(locked_at: now, locked_by: worker.name)
-          return nil if count == 0
 
-          where(locked_at: now, locked_by: worker.name, failed_at: nil).first
+          # On MySQL >= 8.0.1 we leverage SKIP LOCK to avoid multiple workers blocking each other
+          # when attempting to get the next available job
+          # https://dev.mysql.com/doc/refman/8.0/en/innodb-locking-reads.html
+          if connection.send(:full_version).split('.').map(&:to_i).zip([8, 0, 1]).all? { |v, req| v >= req }
+            quoted_table_name = connection.quote_table_name(table_name)
+
+            # MySQL doesn't support LIMIT within a subquery so we select the id prior to the update
+            connection.transaction do
+              subquery = ready_scope.select(:id).limit(1).lock('FOR UPDATE SKIP LOCKED').to_sql
+              selected_id = connection.select_value(subquery)
+              return nil unless selected_id
+
+              # Lock the job with the selected id
+              count = where(id: selected_id).update_all(locked_at: now, locked_by: worker.name)
+              return nil if count == 0
+
+              where(locked_at: now, locked_by: worker.name, failed_at: nil, id: selected_id).first
+            end
+          else
+            # This works on MySQL and possibly some other DBs that support
+            # UPDATE...LIMIT. It uses separate queries to lock and return the job
+            count = ready_scope.limit(1).update_all(locked_at: now, locked_by: worker.name)
+            return nil if count == 0
+
+            where(locked_at: now, locked_by: worker.name, failed_at: nil).first
+          end
         end
 
         def self.reserve_with_scope_using_optimized_mssql(ready_scope, worker, now)
