@@ -6,6 +6,10 @@ require "delayed/backend/active_record"
 describe Delayed::Backend::ActiveRecord::Job do
   it_behaves_like "a delayed_job backend"
 
+  it "is a descendant of Delayed::Backend::ActiveRecord::Base" do
+    expect(described_class).to be < Delayed::Backend::ActiveRecord::Base
+  end
+
   describe "configuration" do
     describe "reserve_sql_strategy" do
       let(:configuration) { Delayed::Backend::ActiveRecord.configuration }

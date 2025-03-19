@@ -28,9 +28,13 @@ module Delayed
         yield(configuration)
       end
 
+      class Base < ::ActiveRecord::Base
+        self.abstract_class = true
+      end
+
       # A job object that is persisted to the database.
       # Contains the work object as a YAML field.
-      class Job < ::ActiveRecord::Base
+      class Job < Base
         include Delayed::Backend::Base
 
         if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
@@ -46,7 +50,7 @@ module Delayed
         before_save :set_default_run_at
 
         def self.set_delayed_job_table_name
-          delayed_job_table_name = "#{::ActiveRecord::Base.table_name_prefix}delayed_jobs"
+          delayed_job_table_name = "#{Base.table_name_prefix}delayed_jobs"
           self.table_name = delayed_job_table_name
         end
 
@@ -63,14 +67,14 @@ module Delayed
 
         def self.before_fork
           if Gem::Version.new("7.1.0") <= Gem::Version.new(::ActiveRecord::VERSION::STRING)
-            ::ActiveRecord::Base.connection_handler.clear_all_connections!(:all)
+            Base.connection_handler.clear_all_connections!(:all)
           else
-            ::ActiveRecord::Base.connection_handler.clear_all_connections!
+            Base.connection_handler.clear_all_connections!
           end
         end
 
         def self.after_fork
-          ::ActiveRecord::Base.establish_connection
+          Base.establish_connection
         end
 
         # When a worker is exiting, make sure we don't have any locked jobs.
@@ -199,7 +203,7 @@ module Delayed
           if ::ActiveRecord.respond_to?(:default_timezone)
             ::ActiveRecord.default_timezone
           else
-            ::ActiveRecord::Base.default_timezone
+            Base.default_timezone
           end
         end
 
