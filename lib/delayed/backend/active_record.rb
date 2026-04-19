@@ -42,6 +42,7 @@ module Delayed
         scope :min_priority, lambda { where("priority >= ?", Worker.min_priority) if Worker.min_priority }
         scope :max_priority, lambda { where("priority <= ?", Worker.max_priority) if Worker.max_priority }
         scope :for_queues, lambda { |queues = Worker.queues| where(queue: queues) if Array(queues).any? }
+        scope :not_for_queues, lambda { |queues = Worker.queues| where.not(queue: queues).yield_self { |scope| Array(queues).include?(nil) ? scope : scope.or(where(queue: nil)) } if Array(queues).any? }
 
         before_save :set_default_run_at
 
@@ -75,7 +76,16 @@ module Delayed
 
         # When a worker is exiting, make sure we don't have any locked jobs.
         def self.clear_locks!(worker_name)
-          where(locked_by: worker_name).update_all(locked_by: nil, locked_at: nil)
+          case Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy
+          # Optimizations for faster lookups on some common databases
+          when :optimized_sql
+            where(locked_by: worker_name).update_all(locked_by: nil, locked_at: nil)
+          # Slower but in some cases more unproblematic strategy to lookup records
+          # See https://github.com/collectiveidea/delayed_job_active_record/pull/89 for more details.
+          when :default_sql
+            job_ids = where(locked_by: worker_name).pluck(:id)
+            where(id: job_ids).update_all(locked_by: nil, locked_at: nil) if job_ids.present?
+          end
         end
 
         def self.reserve(worker, max_run_time = Worker.max_run_time)
@@ -83,8 +93,13 @@ module Delayed
             ready_to_run(worker.name, max_run_time)
             .min_priority
             .max_priority
-            .for_queues
             .by_priority
+
+          if Worker.exclude_specified_queues
+            ready_scope = ready_scope.not_for_queues
+          else
+            ready_scope = ready_scope.for_queues
+          end
 
           reserve_with_scope(ready_scope, worker, db_time_now)
         end
