@@ -78,6 +78,16 @@ module Delayed
           where(locked_by: worker_name).update_all(locked_by: nil, locked_at: nil)
         end
 
+        # Rails 7.2 deprecated `connection` in favour of `lease_connection`
+        # https://github.com/rails/rails/pull/51230
+        def self.reservation_connection
+          if respond_to?(:lease_connection)
+            lease_connection
+          else
+            connection
+          end
+        end
+
         def self.reserve(worker, max_run_time = Worker.max_run_time)
           ready_scope =
             ready_to_run(worker.name, max_run_time)
@@ -102,7 +112,7 @@ module Delayed
         end
 
         def self.reserve_with_scope_using_optimized_sql(ready_scope, worker, now)
-          case connection.adapter_name
+          case reservation_connection.adapter_name
           when "PostgreSQL", "PostGIS"
             reserve_with_scope_using_optimized_postgres(ready_scope, worker, now)
           when "MySQL", "Mysql2", "Trilogy"
@@ -138,11 +148,11 @@ module Delayed
           # On PostgreSQL >= 9.5 we leverage SKIP LOCK to avoid multiple workers blocking each other
           # when attempting to get the next available job
           # https://www.postgresql.org/docs/9.5/sql-select.html#SQL-FOR-UPDATE-SHARE
-          if connection.send(:postgresql_version) >= 9_05_00 # rubocop:disable Style/NumericLiterals
+          if reservation_connection.send(:postgresql_version) >= 9_05_00 # rubocop:disable Style/NumericLiterals
             subquery += " SKIP LOCKED"
           end
 
-          quoted_name = connection.quote_table_name(table_name)
+          quoted_name = reservation_connection.quote_table_name(table_name)
           find_by_sql(
             [
               "UPDATE #{quoted_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery}) RETURNING *",
@@ -173,9 +183,9 @@ module Delayed
           subsubquery_sql = ready_scope.limit(1).to_sql
           # select("id") doesn't generate a subquery, so force a subquery
           subquery_sql = "SELECT id FROM (#{subsubquery_sql}) AS x"
-          quoted_table_name = connection.quote_table_name(table_name)
+          quoted_table_name = reservation_connection.quote_table_name(table_name)
           sql = "UPDATE #{quoted_table_name} SET locked_at = ?, locked_by = ? WHERE id IN (#{subquery_sql})"
-          count = connection.execute(sanitize_sql([sql, now, worker.name]))
+          count = reservation_connection.execute(sanitize_sql([sql, now, worker.name]))
           return nil if count == 0
 
           # MSSQL JDBC doesn't support OUTPUT INSERTED.* for returning a result set, so query locked row
