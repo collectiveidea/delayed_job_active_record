@@ -20,7 +20,12 @@ group :test do
 
   gem "rspec", ">= 3"
 
-  gem "simplecov", ">= 0.20.0", require: false
+  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.2")
+    gem "simplecov", ">= 1", require: false
+  else
+    # SimpleCov 1.0 requires Ruby 3.2
+    gem "simplecov", ">= 0.20.0", require: false
+  end
   gem "simplecov-lcov", ">= 0.8.0", require: false
 end
 
