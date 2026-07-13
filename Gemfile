@@ -20,7 +20,7 @@ group :test do
 
   gem "rspec", ">= 3"
 
-  gem "simplecov", ">= 0.20.0", require: false
+  gem "simplecov", ">= 1", require: false
   gem "simplecov-lcov", ">= 0.8.0", require: false
 end
 
