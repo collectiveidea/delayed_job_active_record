@@ -27,6 +27,10 @@ jobs:
           - gemfiles/postgresql/8-0.gemfile
           - gemfiles/sqlite3/8-0.gemfile
           - gemfiles/trilogy/8-0.gemfile
+          - gemfiles/mysql2/8-1.gemfile
+          - gemfiles/postgresql/8-1.gemfile
+          - gemfiles/sqlite3/8-1.gemfile
+          - gemfiles/trilogy/8-1.gemfile
         ubuntu: ['latest']
         include:
           #
