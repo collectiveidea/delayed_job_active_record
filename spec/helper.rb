@@ -19,6 +19,16 @@ SimpleCov.start do
   else
     add_filter "/spec/"
   end
+
+  # JRuby can't measure branch or method coverage, and its line coverage
+  # is unreliable without --debug, so only enforce thresholds on CRuby.
+  # The thresholds and the simplecov:disable directives need SimpleCov 1.2,
+  # which requires Ruby 3.2.
+  if RUBY_ENGINE == "ruby" && Gem::Version.new(SimpleCov::VERSION) >= Gem::Version.new("1.2")
+    coverage :line, minimum: 100
+    coverage :branch, minimum: 100
+    coverage :method, minimum: 100
+  end
 end
 
 require "logger"
