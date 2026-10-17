@@ -56,7 +56,7 @@ jobs:
           - 3306:3306
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Select the gemfile
       env:
         ADAPTER: ${{ matrix.adapter }}
@@ -97,7 +97,7 @@ jobs:
     continue-on-error: ${{ matrix.rails == 'edge' || endsWith(matrix.ruby, 'head') }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Select the gemfile
       env:
         ADAPTER: ${{ matrix.adapter }}
@@ -172,7 +172,7 @@ jobs:
           - 3306:3306
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Select the gemfile
       env:
         ADAPTER: ${{ matrix.adapter }}
