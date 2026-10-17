@@ -15,6 +15,8 @@ Gem::Specification.new do |spec|
   spec.files         = %w[CONTRIBUTING.md LICENSE.md README.md delayed_job_active_record.gemspec] + Dir["lib/**/*.rb"]
   spec.require_paths = ["lib"]
 
+  spec.required_ruby_version = ">= 3.2"
+
   spec.metadata = { "rubygems_mfa_required" => "true" }
 
   spec.add_dependency "activerecord", [">= 3.0", "< 9.0"]
