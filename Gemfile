@@ -32,7 +32,7 @@ group :test do
 
   gem "rspec", ">= 3"
 
-  gem "simplecov", ">= 1", require: false
+  gem "simplecov", ">= 1.2", require: false
   gem "simplecov-lcov", ">= 0.8", require: false
 end
 

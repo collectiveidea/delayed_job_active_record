@@ -14,6 +14,14 @@ SimpleCov.formatters = [
 
 SimpleCov.start do
   skip "/spec/"
+
+  # JRuby can't measure branch or method coverage, and its line coverage
+  # is unreliable without --debug, so only enforce thresholds on CRuby
+  if RUBY_ENGINE == "ruby"
+    coverage :line, minimum: 100
+    coverage :branch, minimum: 100
+    coverage :method, minimum: 100
+  end
 end
 
 require "logger"
