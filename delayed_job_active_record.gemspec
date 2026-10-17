@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
 
   spec.licenses = "MIT"
 
-  spec.authors  = ["David Genord II", "Brian Ryckbost", "Matt Griffin", "Erik Michaels-Ober"]
+  spec.authors  = ["David Genord II", "Brian Ryckbost", "Matt Griffin", "Erik Berlin"]
   spec.email    = ["david@collectiveidea.com", "bryckbost@gmail.com", "matt@griffinonline.org", "sferik@gmail.com"]
   spec.homepage = "http://github.com/collectiveidea/delayed_job_active_record"
 
