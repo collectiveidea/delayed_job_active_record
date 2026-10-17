@@ -5,15 +5,15 @@ source "https://rubygems.org"
 gem "rake"
 
 group :test do
-  platforms :ruby, :mswin, :mingw do
+  platforms :ruby, :windows do
     gem "trilogy"
   end
 
-  gem "rspec", ">= 2.11"
-  gem "simplecov", ">= 0.20.0", require: false
-  gem "simplecov-lcov", ">= 0.8.0", require: false
+  gem "rspec", ">= 3"
+  gem "simplecov", ">= 1", require: false
+  gem "simplecov-lcov", ">= 0.8", require: false
 
-  gem "activerecord", github: "rails"
+  gem "activerecord", github: "rails/rails"
 end
 
 gem "delayed_job", github: "collectiveidea/delayed_job"
