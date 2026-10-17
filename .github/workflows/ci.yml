@@ -27,6 +27,10 @@ jobs:
           - gemfiles/postgresql/8-0.gemfile
           - gemfiles/sqlite3/8-0.gemfile
           - gemfiles/trilogy/8-0.gemfile
+          - gemfiles/mysql2/8-1.gemfile
+          - gemfiles/postgresql/8-1.gemfile
+          - gemfiles/sqlite3/8-1.gemfile
+          - gemfiles/trilogy/8-1.gemfile
         ubuntu: ['latest']
         include:
           # Rails 6.0 was EOL with the release of 7.2 and compatible with ruby 3.3
