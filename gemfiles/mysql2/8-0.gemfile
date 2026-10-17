@@ -6,7 +6,9 @@ gem "rake"
 
 group :test do
   platforms :jruby do
-    gem "activerecord-jdbcmysql-adapter"
+    # Rails 8 support is prerelease-only so far, and the resolver never
+    # picks prereleases without an explicit pin
+    gem "activerecord-jdbcmysql-adapter", "80.0.pre1"
   end
 
   platforms :ruby, :mswin, :mingw do
