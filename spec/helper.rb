@@ -7,15 +7,21 @@ SimpleCov::Formatter::LcovFormatter.config do |c|
   c.report_with_single_file = true
   c.single_report_path = "coverage/lcov.info"
 end
-SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
-  [
-    SimpleCov::Formatter::HTMLFormatter,
-    SimpleCov::Formatter::LcovFormatter
-  ]
-)
+SimpleCov.formatters = [
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::LcovFormatter
+]
 
 SimpleCov.start do
-  add_filter "/spec/"
+  skip "/spec/"
+
+  # JRuby can't measure branch or method coverage, and its line coverage
+  # is unreliable without --debug, so only enforce thresholds on CRuby
+  if RUBY_ENGINE == "ruby"
+    coverage :line, minimum: 100
+    coverage :branch, minimum: 100
+    coverage :method, minimum: 100
+  end
 end
 
 require "logger"
@@ -46,21 +52,7 @@ ActiveRecord::Base.establish_connection config[db_adapter]
 ActiveRecord::Base.logger = Delayed::Worker.logger
 ActiveRecord::Migration.verbose = false
 
-# MySQL 5.7 no longer supports null default values for the primary key
-# Override the default primary key type in Rails <= 4.0
-# https://stackoverflow.com/a/34555109
-if db_adapter == "mysql2"
-  types = if defined?(ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter)
-    # ActiveRecord 3.2+
-    ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter::NATIVE_DATABASE_TYPES
-  else
-    # ActiveRecord < 3.2
-    ActiveRecord::ConnectionAdapters::Mysql2Adapter::NATIVE_DATABASE_TYPES
-  end
-  types[:primary_key] = types[:primary_key].sub(" DEFAULT NULL", "")
-end
-
-migration_template = File.open("lib/generators/delayed_job/templates/migration.rb")
+migration_template = File.read("lib/generators/delayed_job/templates/migration.rb")
 
 # need to eval the template with the migration_version intact
 migration_context =
@@ -72,18 +64,15 @@ migration_context =
     private
 
     def migration_version
-      "[#{ActiveRecord::VERSION::MAJOR}.#{ActiveRecord::VERSION::MINOR}]" if ActiveRecord::VERSION::MAJOR >= 5
+      "[#{ActiveRecord::VERSION::MAJOR}.#{ActiveRecord::VERSION::MINOR}]"
     end
   end
 
-migration_ruby = ERB.new(migration_template.read).result(migration_context.new.my_binding)
+migration_ruby = ERB.new(migration_template).result(migration_context.new.my_binding)
 eval(migration_ruby) # rubocop:disable Security/Eval
 
 ActiveRecord::Schema.define do
-  if table_exists?(:delayed_jobs)
-    # `if_exists: true` was only added in Rails 5
-    drop_table :delayed_jobs
-  end
+  drop_table :delayed_jobs, if_exists: true
 
   CreateDelayedJobs.up
 
@@ -95,11 +84,8 @@ end
 
 # Purely useful for test cases...
 class Story < ActiveRecord::Base
-  if ::ActiveRecord::VERSION::MAJOR < 4 && ActiveRecord::VERSION::MINOR < 2
-    set_primary_key :story_id
-  else
-    self.primary_key = :story_id
-  end
+  self.primary_key = :story_id
+
   def tell
     text
   end
@@ -114,3 +100,22 @@ end
 
 # Add this directory so the ActiveSupport autoloading works
 ActiveSupport::Dependencies.autoload_paths << File.dirname(__FILE__)
+
+RSpec.configure do |config|
+  config.define_derived_metadata do |metadata|
+    next unless RUBY_ENGINE == "jruby"
+
+    case metadata[:description]
+    when "re-schedules jobs after failing"
+      # Fixed in https://github.com/collectiveidea/delayed_job/commit/4c2850c
+      if Gem.loaded_specs["delayed_job"].version <= Gem::Version.new("4.2.0")
+        metadata[:skip] = "delayed_job 4.2.0's shared examples expect CRuby's backtrace format"
+      end
+    when "reserves jobs scheduled for the past when time zones are involved"
+      if db_adapter == "sqlite3" && ActiveRecord.version >= Gem::Version.new("7.2")
+        metadata[:skip] = "JDBC SQLite binds zoned times in local time: " \
+                          "https://github.com/jruby/activerecord-jdbc-adapter/issues/1202"
+      end
+    end
+  end
+end
