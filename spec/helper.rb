@@ -46,20 +46,6 @@ ActiveRecord::Base.establish_connection config[db_adapter]
 ActiveRecord::Base.logger = Delayed::Worker.logger
 ActiveRecord::Migration.verbose = false
 
-# MySQL 5.7 no longer supports null default values for the primary key
-# Override the default primary key type in Rails <= 4.0
-# https://stackoverflow.com/a/34555109
-if db_adapter == "mysql2"
-  types = if defined?(ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter)
-    # ActiveRecord 3.2+
-    ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter::NATIVE_DATABASE_TYPES
-  else
-    # ActiveRecord < 3.2
-    ActiveRecord::ConnectionAdapters::Mysql2Adapter::NATIVE_DATABASE_TYPES
-  end
-  types[:primary_key] = types[:primary_key].sub(" DEFAULT NULL", "")
-end
-
 migration_template = File.open("lib/generators/delayed_job/templates/migration.rb")
 
 # need to eval the template with the migration_version intact
@@ -72,7 +58,7 @@ migration_context =
     private
 
     def migration_version
-      "[#{ActiveRecord::VERSION::MAJOR}.#{ActiveRecord::VERSION::MINOR}]" if ActiveRecord::VERSION::MAJOR >= 5
+      "[#{ActiveRecord::VERSION::MAJOR}.#{ActiveRecord::VERSION::MINOR}]"
     end
   end
 
@@ -80,10 +66,7 @@ migration_ruby = ERB.new(migration_template.read).result(migration_context.new.m
 eval(migration_ruby) # rubocop:disable Security/Eval
 
 ActiveRecord::Schema.define do
-  if table_exists?(:delayed_jobs)
-    # `if_exists: true` was only added in Rails 5
-    drop_table :delayed_jobs
-  end
+  drop_table :delayed_jobs, if_exists: true
 
   CreateDelayedJobs.up
 
@@ -95,11 +78,8 @@ end
 
 # Purely useful for test cases...
 class Story < ActiveRecord::Base
-  if ::ActiveRecord::VERSION::MAJOR < 4 && ActiveRecord::VERSION::MINOR < 2
-    set_primary_key :story_id
-  else
-    self.primary_key = :story_id
-  end
+  self.primary_key = :story_id
+
   def tell
     text
   end

@@ -19,6 +19,6 @@ Gem::Specification.new do |spec|
 
   spec.metadata = { "rubygems_mfa_required" => "true" }
 
-  spec.add_dependency "activerecord", [">= 3.0", "< 9.0"]
-  spec.add_dependency "delayed_job",  [">= 3.0", "< 5"]
+  spec.add_dependency "activerecord", [">= 6", "< 9"]
+  spec.add_dependency "delayed_job",  [">= 3", "< 5"]
 end

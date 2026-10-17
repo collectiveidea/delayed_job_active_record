@@ -70,7 +70,6 @@ jobs:
             ubuntu: '22.04'
     services:
       postgres:
-        # AR before 4.2.6 doesn't work with 12
         image: postgres:11-alpine
         # Provide the password for postgres
         env:
