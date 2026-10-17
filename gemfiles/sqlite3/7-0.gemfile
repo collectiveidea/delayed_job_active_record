@@ -13,9 +13,9 @@ group :test do
     gem "sqlite3", "~> 1.4"
   end
 
-  gem "rspec", ">= 2.11"
+  gem "rspec", ">= 3"
   gem "simplecov", ">= 0.20.0", require: false
-  gem "simplecov-lcov", ">= 0.8.0", require: false
+  gem "simplecov-lcov", ">= 0.8", require: false
 
   gem "activerecord", "~> 7.0.1"
 
