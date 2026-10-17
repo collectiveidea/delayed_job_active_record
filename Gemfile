@@ -25,11 +25,11 @@ group :test do
 end
 
 group :rubocop do
-  gem "rubocop"
-  gem "rubocop-packaging"
-  gem "rubocop-performance"
-  gem "rubocop-rails"
-  gem "rubocop-rspec"
+  gem "rubocop", "~> 1.88"
+  gem "rubocop-packaging", "~> 0.6"
+  gem "rubocop-performance", "~> 1.27"
+  gem "rubocop-rails", "~> 2.38"
+  gem "rubocop-rspec", "~> 3.10"
 end
 
 gemspec
