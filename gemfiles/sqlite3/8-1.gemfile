@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "rake"
+
+group :test do
+  platforms :jruby do
+    # Rails 8.1 support is prerelease-only so far, and the resolver never
+    # picks prereleases without an explicit pin
+    gem "activerecord-jdbcsqlite3-adapter", "81.0.pre1"
+  end
+
+  platforms :ruby, :windows do
+    gem "sqlite3", ">= 2.1"
+  end
+
+  gem "rspec", ">= 3"
+  gem "simplecov", ">= 1.2", require: false
+  gem "simplecov-lcov", ">= 0.8", require: false
+
+  gem "activerecord", "~> 8.1.0"
+end
+
+gemspec path: "../../"

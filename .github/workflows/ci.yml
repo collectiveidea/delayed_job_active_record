@@ -7,257 +7,196 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
-    name: Test (Ruby ${{ matrix.ruby }}, Gemfile ${{ matrix.gemfile }})
+  # Every adapter against every Rails version on one current Ruby
+  adapters:
+    name: Test (Ruby ${{ matrix.ruby }}, Rails ${{ matrix.rails }}, ${{ matrix.adapter }})
     runs-on: ubuntu-${{ matrix.ubuntu }}
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['3.2', '3.3']
-        gemfile:
-          - gemfiles/mysql2/7-1.gemfile
-          - gemfiles/postgresql/7-1.gemfile
-          - gemfiles/sqlite3/7-1.gemfile
-          - gemfiles/trilogy/7-1.gemfile
-          - gemfiles/mysql2/7-2.gemfile
-          - gemfiles/postgresql/7-2.gemfile
-          - gemfiles/sqlite3/7-2.gemfile
-          - gemfiles/trilogy/7-2.gemfile
-          - gemfiles/mysql2/8-0.gemfile
-          - gemfiles/postgresql/8-0.gemfile
-          - gemfiles/sqlite3/8-0.gemfile
-          - gemfiles/trilogy/8-0.gemfile
-        ubuntu: ['latest']
+        rails: ['6.0', '6.1', '7.0', '7.1', '7.2', '8.0', '8.1', edge]
+        adapter: [sqlite3, postgresql, mysql2, trilogy]
         include:
-          #
-          # Current older ruby
-          #
-          - ruby: '2.7'
-            gemfile: gemfiles/mysql2/7-1.gemfile
+          - ruby: '4.0'
             ubuntu: latest
-          - ruby: '2.7'
-            gemfile: gemfiles/postgresql/7-1.gemfile
-            ubuntu: latest
-          - ruby: '2.7'
-            gemfile: gemfiles/sqlite3/7-1.gemfile
-            ubuntu: latest
-          - ruby: '2.7'
-            gemfile: gemfiles/trilogy/7-1.gemfile
-            ubuntu: latest
-          - ruby: '3.0'
-            gemfile: gemfiles/mysql2/7-1.gemfile
-            ubuntu: latest
-          - ruby: '3.0'
-            gemfile: gemfiles/postgresql/7-1.gemfile
-            ubuntu: latest
-          - ruby: '3.0'
-            gemfile: gemfiles/sqlite3/7-1.gemfile
-            ubuntu: latest
-          - ruby: '3.0'
-            gemfile: gemfiles/trilogy/7-1.gemfile
-            ubuntu: latest
-          - ruby: '3.1'
-            gemfile: gemfiles/mysql2/7-1.gemfile
-            ubuntu: latest
-          - ruby: '3.1'
-            gemfile: gemfiles/postgresql/7-1.gemfile
-            ubuntu: latest
-          - ruby: '3.1'
-            gemfile: gemfiles/sqlite3/7-1.gemfile
-            ubuntu: latest
-          - ruby: '3.1'
-            gemfile: gemfiles/trilogy/7-1.gemfile
-            ubuntu: latest
-          - ruby: '3.1'
-            gemfile: gemfiles/mysql2/7-2.gemfile
-            ubuntu: latest
-          - ruby: '3.1'
-            gemfile: gemfiles/postgresql/7-2.gemfile
-            ubuntu: latest
-          - ruby: '3.1'
-            gemfile: gemfiles/sqlite3/7-2.gemfile
-            ubuntu: latest
-          - ruby: '3.1'
-            gemfile: gemfiles/trilogy/7-2.gemfile
-            ubuntu: latest
-
-
-          #
-          # The past
-          #
-          # EOL Active Record
-          # Rails 3.2 was maintained longer and is ruby 2.2 compatible
-          - ruby: '2.2'
-            gemfile: gemfiles/postgresql/3-2.gemfile
-            ubuntu: '20.04'
-          - ruby: '2.2'
-            gemfile: gemfiles/sqlite3/3-2.gemfile
-            ubuntu: '20.04'
-          # Rails <= 4.0 was only compatible with ruby 2.0
-          # The test were running, but there are known incompatibilites
-          - ruby: 2.0.0
-            gemfile: gemfiles/postgresql/3-0.gemfile
-            ubuntu: '20.04'
-          - ruby: 2.0.0
-            gemfile: gemfiles/sqlite3/3-0.gemfile
-            ubuntu: '20.04'
-          - ruby: 2.0.0
-            gemfile: gemfiles/postgresql/3-1.gemfile
-            ubuntu: '20.04'
-          - ruby: 2.0.0
-            gemfile: gemfiles/sqlite3/3-1.gemfile
-            ubuntu: '20.04'
-          - ruby: 2.0.0
-            gemfile: gemfiles/postgresql/4-0.gemfile
-            ubuntu: '20.04'
-          - ruby: 2.0.0
-            gemfile: gemfiles/sqlite3/4-0.gemfile
-            ubuntu: '20.04'
-          # Rails 4.1 was only compatible with ruby 2.1
-          - ruby: '2.1'
-            gemfile: gemfiles/postgresql/4-1.gemfile
-            ubuntu: '20.04'
-          - ruby: '2.1'
-            gemfile: gemfiles/sqlite3/4-1.gemfile
-            ubuntu: '20.04'
-          # Rails 4.2 was EOL with the release of 6.0 and compatible with ruby 2.4
-          - ruby: '2.4'
-            gemfile: gemfiles/mysql2/4-2.gemfile
-            ubuntu: '20.04'
-          - ruby: '2.4'
-            gemfile: gemfiles/postgresql/4-2.gemfile
-            ubuntu: '20.04'
-          - ruby: '2.4'
-            gemfile: gemfiles/sqlite3/4-2.gemfile
-            ubuntu: '20.04'
-          # Rails 5.0 was EOL with the release of 5.2 and compatible with ruby 2.4
-          - ruby: '2.4'
-            gemfile: gemfiles/mysql2/5-0.gemfile
-            ubuntu: '20.04'
-          - ruby: '2.4'
-            gemfile: gemfiles/postgresql/5-0.gemfile
-            ubuntu: '20.04'
-          - ruby: '2.4'
-            gemfile: gemfiles/sqlite3/5-0.gemfile
-            ubuntu: '20.04'
-          # Rails 5.1 was EOL with the release of 6.0 and compatible with ruby 2.5
-          - ruby: '2.5'
-            gemfile: gemfiles/mysql2/5-1.gemfile
-            ubuntu: '20.04'
-          - ruby: '2.5'
-            gemfile: gemfiles/postgresql/5-1.gemfile
-            ubuntu: '20.04'
-          - ruby: '2.5'
-            gemfile: gemfiles/sqlite3/5-1.gemfile
-            ubuntu: '20.04'
-          # Rails 6.0 was EOL with the release of 7.2 and compatible with ruby 3.3
-          - ruby: '3.3'
-            gemfile: gemfiles/mysql2/6-0.gemfile
+          # EOL Active Record still supported on Ruby >= 3.2
+          - rails: '6.0'
+            ruby: '3.2'
             ubuntu: '22.04'
-          - ruby: '3.3'
-            gemfile: gemfiles/trilogy/6-0.gemfile
-            ubuntu: '22.04'
-          - ruby: '3.3'
-            gemfile: gemfiles/postgresql/6-0.gemfile
-            ubuntu: '22.04'
-          - ruby: '3.3'
-            gemfile: gemfiles/sqlite3/6-0.gemfile
-            ubuntu: '22.04'
-          # Rails 6.1 was EOL with the release of 7.2 and compatible with ruby 3.3
-          - ruby: '3.3'
-            gemfile: gemfiles/mysql2/6-1.gemfile
-            ubuntu: '22.04'
-          - ruby: '3.3'
-            gemfile: gemfiles/trilogy/6-1.gemfile
-            ubuntu: '22.04'
-          - ruby: '3.3'
-            gemfile: gemfiles/postgresql/6-1.gemfile
-            ubuntu: '22.04'
-          - ruby: '3.3'
-            gemfile: gemfiles/sqlite3/6-1.gemfile
-            ubuntu: '22.04'
-          # Rails 7.0 was EOL with the release of 7.2 and compatible with ruby 3.3
-          - ruby: '3.3'
-            gemfile: gemfiles/mysql2/7-0.gemfile
-            ubuntu: '22.04'
-          - ruby: '3.3'
-            gemfile: gemfiles/trilogy/7-0.gemfile
-            ubuntu: '22.04'
-          - ruby: '3.3'
-            gemfile: gemfiles/postgresql/7-0.gemfile
-            ubuntu: '22.04'
-          - ruby: '3.3'
-            gemfile: gemfiles/sqlite3/7-0.gemfile
+          - rails: '6.1'
+            ruby: '3.2'
             ubuntu: '22.04'
 
-          #
-          # The parallel dimension
-          #
-          # Rubinius (Isn't supported on Github Actions)
-          # - rvm: rbx-2
-          #   gemfile: gemfiles/mysql2/6-0.gemfile
-          # - rvm: rbx-2
-          #   gemfile: gemfiles/postgresql/6-0.gemfile
-          # - rvm: rbx-2
-          #   gemfile: gemfiles/sqlite3/6-0.gemfile
-        exclude:
-          # jruby doesn't support trilogy
-          - ruby: 'jruby-9.4'
-            gemfile: gemfiles/trilogy/7-1.gemfile
-          - ruby: 'jruby-9.4'
-            gemfile: gemfiles/trilogy/7-2.gemfile
+    continue-on-error: ${{ matrix.rails == 'edge' }}
+
     services:
       postgres:
-        # AR before 4.2.6 doesn't work with 12
-        image: postgres:11-alpine
-        # Provide the password for postgres
+        image: postgres:18
         env:
           POSTGRES_DB: delayed_job_test
           POSTGRES_PASSWORD: postgres
-        # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         ports:
-          # Maps tcp port 5432 on service container to the host
           - 5432:5432
       mysql:
-        image: mysql:5.7
+        image: mysql:8.4
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: delayed_job_test
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
-            - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 3306:3306
 
     steps:
     - uses: actions/checkout@v4
-    - name: Reinstall libpg
-      if: ${{ matrix.ruby < '2.4' && contains(matrix.gemfile, 'postgresql') }}
-      # version located via https://pkgs.org/search/?q=libpq5 and the Ubuntu 20.04 LTS package list
-      run: sudo apt-get update && sudo apt-get install -y --allow-downgrades libpq5=12.19-0ubuntu0.20.04.1 && sudo apt-get install -y --allow-downgrades libpq-dev
-    - uses: ruby/setup-ruby@v1
+    - name: Select the gemfile
       env:
-        BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+        ADAPTER: ${{ matrix.adapter }}
+        RAILS_VERSION: ${{ matrix.rails }}
+      run: |
+        gemfile=$([ "$RAILS_VERSION" = edge ] && echo master || echo "${RAILS_VERSION/./-}")
+        echo "BUNDLE_GEMFILE=$GITHUB_WORKSPACE/gemfiles/$ADAPTER/$gemfile.gemfile" >> "$GITHUB_ENV"
+    - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-        cache-version: 2
     - name: Run tests
-      env:
-        BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       run: bundle exec rspec
     - name: Coveralls Parallel
       uses: coverallsapp/github-action@main
       with:
         github-token: ${{ secrets.github_token }}
-        flag-name: run-${{ matrix.ruby }}-${{ matrix.gemfile }}
+        flag-name: run-${{ matrix.ruby }}-${{ matrix.rails }}-${{ matrix.adapter }}
         parallel: true
+        # Don't fail otherwise-green jobs when coveralls.io has an outage
+        fail-on-error: false
+
+  # Every Ruby against every Rails version it supports, on SQLite
+  rubies:
+    name: Test (Ruby ${{ matrix.ruby }}, Rails ${{ matrix.rails }}, ${{ matrix.adapter }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['3.2', '3.3', '3.4', ruby-head]
+        rails: ['7.0', '7.1', '7.2', '8.0', '8.1', edge]
+        adapter: [sqlite3]
+        exclude:
+          # Rails edge requires Ruby >= 3.3.1
+          - ruby: '3.2'
+            rails: edge
+
+    continue-on-error: ${{ matrix.rails == 'edge' || endsWith(matrix.ruby, 'head') }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Select the gemfile
+      env:
+        ADAPTER: ${{ matrix.adapter }}
+        RAILS_VERSION: ${{ matrix.rails }}
+      run: |
+        gemfile=$([ "$RAILS_VERSION" = edge ] && echo master || echo "${RAILS_VERSION/./-}")
+        echo "BUNDLE_GEMFILE=$GITHUB_WORKSPACE/gemfiles/$ADAPTER/$gemfile.gemfile" >> "$GITHUB_ENV"
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Run tests
+      run: bundle exec rspec
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@main
+      with:
+        github-token: ${{ secrets.github_token }}
+        flag-name: run-${{ matrix.ruby }}-${{ matrix.rails }}-${{ matrix.adapter }}
+        parallel: true
+        # Don't fail otherwise-green jobs when coveralls.io has an outage
+        fail-on-error: false
+
+  # The JDBC adapters only support some Rails versions, and there is no
+  # JDBC adapter for Trilogy
+  jruby:
+    name: Test (Ruby ${{ matrix.ruby }}, Rails ${{ matrix.rails }}, ${{ matrix.adapter }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: [jruby-10.0, jruby-head]
+        rails: ['7.0', '7.1', '7.2', '8.0', '8.1']
+        adapter: [sqlite3, postgresql, mysql2]
+        exclude:
+          # Only activerecord-jdbcsqlite3-adapter supports Rails 8.1,
+          # and only via its 81.0.pre1 prerelease
+          - rails: '8.1'
+            adapter: postgresql
+          - rails: '8.1'
+            adapter: mysql2
+          - ruby: jruby-head
+            adapter: postgresql
+          - ruby: jruby-head
+            adapter: mysql2
+
+    continue-on-error: ${{ endsWith(matrix.ruby, 'head') }}
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: delayed_job_test
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: delayed_job_test
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 3306:3306
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Select the gemfile
+      env:
+        ADAPTER: ${{ matrix.adapter }}
+        RAILS_VERSION: ${{ matrix.rails }}
+      run: |
+        gemfile=$([ "$RAILS_VERSION" = edge ] && echo master || echo "${RAILS_VERSION/./-}")
+        echo "BUNDLE_GEMFILE=$GITHUB_WORKSPACE/gemfiles/$ADAPTER/$gemfile.gemfile" >> "$GITHUB_ENV"
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Run tests
+      run: bundle exec rspec
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@main
+      with:
+        github-token: ${{ secrets.github_token }}
+        flag-name: run-${{ matrix.ruby }}-${{ matrix.rails }}-${{ matrix.adapter }}
+        parallel: true
+        # Don't fail otherwise-green jobs when coveralls.io has an outage
+        fail-on-error: false
 
   finish:
-    needs: test
+    needs: [adapters, rubies, jruby]
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
@@ -265,3 +204,4 @@ jobs:
       with:
         github-token: ${{ secrets.github_token }}
         parallel-finished: true
+        fail-on-error: false

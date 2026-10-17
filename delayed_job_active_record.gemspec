@@ -8,15 +8,23 @@ Gem::Specification.new do |spec|
 
   spec.licenses = "MIT"
 
-  spec.authors  = ["David Genord II", "Brian Ryckbost", "Matt Griffin", "Erik Michaels-Ober"]
+  spec.authors  = ["David Genord II", "Brian Ryckbost", "Matt Griffin", "Erik Berlin"]
   spec.email    = ["david@collectiveidea.com", "bryckbost@gmail.com", "matt@griffinonline.org", "sferik@gmail.com"]
   spec.homepage = "http://github.com/collectiveidea/delayed_job_active_record"
 
-  spec.files         = %w[CONTRIBUTING.md LICENSE.md README.md delayed_job_active_record.gemspec] + Dir["lib/**/*.rb"]
+  spec.files         = %w[CHANGELOG.md CONTRIBUTING.md LICENSE.md README.md delayed_job_active_record.gemspec] +
+                       Dir["lib/**/*.rb"]
   spec.require_paths = ["lib"]
 
-  spec.metadata = { "rubygems_mfa_required" => "true" }
+  spec.required_ruby_version = ">= 3.2"
 
-  spec.add_dependency "activerecord", [">= 3.0", "< 9.0"]
-  spec.add_dependency "delayed_job",  [">= 3.0", "< 5"]
+  spec.metadata = {
+    "bug_tracker_uri" => "https://github.com/collectiveidea/delayed_job_active_record/issues",
+    "changelog_uri" => "https://github.com/collectiveidea/delayed_job_active_record/blob/master/CHANGELOG.md",
+    "rubygems_mfa_required" => "true",
+    "source_code_uri" => "https://github.com/collectiveidea/delayed_job_active_record"
+  }
+
+  spec.add_dependency "activerecord", [">= 6", "< 9"]
+  spec.add_dependency "delayed_job",  [">= 3", "< 5"]
 end
