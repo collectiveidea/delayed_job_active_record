@@ -40,7 +40,7 @@ module Delayed
         end
         # simplecov:enable
 
-        scope :by_priority, lambda { order("priority ASC, run_at ASC") }
+        scope :by_priority, lambda { order(:priority, :run_at) }
         scope :min_priority, lambda { where("priority >= ?", Worker.min_priority) if Worker.min_priority }
         scope :max_priority, lambda { where("priority <= ?", Worker.max_priority) if Worker.max_priority }
         scope :for_queues, lambda { |queues = Worker.queues| where(queue: queues) if Array(queues).any? }

@@ -52,7 +52,7 @@ ActiveRecord::Base.establish_connection config[db_adapter]
 ActiveRecord::Base.logger = Delayed::Worker.logger
 ActiveRecord::Migration.verbose = false
 
-migration_template = File.open("lib/generators/delayed_job/templates/migration.rb")
+migration_template = File.read("lib/generators/delayed_job/templates/migration.rb")
 
 # need to eval the template with the migration_version intact
 migration_context =
@@ -68,7 +68,7 @@ migration_context =
     end
   end
 
-migration_ruby = ERB.new(migration_template.read).result(migration_context.new.my_binding)
+migration_ruby = ERB.new(migration_template).result(migration_context.new.my_binding)
 eval(migration_ruby) # rubocop:disable Security/Eval
 
 ActiveRecord::Schema.define do
