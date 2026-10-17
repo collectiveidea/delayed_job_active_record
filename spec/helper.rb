@@ -92,3 +92,22 @@ end
 
 # Add this directory so the ActiveSupport autoloading works
 ActiveSupport::Dependencies.autoload_paths << File.dirname(__FILE__)
+
+RSpec.configure do |config|
+  config.define_derived_metadata do |metadata|
+    next unless RUBY_ENGINE == "jruby"
+
+    case metadata[:description]
+    when "re-schedules jobs after failing"
+      # Fixed in https://github.com/collectiveidea/delayed_job/commit/4c2850c
+      if Gem.loaded_specs["delayed_job"].version <= Gem::Version.new("4.2.0")
+        metadata[:skip] = "delayed_job 4.2.0's shared examples expect CRuby's backtrace format"
+      end
+    when "reserves jobs scheduled for the past when time zones are involved"
+      if db_adapter == "sqlite3" && ActiveRecord.version >= Gem::Version.new("7.2")
+        metadata[:skip] = "JDBC SQLite binds zoned times in local time: " \
+                          "https://github.com/jruby/activerecord-jdbc-adapter/issues/1202"
+      end
+    end
+  end
+end
