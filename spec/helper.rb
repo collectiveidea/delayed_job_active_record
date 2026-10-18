@@ -7,15 +7,28 @@ SimpleCov::Formatter::LcovFormatter.config do |c|
   c.report_with_single_file = true
   c.single_report_path = "coverage/lcov.info"
 end
-SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
-  [
-    SimpleCov::Formatter::HTMLFormatter,
-    SimpleCov::Formatter::LcovFormatter
-  ]
-)
+SimpleCov.formatters = [
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::LcovFormatter
+]
 
 SimpleCov.start do
-  add_filter "/spec/"
+  # SimpleCov 1.0 renamed add_filter to skip
+  if respond_to?(:skip)
+    skip "/spec/"
+  else
+    add_filter "/spec/"
+  end
+
+  # JRuby can't measure branch or method coverage, and its line coverage
+  # is unreliable without --debug, so only enforce thresholds on CRuby.
+  # The thresholds and the simplecov:disable directives need SimpleCov 1.2,
+  # which requires Ruby 3.2.
+  if RUBY_ENGINE == "ruby" && Gem::Version.new(SimpleCov::VERSION) >= Gem::Version.new("1.2")
+    coverage :line, minimum: 100
+    coverage :branch, minimum: 100
+    coverage :method, minimum: 100
+  end
 end
 
 require "logger"

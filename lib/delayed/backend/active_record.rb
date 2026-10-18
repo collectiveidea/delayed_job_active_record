@@ -33,10 +33,12 @@ module Delayed
       class Job < ::ActiveRecord::Base
         include Delayed::Backend::Base
 
+        # simplecov:disable - only runs on Active Record 3 or with protected_attributes_continued
         if ::ActiveRecord::VERSION::MAJOR < 4 || defined?(::ActiveRecord::MassAssignmentSecurity)
           attr_accessible :priority, :run_at, :queue, :payload_object,
                           :failed_at, :locked_at, :locked_by, :handler
         end
+        # simplecov:enable
 
         scope :by_priority, lambda { order("priority ASC, run_at ASC") }
         scope :min_priority, lambda { where("priority >= ?", Worker.min_priority) if Worker.min_priority }
@@ -90,7 +92,8 @@ module Delayed
         end
 
         def self.reserve_with_scope(ready_scope, worker, now)
-          case Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy
+          strategy = Delayed::Backend::ActiveRecord.configuration.reserve_sql_strategy
+          case strategy # simplecov:disable branch - the setter only accepts these two
           # Optimizations for faster lookups on some common databases
           when :optimized_sql
             reserve_with_scope_using_optimized_sql(ready_scope, worker, now)
