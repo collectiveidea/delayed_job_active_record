@@ -6,16 +6,16 @@ gem "rake"
 
 group :test do
   platforms :jruby do
-    gem "activerecord-jdbcsqlite3-adapter"
+    gem "activerecord-jdbcsqlite3-adapter", "~> 60"
   end
 
   platforms :ruby, :mswin, :mingw do
     gem "sqlite3", "~> 1.4"
   end
 
-  gem "rspec", ">= 2.11"
+  gem "rspec", ">= 3"
   gem "simplecov", ">= 0.20.0", require: false
-  gem "simplecov-lcov", ">= 0.8.0", require: false
+  gem "simplecov-lcov", ">= 0.8", require: false
 
   gem "activerecord", "~> 6.0.0"
 

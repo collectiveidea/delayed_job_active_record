@@ -6,16 +6,16 @@ gem "rake"
 
 group :test do
   platforms :jruby do
-    gem "activerecord-jdbcpostgresql-adapter"
+    gem "activerecord-jdbcpostgresql-adapter", "~> 61"
   end
 
   platforms :ruby, :mswin, :mingw do
     gem "pg", "~> 1.1"
   end
 
-  gem "rspec", ">= 2.11"
+  gem "rspec", ">= 3"
   gem "simplecov", ">= 0.20.0", require: false
-  gem "simplecov-lcov", ">= 0.8.0", require: false
+  gem "simplecov-lcov", ">= 0.8", require: false
 
   gem "activerecord", "~> 6.1.0"
 
