@@ -92,30 +92,35 @@ jobs:
           - ruby: '2.1'
             gemfile: gemfiles/postgresql/3-2.gemfile
             ubuntu: '22.04'
+            docker: true
           - ruby: '2.1'
             gemfile: gemfiles/sqlite3/3-2.gemfile
             ubuntu: '22.04'
           - ruby: '2.1'
             gemfile: gemfiles/postgresql/3-0.gemfile
             ubuntu: '22.04'
+            docker: true
           - ruby: '2.1'
             gemfile: gemfiles/sqlite3/3-0.gemfile
             ubuntu: '22.04'
           - ruby: '2.1'
             gemfile: gemfiles/postgresql/3-1.gemfile
             ubuntu: '22.04'
+            docker: true
           - ruby: '2.1'
             gemfile: gemfiles/sqlite3/3-1.gemfile
             ubuntu: '22.04'
           - ruby: '2.1'
             gemfile: gemfiles/postgresql/4-0.gemfile
             ubuntu: '22.04'
+            docker: true
           - ruby: '2.1'
             gemfile: gemfiles/sqlite3/4-0.gemfile
             ubuntu: '22.04'
           - ruby: '2.1'
             gemfile: gemfiles/postgresql/4-1.gemfile
             ubuntu: '22.04'
+            docker: true
           - ruby: '2.1'
             gemfile: gemfiles/sqlite3/4-1.gemfile
             ubuntu: '22.04'
@@ -234,6 +239,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ruby/setup-ruby@v1
+      if: ${{ !matrix.docker }}
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       with:
@@ -241,9 +247,19 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
         cache-version: 2
     - name: Run tests
+      if: ${{ !matrix.docker }}
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       run: bundle exec rspec
+    - name: Run tests in a Ruby ${{ matrix.ruby }} container
+      if: ${{ matrix.docker }}
+      # setup-ruby's Ruby 2.1 is built against OpenSSL 1.0, and the old pg gem
+      # crashes it by loading Ubuntu 22.04's libpq, which links OpenSSL 3, so
+      # build pg in the Debian image that Ruby 2.1 shipped with instead
+      run: >-
+        docker run --rm --network host -v "$GITHUB_WORKSPACE:/app" -w /app
+        -e LANG=C.UTF-8 -e BUNDLE_GEMFILE=/app/${{ matrix.gemfile }}
+        ruby:${{ matrix.ruby }} bash -c "bundle install --jobs 4 && bundle exec rspec"
     - name: Coveralls Parallel
       uses: coverallsapp/github-action@main
       with:
